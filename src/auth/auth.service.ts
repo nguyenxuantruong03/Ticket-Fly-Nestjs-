@@ -12,9 +12,10 @@ import { JwtService } from '@nestjs/jwt';
 import refreshConfig from './config/refresh.config';
 import { ConfigType } from '@nestjs/config';
 import { Role } from '@prisma/client';
-import { GetTokenDto } from './dto/get-token.dto';
+import { GetTokenDto } from './dto/get-token.dto.';
 import { sendVerificationEmail } from 'mail/verificationEmail';
-import { GetEmailDto } from './dto/get-email';
+import { GetEmailDto } from './dto/get-email.dto';
+import { CreateNewPasswordDto } from './dto/create-new-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -36,8 +37,9 @@ export class AuthService {
     const user = await this.userService.findByEmail(email);
     if (!user)
       throw new UnauthorizedException({ message: 'Người dùng không tồn tại!' });
+
     const now = new Date();
-    if (now < user.banUntil) {
+    if (user.banUntil && now < user.banUntil) {
       throw new UnauthorizedException({
         timeUnBan: user.banUntil, // Thời gian hết khóa
       });
@@ -46,10 +48,10 @@ export class AuthService {
     if (!user.emailVerified)
       throw new UnauthorizedException({
         emailNotVerified: 'Email chưa được xác thực!',
-        countResendEmailVerify: user.reSendemailVerified, // Số lần gửi lại email xác thực
+        countResendEmailVerify: user.reSendemail, // Số lần gửi lại email xác thực
       });
 
-    const isPasswordMatched = verify(user.password, password);
+    const isPasswordMatched = await verify(user.password, password);
     if (!isPasswordMatched)
       throw new UnauthorizedException({ message: 'Mật khẩu không đúng!' });
     return {
@@ -143,7 +145,15 @@ export class AuthService {
     return await this.userService.updateRefreshToken(userId, null);
   }
 
-  async verificationAccount(tokenDto: GetTokenDto) {
-    return await this.userService.verificationAccount(tokenDto);
+  async verificationAccount(getTokenDto: GetTokenDto) {
+    return await this.userService.verificationAccount(getTokenDto);
+  }
+
+  async forgotPassword(getEmailDto: GetEmailDto) {
+    return await this.userService.forgotPassword(getEmailDto);
+  }
+
+  async newPassword(createNewPasswordDto: CreateNewPasswordDto) {
+    return await this.userService.newPassword(createNewPasswordDto);
   }
 }

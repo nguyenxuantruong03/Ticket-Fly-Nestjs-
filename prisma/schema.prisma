@@ -14,10 +14,10 @@ datasource db {
 }
 
 model User {
-  id                  String    @id @default(cuid())
-  email               String    @unique
-  emailVerified       DateTime?
-  reSendemailVerified Int       @default(0)
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  reSendemail   Int       @default(0)
 
   name  String
   image String?

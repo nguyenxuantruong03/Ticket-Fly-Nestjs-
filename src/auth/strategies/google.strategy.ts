@@ -59,7 +59,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
 
       // Kiểm tra nếu user bị khóa
       const now = new Date();
-      if (now < user.banUntil) {
+      if (user.banUntil && now < user.banUntil) {
         return {
           redirectUrl: `${process.env.NEST_PUBLIC_FRONT_END}/auth/login?errorGooglebanUntil=${encodeURIComponent(`${user.banUntil}`)}`,
         };

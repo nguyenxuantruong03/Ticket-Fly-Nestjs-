@@ -16,8 +16,9 @@ import { GoogleAuthGuard } from './guards/google-auth/google-auth.guard';
 import { Response } from 'express';
 import { Public } from './decorators/public..decorator';
 import { Roles } from './decorators/role.decorator';
-import { GetTokenDto } from './dto/get-token.dto';
-import { GetEmailDto } from './dto/get-email';
+import { GetTokenDto } from './dto/get-token.dto.';
+import { GetEmailDto } from './dto/get-email.dto';
+import { CreateNewPasswordDto } from './dto/create-new-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -90,5 +91,17 @@ export class AuthController {
   @Post('reSendVerificationAccount')
   reSendVerificationAccount(@Body() email: GetEmailDto) {
     return this.authService.reSendVerificationAccount(email);
+  }
+
+  @Public()
+  @Post('forgotPassword')
+  forgotPassword(@Body() email: GetEmailDto) {
+    return this.authService.forgotPassword(email);
+  }
+
+  @Public()
+  @Post('newPassword')
+  newPassword(@Body() createNewPasswordDto: CreateNewPasswordDto) {
+    return this.authService.newPassword(createNewPasswordDto);
   }
 }
