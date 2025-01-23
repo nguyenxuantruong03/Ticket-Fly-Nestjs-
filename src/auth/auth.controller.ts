@@ -19,6 +19,7 @@ import { Roles } from './decorators/role.decorator';
 import { GetTokenDto } from './dto/get-token.dto.';
 import { GetEmailDto } from './dto/get-email.dto';
 import { CreateNewPasswordDto } from './dto/create-new-password.dto';
+import { CreateTwoFactorDto } from './dto/create-TwoFactorDto';
 
 @Controller('auth')
 export class AuthController {
@@ -34,7 +35,12 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   login(@Request() req) {
-    return this.authService.login(req.user.id, req.user.name, req.user.role);
+    return this.authService.login(
+      req.user.id,
+      req.user.name,
+      req.user.role,
+      req.user.isTwoFactorEnabled,
+    );
   }
 
   @Roles('ADMIN', 'EDITOR')
@@ -103,5 +109,11 @@ export class AuthController {
   @Post('newPassword')
   newPassword(@Body() createNewPasswordDto: CreateNewPasswordDto) {
     return this.authService.newPassword(createNewPasswordDto);
+  }
+
+  @Public()
+  @Post('twoFactor')
+  twoFactor(@Body() { email, code }: CreateTwoFactorDto) {
+    return this.authService.TwoFacTorAuthentication(email, code);
   }
 }

@@ -5,14 +5,9 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { hash, verify } from 'argon2';
+import { hash } from 'argon2';
 import { sendVerificationEmail } from 'mail/verificationEmail';
-import { GetTokenDto } from './dto/get-token.dto';
 import { randomBytes } from 'crypto';
-import { GetEmailDto } from 'src/auth/dto/get-email.dto';
-import { sendPasswordResetEmail } from 'mail/forgot-password';
-import { CreateNewPasswordDto } from 'src/auth/dto/create-new-password.dto';
-
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
@@ -81,6 +76,49 @@ export class UserService {
     });
   }
 
+  async findTwoFactorToken(email: string) {
+    const twoFactorToken = await this.prisma.twoFactorToken.findFirst({
+      where: { email },
+    });
+
+    return twoFactorToken;
+  }
+
+  async findPasswordResetToken(token: string) {
+    const existingToken = await this.prisma.passwordResetToken.findUnique({
+      where: { token },
+    });
+
+    return existingToken;
+  }
+
+  async findVerificationToken(token: string) {
+    const verificationExistingToken =
+      await this.prisma.verificationToken.findUnique({
+        where: {
+          token,
+        },
+      });
+    return verificationExistingToken;
+  }
+
+  async updateandDeleteVerificationToken(email: string) {
+    const existingUser = await this.findByEmail(email);
+    const existingToken = await this.findVerificationToken(email);
+    await this.prisma.user.update({
+      where: { id: existingUser.id },
+      data: {
+        emailVerified: new Date(),
+        email: existingUser.email,
+        reSendemail: 0,
+      },
+    });
+
+    await this.prisma.verificationToken.delete({
+      where: { id: existingToken.id },
+    });
+  }
+
   async updateRefreshToken(userId: string, hashedRefreshToken: string | null) {
     return await this.prisma.user.update({
       where: {
@@ -90,6 +128,84 @@ export class UserService {
         hashedRefreshToken,
       },
     });
+  }
+
+  async updateAndDeletePasswordResetToken(email: string, hashPassword: string) {
+    const existingUser = await this.findByEmail(email);
+    const existingToken = await this.findPasswordResetToken(email);
+
+    await this.prisma.user.update({
+      where: { id: existingUser.id },
+      data: { password: hashPassword },
+    });
+
+    await this.prisma.passwordResetToken.delete({
+      where: { id: existingToken.id },
+    });
+
+    // Cập nhật lại resent 0
+    await this.prisma.user.update({
+      where: { id: existingUser.id },
+      data: {
+        reSendemail: 0,
+      },
+    });
+  }
+
+  async createAndDeleteTwoFactorTokenConfirmation(email: string) {
+    const twoFactorToken = await this.findTwoFactorToken(email);
+    const existingUser = await this.findByEmail(email);
+
+    await this.prisma.twoFactorToken.delete({
+      where: { id: twoFactorToken.id },
+    });
+
+    const existingConfirmation =
+      await this.prisma.twoFactorConfirmation.findUnique({
+        where: { userId: existingUser.id },
+      });
+
+    if (existingConfirmation) {
+      await this.prisma.twoFactorConfirmation.delete({
+        where: { id: existingConfirmation.id },
+      });
+    }
+
+    await this.prisma.twoFactorConfirmation.create({
+      data: {
+        userId: existingUser.id,
+      },
+    });
+  }
+
+  async genearteTwoFactorToken(email: string) {
+    // Fallback random token generator
+    const token = Array.from({ length: 6 }, () =>
+      Math.floor(Math.random() * 10),
+    ).join('');
+    const expires = new Date(new Date().getTime() + 15 * 60 * 1000);
+
+    const existingToken = await this.prisma.twoFactorToken.findFirst({
+      where: { email },
+    });
+
+    if (existingToken) {
+      await this.prisma.twoFactorToken.delete({
+        where: {
+          id: existingToken.id,
+        },
+      });
+    }
+
+    const twoFactorToken = await this.prisma.twoFactorToken.create({
+      data: {
+        email,
+        token,
+        expires,
+      },
+    });
+
+    return twoFactorToken;
   }
 
   async removeResendEmail(email: string) {
@@ -137,50 +253,7 @@ export class UserService {
     });
   }
 
-  async forgotPassword({ email }: GetEmailDto) {
-    const now = new Date();
-    const existingUser = await this.findByEmail(email);
-
-    if (!existingUser) {
-      throw new UnauthorizedException({ message: 'Người dùng không tồn tại!' });
-    }
-
-    if (existingUser.banUntil && now < existingUser.banUntil) {
-      throw new UnauthorizedException({
-        timeUnBan: existingUser.banUntil, // Thời gian hết khóa
-      });
-    }
-
-    // Kiểm tra người dùng đã hết bị ban thì set lại thành ban thành null và reSendemail = 0
-    await this.removeResendEmail(email);
-
-    // Kiếm tra nếu <5 lần gửi email xác thực
-    if (existingUser.reSendemail < 5) {
-      // Tăng số lần gửi email xác thực lên 1
-      await this.updateReSendEmail(email);
-
-      // Generate token & send email
-      const passwordResetToken = await this.generatePasswordForgetToken(email);
-      await sendPasswordResetEmail(
-        passwordResetToken.email,
-        passwordResetToken.token,
-      );
-    } else {
-      // Ban người dùng 7 ngày
-      await this.banUser(email);
-
-      throw new BadRequestException({
-        message: 'Bạn đã gửi quá số lần cho phép!',
-      });
-    }
-
-    return {
-      countResendEmailVerify: existingUser.reSendemail,
-      success: 'Chúng tôi đã gửi yêu cầu đặt lại mật khẩu đến email của bạn!',
-    };
-  }
-
-  generatePasswordForgetToken = async (email: string) => {
+  async generatePasswordForgetToken(email: string) {
     const token = randomBytes(32).toString('hex');
     const expires = new Date(new Date().getTime() + 2 * 60 * 1000);
 
@@ -205,62 +278,7 @@ export class UserService {
     });
 
     return passwordResetToken;
-  };
-
-  newPassword = async ({ password, token }: CreateNewPasswordDto) => {
-    const existingToken = await this.prisma.passwordResetToken.findUnique({
-      where: { token },
-    });
-
-    if (!existingToken) {
-      throw new BadRequestException({
-        message:
-          'Không tìm thấy yêu cầu cần đổi mật khẩu hoặc yêu cầu của bạn đã hết hạn. Hãy gửi lại yêu cầu!',
-      });
-    }
-
-    const hasExpired = new Date(existingToken.expires) < new Date();
-
-    if (hasExpired) {
-      throw new BadRequestException({
-        message: 'Bạn hãy gửi yêu cầu lại. Yêu cầu của bạn đã hết hạn!',
-      });
-    }
-
-    const existingUser = await this.findByEmail(existingToken.email);
-
-    if (!existingUser) {
-      throw new UnauthorizedException({ message: 'Người dùng không tồn tại!' });
-    }
-
-    const hashPassword = await hash(password);
-    const isPasswordMatched = await verify(existingUser.password, password);
-
-    if (isPasswordMatched) {
-      throw new BadRequestException({
-        message: 'Mật khẩu mới không được trùng với mật khẩu cũ!',
-      });
-    }
-
-    await this.prisma.user.update({
-      where: { id: existingUser.id },
-      data: { password: hashPassword },
-    });
-
-    await this.prisma.passwordResetToken.delete({
-      where: { id: existingToken.id },
-    });
-
-    // Cập nhật lại resent 0
-    await this.prisma.user.update({
-      where: { id: existingUser.id },
-      data: {
-        reSendemail: 0,
-      },
-    });
-
-    return { success: 'Mật khẩu mới đã cập nhật lại!' };
-  };
+  }
 
   async generateVerificationToken(email: string) {
     const token = randomBytes(32).toString('hex'); // Tạo chuỗi token dài 32 byte
@@ -312,46 +330,5 @@ export class UserService {
         message: 'Bạn đã gửi quá số lần cho phép!',
       });
     }
-  }
-
-  async verificationAccount({ token }: GetTokenDto) {
-    const existingToken = await this.prisma.verificationToken.findUnique({
-      where: {
-        token,
-      },
-    });
-
-    if (!existingToken) {
-      return { error: 'Token không tồn tại!' };
-    }
-
-    const hasExpired = new Date(existingToken.expires) < new Date();
-
-    if (hasExpired) {
-      return { error: 'Token đã hết hạn!' };
-    }
-
-    const existingUser = await this.prisma.user.findUnique({
-      where: { email: existingToken.email },
-    });
-
-    if (!existingUser) {
-      return { error: 'Email hiện tại không có!' };
-    }
-
-    await this.prisma.user.update({
-      where: { id: existingUser.id },
-      data: {
-        emailVerified: new Date(),
-        email: existingUser.email,
-        reSendemail: 0,
-      },
-    });
-
-    await this.prisma.verificationToken.delete({
-      where: { id: existingToken.id },
-    });
-
-    return { success: 'Email đã xác thực!' };
   }
 }
