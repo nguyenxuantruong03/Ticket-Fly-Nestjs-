@@ -34,12 +34,13 @@ export class AuthController {
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  login(@Request() req) {
+  login(@Request() req, @Body() { tokenCaptcha }: any) {
     return this.authService.login(
       req.user.id,
       req.user.name,
       req.user.role,
       req.user.isTwoFactorEnabled,
+      tokenCaptcha,
     );
   }
 
@@ -75,6 +76,9 @@ export class AuthController {
       req.user.id,
       req.user.name,
       req.user.role,
+      false,
+      '',
+      req.user.Account.type,
     );
     // Redirect về trang front-end với thông tin user
     res.redirect(
@@ -113,7 +117,7 @@ export class AuthController {
 
   @Public()
   @Post('twoFactor')
-  twoFactor(@Body() { email, code }: CreateTwoFactorDto) {
-    return this.authService.TwoFacTorAuthentication(email, code);
+  twoFactor(@Body() { email, code, tokenCaptcha }: CreateTwoFactorDto) {
+    return this.authService.TwoFacTorAuthentication(email, code, tokenCaptcha);
   }
 }
