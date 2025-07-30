@@ -16,7 +16,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       context.getHandler(),
       context.getClass(),
     ]);
-
+    // JwtAuthGuard check thấy isPublic = true → không thực hiện xác thực JWT.
     if (isPublic) return true;
     return super.canActivate(context);
   }

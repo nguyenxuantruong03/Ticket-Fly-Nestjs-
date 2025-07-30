@@ -6,7 +6,4 @@ export class CreateTwoFactorDto {
 
   @IsString()
   code: string;
-
-  @IsString()
-  tokenCaptcha: string;
 }

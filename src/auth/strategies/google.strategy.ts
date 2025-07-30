@@ -4,6 +4,8 @@ import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import gooogleOauthConfig from '../config/gooogle-oauth.config';
 import { ConfigType } from '@nestjs/config';
 import { AuthService } from '../auth.service';
+import { Request } from 'express';
+import { GoogleUser } from '../interface/google-user.interface';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy) {
@@ -17,15 +19,19 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       clientSecret: googleOauthConfig.clientSecret,
       callbackURL: googleOauthConfig.callbackURL,
       scope: ['email', 'profile'], // Yêu cầu quyền truy cập email và hồ sơ
+      passReqToCallback: true,
     });
   }
 
   async validate(
+    req: Request,
     accessToken: string,
     refreshToken: string,
     profile: any,
     done: VerifyCallback,
   ) {
+    const redirect = req.query.state as string | undefined;
+
     try {
       const user = await this.authService.validateGoogleUser({
         email: profile.emails[0].value,
@@ -58,15 +64,21 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       }
 
       // Kiểm tra nếu user bị khóa
-      const now = new Date();
-      if (user.banUntil && now < user.banUntil) {
+      if (user.banUntil && new Date() < user.banUntil) {
         return {
           redirectUrl: `${process.env.NEST_PUBLIC_FRONT_END}/auth/login?errorGooglebanUntil=${encodeURIComponent(`${user.banUntil}`)}`,
         };
       }
 
-      // Thành công
-      return done(null, user);
+      // Gắn redirectUrl nếu có
+      const finalUser: GoogleUser = {
+        id: user.id,
+        name: user.name,
+        role: user.role,
+        redirect,
+      };
+
+      return done(null, finalUser);
     } catch (error) {
       console.error(error);
       return {

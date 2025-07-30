@@ -20,6 +20,8 @@ import { GetTokenDto } from './dto/get-token.dto.';
 import { GetEmailDto } from './dto/get-email.dto';
 import { CreateNewPasswordDto } from './dto/create-new-password.dto';
 import { CreateTwoFactorDto } from './dto/create-TwoFactorDto';
+import { GoogleUser } from './interface/google-user.interface';
+import { Role } from '@prisma/client';
 
 @Controller('auth')
 export class AuthController {
@@ -31,22 +33,24 @@ export class AuthController {
     return this.authService.registerUser(createUserDto);
   }
 
+  // Passport-local chỉ hỗ trợ hai trường: username (hoặc usernameField nếu bạn cấu hình lại)
   @Public()
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  login(@Request() req, @Body() { tokenCaptcha }: any) {
+  login(@Request() req) {
+    // req.user trong controller nhận được giá trị
+    // là kết quả trả về từ phương thức validate của LocalStrategy
     return this.authService.login(
       req.user.id,
       req.user.name,
       req.user.role,
       req.user.isTwoFactorEnabled,
-      tokenCaptcha,
     );
   }
 
-  @Roles('ADMIN', 'EDITOR')
+  @Roles(Role.USER)
   @Get('protected')
-  getAll(@Request() req) {
+  async getAll(@Request() req) {
     return {
       message: `Now you can access this protected API. This is your userID: ${req.user.id}`,
     };
@@ -55,37 +59,50 @@ export class AuthController {
   @Public()
   @UseGuards(RefreshAuthGuard)
   @Post('refresh')
-  refreshToken(@Request() req) {
-    return this.authService.refreshToken(req.user.id, req.user.name);
+  async refreshToken(@Request() req) {
+    return this.authService.refreshToken(req.user.id);
   }
 
   @Public()
   @UseGuards(GoogleAuthGuard)
   @Get('google/login')
-  googleLogin() {}
+  googleLogin() {
+    // Passport tự xử lý nên bạn không cần làm gì ở đây,
+    // nhưng nó sẽ giữ `redirect` nếu bạn truyền vào query
+  }
 
   @Public()
   @UseGuards(GoogleAuthGuard)
   @Get('google/callback')
   async googleCallback(@Request() req, @Res() res: Response) {
-    // Check nếu người dùng không đăng nhập đúng oauth và redirect về trang login + thông báo lỗi
     if (req.user && req.user.redirectUrl) {
       return res.redirect(req.user.redirectUrl);
     }
+
     const response = await this.authService.login(
       req.user.id,
       req.user.name,
       req.user.role,
       false,
-      '',
-      req.user.Account.type,
     );
-    // Redirect về trang front-end với thông tin user
-    res.redirect(
-      `${process.env.NEST_PUBLIC_FRONT_END}/api/auth/google/callback?userId=${response.id}&name=${response.name}&accessToken=${response.accessToken}&refreshToken=${response.refreshToken}&role=${response.role}`,
-    );
+
+    const redirectTo = (req.user as GoogleUser).redirect || '/';
+
+    const finalRedirect =
+      `${process.env.NEST_PUBLIC_FRONT_END}/api/auth/google/callback` +
+      `?userId=${response.id}` +
+      `&name=${response.name}` +
+      `&accessToken=${response.accessToken}` +
+      `&refreshToken=${response.refreshToken}` +
+      `&role=${response.role}` +
+      `&redirect=${encodeURIComponent(redirectTo)}`;
+
+    return res.redirect(finalRedirect);
   }
 
+  // req.user.id trong backend ở đoạn code này phụ thuộc vào cơ chế xác thực mà bạn đã thiết lập,
+  // cụ thể là dựa vào Authorization header (Bearer ${session?.accessToken}).
+  // JwtAuthGuard sẽ kiểm tra xem token có hợp lệ không, nếu không hợp lệ sẽ trả về lỗi 401 Unauthorized.
   @Post('logout')
   logOut(@Req() req) {
     return this.authService.logOut(req.user.id);
@@ -117,7 +134,7 @@ export class AuthController {
 
   @Public()
   @Post('twoFactor')
-  twoFactor(@Body() { email, code, tokenCaptcha }: CreateTwoFactorDto) {
-    return this.authService.TwoFacTorAuthentication(email, code, tokenCaptcha);
+  twoFactor(@Body() { email, code }: CreateTwoFactorDto) {
+    return this.authService.TwoFacTorAuthentication(email, code);
   }
 }

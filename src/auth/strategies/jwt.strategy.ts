@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import jwtConfig from '../config/jwt.config';
 import { ConfigType } from '@nestjs/config';
-import { AuthJwtPayload } from '../types/auth-jwtPayload';
+import { AuthJwtPayload } from '../interface/auth-jwtPayload';
 import { AuthService } from '../auth.service';
 
 // const test = new Strategy({

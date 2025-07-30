@@ -16,9 +16,13 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   //Logic kiểm tra người dùng
+  // Trong LocalStrategy, hoặc bất kỳ trường nào ngoài usernameField (email) và password
+  // từ body là do cơ chế của Passport-local strategy.
   validate(email: string, password: string) {
     if (password === '')
       throw new UnauthorizedException('Please provide your password!');
+
+    // Check validate email và password xong thì trả về dữ liệu id,name,role,isTwoFactorEnabled
     return this.authService.validateLocalUser(email, password);
   }
 }

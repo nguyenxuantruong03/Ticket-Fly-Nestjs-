@@ -32,6 +32,7 @@ import { RolesGuard } from './guards/roles/roles.guard';
     JwtStrategy,
     RefreshStrategy,
     GoogleStrategy,
+    // Dùng ở đây cho toàn bộ nhưng nếu là isPublic thì bỏ qua ko check JwtAuthGuard
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard, //@UseGuard(JwtAuthGuard),

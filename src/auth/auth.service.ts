@@ -3,13 +3,12 @@ import {
   ConflictException,
   Inject,
   Injectable,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from 'src/user/user.service';
 import { hash, verify } from 'argon2';
-import { AuthJwtPayload } from './types/auth-jwtPayload';
+import { AuthJwtPayload } from './interface/auth-jwtPayload';
 import { JwtService } from '@nestjs/jwt';
 import refreshConfig from './config/refresh.config';
 import { ConfigType } from '@nestjs/config';
@@ -20,8 +19,6 @@ import { GetEmailDto } from './dto/get-email.dto';
 import { CreateNewPasswordDto } from './dto/create-new-password.dto';
 import { sendTwoFactorTokenEmail } from 'mail/two-factor';
 import { sendPasswordResetEmail } from 'mail/forgot-password';
-import { CaptchaData, ErrorCodes } from './types/captcha';
-
 @Injectable()
 export class AuthService {
   constructor(
@@ -60,9 +57,9 @@ export class AuthService {
     if (!isPasswordMatched)
       throw new UnauthorizedException({ message: 'Mật khẩu không đúng!' });
 
-    // Logic dùng để gửi mã xác thực đến người dùng khi logic vào chưa có code nên mặc đinh là '' và tokenCaptcha ''
+    // Logic dùng để gửi mã xác thực đến người dùng khi logic vào chưa có code nên mặc đinh
     if (user.isTwoFactorEnabled && user.email) {
-      await this.TwoFacTorAuthentication(email, '', '');
+      await this.TwoFacTorAuthentication(email, '');
     }
     return {
       id: user.id,
@@ -72,11 +69,7 @@ export class AuthService {
     };
   }
 
-  async TwoFacTorAuthentication(
-    email: string,
-    code: string,
-    tokenCaptcha: string,
-  ) {
+  async TwoFacTorAuthentication(email: string, code: string) {
     // Xác thực 2FA hay còn được gọi là xác thục 2 bước
     const existingUser = await this.userService.findByEmail(email);
     if (code) {
@@ -112,7 +105,6 @@ export class AuthService {
         existingUser.name,
         existingUser.role,
         existingUser.isTwoFactorEnabled,
-        tokenCaptcha,
       );
 
       return {
@@ -160,21 +152,10 @@ export class AuthService {
     name: string,
     role: Role,
     isTwoFactorEnabled?: boolean,
-    tokenCaptcha?: string,
-    type?: string,
   ) {
-    if (type !== 'oauth') {
-      //Kiểm tra tokenCaptcha
-      const captcha = await this.checkCaptcha(tokenCaptcha);
-
-      if (!captcha.success) {
-        throw new BadRequestException({
-          message: captcha.message,
-        });
-      }
-    }
     const { accessToken, refreshToken } = await this.generateTokens(userId);
     const hashedRefreshToken = await hash(refreshToken);
+
     await this.userService.updateRefreshToken(userId, hashedRefreshToken);
     return {
       id: userId,
@@ -198,27 +179,20 @@ export class AuthService {
     const user = await this.userService.findOne(userId);
     if (!user)
       throw new UnauthorizedException({ message: 'Người dùng không tồn tại!' });
-    const refreshTokenMatched = await verify(
-      user.hashedRefreshToken,
-      refreshToken,
-    );
 
-    if (!refreshTokenMatched)
+    const match = await verify(user.hashedRefreshToken, refreshToken);
+
+    if (!match)
       throw new UnauthorizedException({ message: 'Invalid Refresh Token!' });
 
-    const currenUser = { id: user.id };
-    return currenUser;
+    return { id: user.id };
   }
 
-  async refreshToken(userId: string, name: string) {
-    const { accessToken, refreshToken } = await this.generateTokens(userId);
-    const hashedRefreshToken = await hash(refreshToken);
-    await this.userService.updateRefreshToken(userId, hashedRefreshToken);
+  async refreshToken(userId: string) {
+    const { accessToken } = await this.generateTokens(userId);
     return {
       id: userId,
-      name: name,
       accessToken,
-      refreshToken,
     };
   }
 
@@ -348,68 +322,8 @@ export class AuthService {
     return { success: 'Mật khẩu mới đã cập nhật lại!' };
   }
 
-  async checkCaptcha(token: string) {
-    const errorCodeTranslations: Record<ErrorCodes, string> = {
-      'missing-input-secret': 'Thiếu khóa bảo mật',
-      'invalid-input-secret': 'Khóa bảo mật không hợp lệ',
-      'missing-input-response': 'Thiếu phản hồi xác nhận',
-      'invalid-input-response': 'Phản hồi xác nhận không hợp lệ',
-      'bad-request': 'Yêu cầu không đúng',
-      'timeout-or-duplicate': 'Hết hạn hoặc lặp lại yêu cầu',
-    };
-
-    const captchaData: CaptchaData = await this.verifyCaptchaToken(token);
-
-    if (!captchaData) {
-      return {
-        success: false,
-        message:
-          captchaData.success === false
-            ? captchaData['error-codes'].map(
-                (code) => errorCodeTranslations[code],
-              )
-            : undefined,
-      };
-    }
-
-    // Check if success is false to safely access error_codes
-    if (!captchaData.success || captchaData.score < 0.5) {
-      return {
-        success: false,
-        message:
-          captchaData.success === false
-            ? captchaData['error-codes'].map(
-                (code) => errorCodeTranslations[code],
-              )
-            : undefined,
-      };
-    }
-
-    return {
-      success: true,
-    };
-  }
-
-  async verifyCaptchaToken(token: string) {
-    const secretKey = process.env.CAPTCHA_SECRET_KEY;
-
-    if (!secretKey) {
-      throw new NotFoundException({ message: 'No secret key found' });
-    }
-
-    const url = new URL('https://www.google.com/recaptcha/api/siteverify');
-    url.searchParams.append('secret', secretKey);
-    url.searchParams.append('response', token);
-
-    const res = await fetch(url, { method: 'POST' });
-    const captchaData: CaptchaData = await res.json();
-
-    if (!res.ok) {
-      throw new NotFoundException({
-        message: 'Captcha của bạn có vấn đề!',
-      });
-    }
-
-    return captchaData;
+  async findUser(userId: string) {
+    const user = await this.userService.findOne(userId);
+    return user;
   }
 }
