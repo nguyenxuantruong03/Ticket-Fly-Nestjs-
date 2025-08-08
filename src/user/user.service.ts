@@ -8,50 +8,77 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { hash } from 'argon2';
 import { sendVerificationEmail } from 'mail/verificationEmail';
 import { randomBytes } from 'crypto';
+import { CreateUserGoogleDto } from 'src/auth/dto/create-user-google.dto';
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
   async createUser(createUserDto: CreateUserDto) {
-    const { password, account, ...user } = createUserDto;
+    // turnstileToken import vào để tránh rest vào data vì createUserDto có chứa turnstileToken nếu không gọi râ riêng nó sẽ tạo database
+    const { turnstileToken, password, ...user } = createUserDto;
+
     const hashedPassword = await hash(password);
-
-    //Logic này nếu có account thì create account, không thì gửi email xác thực
-    if (account) {
-      // nếu tạo người dùng bằng google thì không cần xác thực email
-      const createUser = await this.prisma.user.create({
-        data: {
-          password: hashedPassword,
-          emailVerified: new Date(),
-          ...user,
-        },
-      });
-
-      await this.prisma.account.create({
-        data: {
-          userId: createUser.id,
-          ...account,
-        },
-      });
-    } else {
-      const createUser = await this.prisma.user.create({
-        data: {
-          password: hashedPassword,
-          ...user,
-        },
-      });
-      // Tạo token xác thực
-      const verificationToken = await this.generateVerificationToken(
-        createUser.email,
-      );
-      // Gửi email xác thực
-      await sendVerificationEmail(
-        verificationToken.email,
-        verificationToken.token,
-      );
-    }
+    const createUser = await this.prisma.user.create({
+      data: {
+        password: hashedPassword,
+        ...user,
+      },
+    });
+    // Tạo token xác thực
+    const verificationToken = await this.generateVerificationToken(
+      createUser.email,
+    );
+    // Gửi email xác thực
+    await sendVerificationEmail(
+      verificationToken.email,
+      verificationToken.token,
+    );
 
     return {
+      success:
+        'Tạo tài khoản thành công. Bạn hãy kiểm tra mail để xác thực tài khoản!',
+    };
+  }
+
+  async createUserGoogle(createUserDto: CreateUserGoogleDto) {
+    // turnstileToken import vào để tránh rest vào data vì createUserDto có chứa turnstileToken nếu không gọi râ riêng nó sẽ tạo database
+    const { password, account, ...user } = createUserDto;
+
+    const hashedPassword = await hash(password);
+
+    // nếu tạo người dùng bằng google thì không cần xác thực email
+    const createUser = await this.prisma.user.create({
+      data: {
+        password: hashedPassword,
+        emailVerified: new Date(),
+        ...user,
+      },
+      include: {
+        account: true,
+      },
+    });
+
+    const createAccount = await this.prisma.account.create({
+      data: {
+        userId: createUser.id,
+        ...account,
+      },
+    });
+
+    return {
+      user: {
+        id: createUser.id,
+        email: createUser.email,
+        name: createUser.name,
+        image: createUser.image,
+        account: {
+          type: createAccount.type,
+          provider: createAccount.provider,
+          providerAccountId: createAccount.providerAccountId,
+        },
+        banUntil: createUser.banUntil,
+        role: createUser.role,
+      },
       success:
         'Tạo tài khoản thành công. Bạn hãy kiểm tra mail để xác thực tài khoản!',
     };
@@ -63,7 +90,7 @@ export class UserService {
         email,
       },
       include: {
-        Account: true,
+        account: true,
       },
     });
   }
@@ -102,9 +129,9 @@ export class UserService {
     return verificationExistingToken;
   }
 
-  async updateandDeleteVerificationToken(email: string) {
+  async updateandDeleteVerificationToken(token:string, email: string) {
     const existingUser = await this.findByEmail(email);
-    const existingToken = await this.findVerificationToken(email);
+    const existingToken = await this.findVerificationToken(token);
     await this.prisma.user.update({
       where: { id: existingUser.id },
       data: {
@@ -130,9 +157,13 @@ export class UserService {
     });
   }
 
-  async updateAndDeletePasswordResetToken(email: string, hashPassword: string) {
+  async updateAndDeletePasswordResetToken(
+    token: string,
+    email: string,
+    hashPassword: string,
+  ) {
     const existingUser = await this.findByEmail(email);
-    const existingToken = await this.findPasswordResetToken(email);
+    const existingToken = await this.findPasswordResetToken(token);
 
     await this.prisma.user.update({
       where: { id: existingUser.id },

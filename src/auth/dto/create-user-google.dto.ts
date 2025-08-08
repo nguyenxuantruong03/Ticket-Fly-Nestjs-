@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { CreateAccountDto } from './create-account.dto';
 
-export class CreateUserDto {
+export class CreateUserGoogleDto {
   @IsString()
   name: string;
 

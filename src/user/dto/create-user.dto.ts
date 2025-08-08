@@ -1,6 +1,4 @@
-import { Type } from 'class-transformer';
-import { IsEmail, IsOptional, IsString, ValidateNested } from 'class-validator';
-import { CreateAccountDto } from './create-account.dto';
+import { IsEmail, IsOptional, IsString } from 'class-validator';
 
 export class CreateUserDto {
   @IsString()
@@ -14,7 +12,6 @@ export class CreateUserDto {
   password: string;
 
   @IsOptional()
-  @ValidateNested({ each: true })
-  @Type(() => CreateAccountDto)
-  account?: CreateAccountDto;
+  @IsString()
+  turnstileToken: string;
 }

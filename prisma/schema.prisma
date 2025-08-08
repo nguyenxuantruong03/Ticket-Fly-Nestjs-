@@ -29,7 +29,7 @@ model User {
   isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
   role                  Role                   @default(USER)
-  Account               Account?
+  account               Account?
 }
 
 model Account {

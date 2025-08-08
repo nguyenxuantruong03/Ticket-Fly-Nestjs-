@@ -15,6 +15,7 @@ import { GoogleStrategy } from './strategies/google.strategy';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import { RolesGuard } from './guards/roles/roles.guard';
+import { ValidateTurnstileService } from 'src/validate-turnstile/validate-turnstile.service';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { RolesGuard } from './guards/roles/roles.guard';
   providers: [
     AuthService,
     UserService,
+    ValidateTurnstileService,
     PrismaService,
     LocalStrategy,
     JwtStrategy,

@@ -53,18 +53,14 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       }
 
       // Kiểm tra nếu user không chứa Account hoặc Account không hợp lệ
-      if (
-        !('Account' in user) ||
-        !user.Account ||
-        user.Account.type !== 'oauth'
-      ) {
+      if (!user || !user.account || user.account.type !== 'oauth') {
         return {
           redirectUrl: `${process.env.NEST_PUBLIC_FRONT_END}/auth/login?errorGoogle=${encodeURIComponent('Đăng nhập tài khoản không đúng. Tài khoản của bạn không dùng oauth!')}`,
         };
       }
 
       // Kiểm tra nếu user bị khóa
-      if (user.banUntil && new Date() < user.banUntil) {
+      if (user && user.banUntil && new Date() < user.banUntil) {
         return {
           redirectUrl: `${process.env.NEST_PUBLIC_FRONT_END}/auth/login?errorGooglebanUntil=${encodeURIComponent(`${user.banUntil}`)}`,
         };

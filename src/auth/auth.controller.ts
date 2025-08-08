@@ -9,19 +9,20 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
 import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
 import { GoogleAuthGuard } from './guards/google-auth/google-auth.guard';
 import { Response } from 'express';
 import { Public } from './decorators/public..decorator';
 import { Roles } from './decorators/role.decorator';
-import { GetTokenDto } from './dto/get-token.dto.';
-import { GetEmailDto } from './dto/get-email.dto';
 import { CreateNewPasswordDto } from './dto/create-new-password.dto';
-import { CreateTwoFactorDto } from './dto/create-TwoFactorDto';
+import { CreateTwoFactorDto } from './dto/create-TwoFactor.dto';
 import { GoogleUser } from './interface/google-user.interface';
 import { Role } from '@prisma/client';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { CreateForgotPasswordDto } from './dto/create-forgotPassword.dto';
+import { CreateResendVerificationDto } from './dto/create-resendVerification.dto';
+import { CreateVerificationAccountDto } from './dto/create-verificationAccount.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -40,10 +41,11 @@ export class AuthController {
   login(@Request() req) {
     // req.user trong controller nhận được giá trị
     // là kết quả trả về từ phương thức validate của LocalStrategy
-    return this.authService.login(
+    return this.authService.loginLocal(
       req.user.id,
       req.user.name,
       req.user.role,
+      req.user.turnstileToken,
       req.user.isTwoFactorEnabled,
     );
   }
@@ -79,7 +81,7 @@ export class AuthController {
       return res.redirect(req.user.redirectUrl);
     }
 
-    const response = await this.authService.login(
+    const response = await this.authService.loginGoogle(
       req.user.id,
       req.user.name,
       req.user.role,
@@ -110,31 +112,35 @@ export class AuthController {
 
   @Public()
   @Post('verificationAccount')
-  verificationAccount(@Body() tokenDto: GetTokenDto) {
-    return this.authService.verificationAccount(tokenDto);
+  verificationAccount(
+    @Body() verificationAccountDto: CreateVerificationAccountDto,
+  ) {
+    return this.authService.verificationAccount(verificationAccountDto);
   }
 
   @Public()
   @Post('reSendVerificationAccount')
-  reSendVerificationAccount(@Body() email: GetEmailDto) {
-    return this.authService.reSendVerificationAccount(email);
+  reSendVerificationAccount(
+    @Body() resendVerificationDto: CreateResendVerificationDto,
+  ) {
+    return this.authService.reSendVerificationAccount(resendVerificationDto);
   }
 
   @Public()
   @Post('forgotPassword')
-  forgotPassword(@Body() email: GetEmailDto) {
-    return this.authService.forgotPassword(email);
+  forgotPassword(@Body() forgotPasswordDto: CreateForgotPasswordDto) {
+    return this.authService.forgotPassword(forgotPasswordDto);
   }
 
   @Public()
   @Post('newPassword')
-  newPassword(@Body() createNewPasswordDto: CreateNewPasswordDto) {
-    return this.authService.newPassword(createNewPasswordDto);
+  newPassword(@Body() newPasswordDto: CreateNewPasswordDto) {
+    return this.authService.newPassword(newPasswordDto);
   }
 
   @Public()
   @Post('twoFactor')
-  twoFactor(@Body() { email, code }: CreateTwoFactorDto) {
-    return this.authService.TwoFacTorAuthentication(email, code);
+  twoFactor(@Body() twoFactorDto: CreateTwoFactorDto) {
+    return this.authService.TwoFacTorAuthentication(twoFactorDto);
   }
 }

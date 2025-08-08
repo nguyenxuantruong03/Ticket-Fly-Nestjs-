@@ -1,9 +1,10 @@
 import { IsEmail, IsString } from 'class-validator';
 
-export class CreateTwoFactorDto {
+export class CreateForgotPasswordDto {
   @IsEmail()
+  @IsString()
   email: string;
 
   @IsString()
-  code: string;
+  turnstileToken: string;
 }

@@ -6,4 +6,7 @@ export class CreateNewPasswordDto {
 
   @IsString()
   password: string;
+
+  @IsString()
+  turnstileToken: string;
 }

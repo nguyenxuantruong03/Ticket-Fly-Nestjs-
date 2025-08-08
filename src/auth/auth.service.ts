@@ -5,7 +5,6 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from 'src/user/user.service';
 import { hash, verify } from 'argon2';
 import { AuthJwtPayload } from './interface/auth-jwtPayload';
@@ -13,12 +12,17 @@ import { JwtService } from '@nestjs/jwt';
 import refreshConfig from './config/refresh.config';
 import { ConfigType } from '@nestjs/config';
 import { Role } from '@prisma/client';
-import { GetTokenDto } from './dto/get-token.dto.';
 import { sendVerificationEmail } from 'mail/verificationEmail';
-import { GetEmailDto } from './dto/get-email.dto';
 import { CreateNewPasswordDto } from './dto/create-new-password.dto';
 import { sendTwoFactorTokenEmail } from 'mail/two-factor';
 import { sendPasswordResetEmail } from 'mail/forgot-password';
+import { ValidateTurnstileService } from 'src/validate-turnstile/validate-turnstile.service';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { CreateUserGoogleDto } from './dto/create-user-google.dto';
+import { CreateForgotPasswordDto } from './dto/create-forgotPassword.dto';
+import { CreateVerificationAccountDto } from './dto/create-verificationAccount.dto';
+import { CreateResendVerificationDto } from './dto/create-resendVerification.dto';
+import { CreateTwoFactorDto } from './dto/create-TwoFactor.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -26,16 +30,25 @@ export class AuthService {
     private readonly jwtService: JwtService,
     @Inject(refreshConfig.KEY)
     private refreshTokenConfig: ConfigType<typeof refreshConfig>,
+    private readonly validateTurnstileService: ValidateTurnstileService,
   ) {}
 
   async registerUser(createUserDto: CreateUserDto) {
+    // Step 1: Xác minh token với Cloudflare
+    await this.validateTurnstileService.validateToken(
+      createUserDto.turnstileToken,
+    );
     const user = await this.userService.findByEmail(createUserDto.email);
     if (user)
       throw new ConflictException({ message: 'Người dùng đã tồn tại!' });
     return this.userService.createUser(createUserDto);
   }
 
-  async validateLocalUser(email: string, password: string) {
+  async validateLocalUser(
+    email: string,
+    password: string,
+    turnstileToken: string,
+  ) {
     const user = await this.userService.findByEmail(email);
     if (!user)
       throw new UnauthorizedException({ message: 'Người dùng không tồn tại!' });
@@ -59,17 +72,26 @@ export class AuthService {
 
     // Logic dùng để gửi mã xác thực đến người dùng khi logic vào chưa có code nên mặc đinh
     if (user.isTwoFactorEnabled && user.email) {
-      await this.TwoFacTorAuthentication(email, '');
+      await this.TwoFacTorAuthentication({
+        email: user.email,
+        code: '',
+        turnstileToken: turnstileToken,
+      });
     }
     return {
       id: user.id,
       name: user.name,
       role: user.role,
       isTwoFactorEnabled: user.isTwoFactorEnabled,
+      turnstileToken: turnstileToken,
     };
   }
 
-  async TwoFacTorAuthentication(email: string, code: string) {
+  async TwoFacTorAuthentication({
+    email,
+    code,
+    turnstileToken,
+  }: CreateTwoFactorDto) {
     // Xác thực 2FA hay còn được gọi là xác thục 2 bước
     const existingUser = await this.userService.findByEmail(email);
     if (code) {
@@ -100,10 +122,11 @@ export class AuthService {
       //Xóa token nếu có và create twoFactorConfirmation và nếu đăng nhập lần sau thì nếu có twoFactorConfirmation thì delete để xác thực 2FA lại
       await this.userService.createAndDeleteTwoFactorTokenConfirmation(email);
 
-      const response = await this.login(
+      const response = await this.loginLocal(
         existingUser.id,
         existingUser.name,
         existingUser.role,
+        turnstileToken,
         existingUser.isTwoFactorEnabled,
       );
 
@@ -123,7 +146,7 @@ export class AuthService {
     }
   }
 
-  async reSendVerificationAccount({ email }: GetEmailDto) {
+  async reSendVerificationAccount({ email }: CreateResendVerificationDto) {
     // Tạo token xác thực
     const verificationToken =
       await this.userService.generateVerificationToken(email);
@@ -147,7 +170,30 @@ export class AuthService {
     };
   }
 
-  async login(
+  async loginLocal(
+    userId: string,
+    name: string,
+    role: Role,
+    turnstileToken: string,
+    isTwoFactorEnabled?: boolean,
+  ) {
+    // Step 1: Xác minh token với Cloudflare
+    await this.validateTurnstileService.validateToken(turnstileToken);
+    const { accessToken, refreshToken } = await this.generateTokens(userId);
+    const hashedRefreshToken = await hash(refreshToken);
+
+    await this.userService.updateRefreshToken(userId, hashedRefreshToken);
+    return {
+      id: userId,
+      name: name,
+      role,
+      isTwoFactorEnabled,
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  async loginGoogle(
     userId: string,
     name: string,
     role: Role,
@@ -196,20 +242,21 @@ export class AuthService {
     };
   }
 
-  async validateGoogleUser(googleUser: CreateUserDto) {
+  async validateGoogleUser(googleUser: CreateUserGoogleDto) {
     const user = await this.userService.findByEmail(googleUser.email);
 
     if (user) return user;
-    return await this.userService.createUser(googleUser);
+
+    const created = await this.userService.createUserGoogle(googleUser);
+    return created.user;
   }
 
   async logOut(userId: string) {
     return await this.userService.updateRefreshToken(userId, null);
   }
 
-  async verificationAccount({ token }: GetTokenDto) {
+  async verificationAccount({ token }: CreateVerificationAccountDto) {
     const existingToken = await this.userService.findVerificationToken(token);
-
     if (!existingToken) {
       return { error: 'Token không tồn tại!' };
     }
@@ -228,14 +275,15 @@ export class AuthService {
       return { error: 'Email hiện tại không có!' };
     }
 
-    await this.userService.updateandDeleteVerificationToken(
-      existingToken.email,
-    );
+    const email = existingToken.email;
 
+    await this.userService.updateandDeleteVerificationToken(token, email);
     return { success: 'Email đã xác thực!' };
   }
 
-  async forgotPassword({ email }: GetEmailDto) {
+  async forgotPassword({ email, turnstileToken }: CreateForgotPasswordDto) {
+    // Step 1: Xác minh token với Cloudflare
+    await this.validateTurnstileService.validateToken(turnstileToken);
     const now = new Date();
     const existingUser = await this.userService.findByEmail(email);
 
@@ -279,7 +327,9 @@ export class AuthService {
     };
   }
 
-  async newPassword({ password, token }: CreateNewPasswordDto) {
+  async newPassword({ token, password, turnstileToken }: CreateNewPasswordDto) {
+    // Step 1: Xác minh token với Cloudflare
+    await this.validateTurnstileService.validateToken(turnstileToken);
     const existingToken = await this.userService.findPasswordResetToken(token);
 
     if (!existingToken) {
@@ -314,8 +364,10 @@ export class AuthService {
       });
     }
 
+    const email = existingUser.email;
     await this.userService.updateAndDeletePasswordResetToken(
       token,
+      email,
       hashPassword,
     );
 
