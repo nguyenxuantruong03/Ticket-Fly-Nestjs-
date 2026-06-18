@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true, // Chuyển đổi payload sang dạng DTO
@@ -18,7 +17,7 @@ async function bootstrap() {
       process.env.NEST_PUBLIC_BACK_END,
     ], // ✅ dùng mảng
     credentials: true,
-    methods: 'GET,POST,PUT,DELETE',
+    methods: 'GET,POST,PUT,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Accept, Authorization',
   });
 

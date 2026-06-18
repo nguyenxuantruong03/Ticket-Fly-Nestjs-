@@ -5,19 +5,19 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UserService } from 'src/user/user.service';
+import { UserService } from '../user/user.service';
 import { hash, verify } from 'argon2';
 import { AuthJwtPayload } from './interface/auth-jwtPayload';
 import { JwtService } from '@nestjs/jwt';
 import refreshConfig from './config/refresh.config';
 import { ConfigType } from '@nestjs/config';
 import { Role } from '@prisma/client';
-import { sendVerificationEmail } from 'mail/verificationEmail';
+import { sendVerificationEmail } from '../../mail/verificationEmail';
 import { CreateNewPasswordDto } from './dto/create-new-password.dto';
-import { sendTwoFactorTokenEmail } from 'mail/two-factor';
-import { sendPasswordResetEmail } from 'mail/forgot-password';
-import { ValidateTurnstileService } from 'src/validate-turnstile/validate-turnstile.service';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { sendTwoFactorTokenEmail } from '../../mail/two-factor';
+import { sendPasswordResetEmail } from '../../mail/forgot-password';
+import { ValidateTurnstileService } from '../validate-turnstile/validate-turnstile.service';
+import { CreateUserDto } from '../user/dto/create-user.dto';
 import { CreateUserGoogleDto } from './dto/create-user-google.dto';
 import { CreateForgotPasswordDto } from './dto/create-forgotPassword.dto';
 import { CreateVerificationAccountDto } from './dto/create-verificationAccount.dto';
@@ -214,7 +214,7 @@ export class AuthService {
   }
 
   async validateJwtUser(userId: string) {
-    const user = await this.userService.findOne(userId);
+    const user = await this.userService.findById(userId);
     if (!user)
       throw new UnauthorizedException({ message: 'Người dùng không tồn tại!' });
     const currenUser = { id: user.id, role: user.role };
@@ -222,7 +222,7 @@ export class AuthService {
   }
 
   async validateRefreshToken(userId: string, refreshToken: string) {
-    const user = await this.userService.findOne(userId);
+    const user = await this.userService.findById(userId);
     if (!user)
       throw new UnauthorizedException({ message: 'Người dùng không tồn tại!' });
 
@@ -375,7 +375,7 @@ export class AuthService {
   }
 
   async findUser(userId: string) {
-    const user = await this.userService.findOne(userId);
+    const user = await this.userService.findById(userId);
     return user;
   }
 }

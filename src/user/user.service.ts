@@ -4,11 +4,12 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { hash } from 'argon2';
-import { sendVerificationEmail } from 'mail/verificationEmail';
+import { sendVerificationEmail } from '../../mail/verificationEmail';
 import { randomBytes } from 'crypto';
-import { CreateUserGoogleDto } from 'src/auth/dto/create-user-google.dto';
+import { CreateUserGoogleDto } from '../auth/dto/create-user-google.dto';
+import { SettingUserDto } from './dto/setting-user.dto';
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
@@ -95,10 +96,13 @@ export class UserService {
     });
   }
 
-  async findOne(userId: string) {
+  async findById(userId: string) {
     return await this.prisma.user.findUnique({
       where: {
         id: userId,
+      },
+      include: {
+        account: true,
       },
     });
   }
@@ -129,7 +133,7 @@ export class UserService {
     return verificationExistingToken;
   }
 
-  async updateandDeleteVerificationToken(token:string, email: string) {
+  async updateandDeleteVerificationToken(token: string, email: string) {
     const existingUser = await this.findByEmail(email);
     const existingToken = await this.findVerificationToken(token);
     await this.prisma.user.update({
@@ -361,5 +365,17 @@ export class UserService {
         message: 'Bạn đã gửi quá số lần cho phép!',
       });
     }
+  }
+
+  async settingUser(userId: string, settingUser: SettingUserDto) {
+    await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        ...settingUser,
+      },
+    });
+    return { message: 'Cập nhật thành công profile' };
   }
 }

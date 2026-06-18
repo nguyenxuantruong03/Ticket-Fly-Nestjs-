@@ -14,12 +14,10 @@ import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
 import { GoogleAuthGuard } from './guards/google-auth/google-auth.guard';
 import { Response } from 'express';
 import { Public } from './decorators/public..decorator';
-import { Roles } from './decorators/role.decorator';
 import { CreateNewPasswordDto } from './dto/create-new-password.dto';
 import { CreateTwoFactorDto } from './dto/create-TwoFactor.dto';
 import { GoogleUser } from './interface/google-user.interface';
-import { Role } from '@prisma/client';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
+import { CreateUserDto } from '../user/dto/create-user.dto';
 import { CreateForgotPasswordDto } from './dto/create-forgotPassword.dto';
 import { CreateResendVerificationDto } from './dto/create-resendVerification.dto';
 import { CreateVerificationAccountDto } from './dto/create-verificationAccount.dto';
@@ -48,14 +46,6 @@ export class AuthController {
       req.user.turnstileToken,
       req.user.isTwoFactorEnabled,
     );
-  }
-
-  @Roles(Role.USER)
-  @Get('protected')
-  async getAll(@Request() req) {
-    return {
-      message: `Now you can access this protected API. This is your userID: ${req.user.id}`,
-    };
   }
 
   @Public()

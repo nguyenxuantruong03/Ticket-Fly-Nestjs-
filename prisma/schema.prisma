@@ -10,7 +10,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -72,7 +71,7 @@ model TwoFactorToken {
 }
 
 model TwoFactorConfirmation {
-  id Int @id @default(autoincrement())
+  id   String   @id @default(cuid())
 
   userId String
   user   User   @relation(fields: [userId], references: [id])

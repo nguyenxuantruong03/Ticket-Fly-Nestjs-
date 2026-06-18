@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from '@prisma/client'; // Import kiểu Role từ Prisma schema
 import { Observable } from 'rxjs';
-import { ROLES_KEY } from 'src/auth/decorators/role.decorator';
+import { ROLES_KEY } from '../../../auth/decorators/role.decorator';
 
 @Injectable()
 // @Injectable(): Đánh dấu lớp này là một provider để NestJS có thể quản lý vòng đời của nó và inject vào các thành phần khác.
