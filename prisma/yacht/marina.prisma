@@ -1,0 +1,30 @@
+model YachtMarina {
+    id String @id @default(cuid())
+
+    name String
+
+    yachts Yacht[]
+
+    addressId String
+    address   Address @relation(fields: [addressId], references: [id])
+
+    departureRoutes   YachtRoute[] @relation("DepartureMarina")
+    destinationRoutes YachtRoute[] @relation("DestinationMarina")
+    latitude          Float?
+
+    longitude Float?
+
+    country String?
+
+    city String?
+
+    contactPhone String?
+
+    operatingHours String?
+
+    marinaFacilities YachtMarinaFacilities?
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}

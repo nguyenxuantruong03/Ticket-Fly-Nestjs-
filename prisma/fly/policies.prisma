@@ -1,0 +1,156 @@
+model FlyPolicies {
+    id String @id @default(cuid())
+
+    flyId String @unique
+    fly   Fly    @relation(fields: [flyId], references: [id], onDelete: Cascade)
+
+    cancellation FlyCancellationPolicy?
+    change       FlyChangePolicy?
+    baggage      FlyBaggagePolicy?
+    boarding     FlyBoardingPolicy?
+    passenger    FlyPassengerPolicy?
+    checkIn      FlyCheckInPolicy?
+    transit      FlyTransitPolicy?
+    visa         FlyVisaPolicy?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model FlyTransitPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    selfTransfer Boolean
+
+    baggageTransfer Boolean
+
+    visaRequiredDuringTransit Boolean
+
+    minimumConnectionMinutes Int?
+}
+
+model FlyCancellationPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    refundable Boolean
+
+    refundType FlyRefundType
+
+    cancellationFee Float?
+
+    noShowFee Float?
+
+    freeCancellationBeforeHours Int?
+}
+
+model FlyChangePolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    allowed Boolean
+
+    changeFee Float?
+
+    maxChanges Int?
+
+    beforeDepartureHours Int?
+}
+
+model FlyBaggagePolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    cabinIncludedKg Float?
+
+    checkedIncludedKg Float?
+
+    extraAllowed Boolean
+
+    extraPricePerKg Float?
+}
+
+model FlyBoardingPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    boardingBeforeMinutes Int?
+
+    gateCloseMinutes Int?
+
+    onlineBoardingPass Boolean?
+
+    printedBoardingPass Boolean?
+}
+
+model FlyPassengerPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    infantAllowed Boolean
+
+    childAllowed Boolean
+
+    petsAllowed Boolean
+
+    unaccompaniedMinor Boolean
+
+    wheelchairSupport Boolean
+
+    pregnantPassengerAllowed Boolean
+}
+
+model FlyCheckInPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    onlineCheckIn Boolean
+
+    opensBeforeHours Int?
+
+    closesBeforeMinutes Int?
+
+    airportCheckIn Boolean
+
+    mobileBoardingPass Boolean
+}
+
+model FlyVisaPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    visaRequired Boolean?
+
+    passportRequired Boolean?
+
+    passportMinimumValidityMonths Int?
+
+    healthDocumentsRequired Boolean?
+
+    note String?
+}

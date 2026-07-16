@@ -1,0 +1,242 @@
+enum CarRentalCalendarStatus {
+    available
+
+    reserved
+
+    blocked
+
+    maintenance
+}
+
+enum CarRentalBookingStatus {
+    pending
+    confirmed
+    awaiting_payment
+    paid
+    cancelled
+    completed
+    rejected
+    expired
+}
+
+enum CarRentalPaymentStatus {
+    unpaid
+    pending
+    paid
+    refunded
+    partially_refunded
+}
+
+enum CarRentalBookingType {
+    self_drive
+    with_driver
+}
+
+enum CarRentalExtraType {
+    gps
+    child_seat
+    extra_driver
+    wifi
+    delivery
+    pickup
+    snow_chain
+    luggage_rack
+    baby_seat
+    other
+}
+
+enum CarRentalExtraPricingType {
+    fixed
+    per_day
+    per_hour
+    per_rental
+}
+
+enum CarRentalBookingLocationType {
+    pickup
+    dropoff
+}
+
+enum CarRentalImageCategory {
+    cover
+    banner
+    gallery
+    promotion
+}
+
+enum CarRentalInsuranceType {
+    basic
+
+    standard
+
+    premium
+
+    full_protection
+}
+
+enum CarRentalInsuranceBenefitType {
+    damage
+
+    theft
+
+    accident
+
+    liability
+
+    medical
+
+    roadside_assistance
+
+    windshield
+
+    tire
+
+    other
+}
+
+enum PickupInstructionType {
+    airport
+
+    office
+
+    hotel
+
+    delivery
+
+    meeting_point
+}
+
+enum RentalVehicleCondition {
+    new
+    excellent
+    good
+    fair
+}
+
+enum RentalVehicleDocumentType {
+    registration
+    insurance
+    inspection
+    permit
+}
+
+enum RentalVehicleImageCategory {
+    exterior
+    interior
+    trunk
+    engine
+    wheel
+    roof
+    document
+    damage
+    accessory
+    other
+}
+
+// ======================================================
+// VEHICLE ENUMS
+// ======================================================
+
+enum RentalVehicleStatus {
+    available
+    reserved
+    maintenance
+    out_of_service
+}
+
+enum RentalTransmission {
+    manual
+    automatic
+}
+
+enum RentalVehicleType {
+    car
+    luxury_car
+    suv
+    pickup
+    van
+    minibus
+    motorbike
+    electric_bicycle
+    other
+}
+
+enum RentalFuelType {
+    gasoline
+    diesel
+    electric
+    hybrid
+}
+
+enum RentalVehicleImagePosition {
+    front
+    rear
+    left
+    right
+    front_left
+    front_right
+    rear_left
+    rear_right
+    dashboard
+    driver_seat
+    front_seats
+    rear_seats
+    cargo
+    engine_bay
+    full_view
+    detail
+    other
+}
+
+enum RentalLocationType {
+    PICKUP
+    DROPOFF
+}
+
+enum DriverStatus {
+    active
+
+    inactive
+}
+
+enum DriverOption {
+    self_drive
+    with_driver
+}
+
+enum RentalDurationType {
+    hourly
+    daily
+    weekly
+    monthly
+}
+
+enum WeekDay {
+    monday
+
+    tuesday
+
+    wednesday
+
+    thursday
+
+    friday
+
+    saturday
+
+    sunday
+}
+
+enum CarRentalPriceRuleType {
+    weekend
+    weekday
+    holiday
+    peak_season
+    low_season
+    early_bird
+    last_minute
+    long_rental
+    promotional
+    member
+    custom
+}

@@ -1,0 +1,31 @@
+model Bus {
+    id String @id @default(cuid())
+
+    providerBookingId String
+    providerBooking   ProviderBooking @relation(fields: [providerBookingId], references: [id])
+
+    routes    BusRoute[]
+    policies BusPolicies?
+    vehicle  BusVehicle?
+    reviews  BusReview[]
+
+    images     BusImage[]
+    favorites  BusFavorite[]
+    price      BusPrice[]
+    booking    BusBooking[]
+    active     Boolean       @default(true)
+    // Search Metadata
+    name       String
+    slug       String        @unique
+    aliases    String[]
+    keywords   String[]
+    searchText String?
+    featured   Boolean       @default(false)
+    tags       String[]
+
+    searchPriority Int @default(0)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}

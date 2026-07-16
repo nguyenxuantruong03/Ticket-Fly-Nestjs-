@@ -1,0 +1,176 @@
+model ProviderBooking {
+    id String @id @default(cuid())
+
+    // =====================================================
+    // BASIC INFORMATION
+    // =====================================================
+
+    officialName String?
+
+    displayName String
+
+    shortName String?
+
+    logo String?
+
+    banner String?
+
+    subtitle String?
+
+    description String?
+
+    // =====================================================
+    // COMPANY INFORMATION
+    // =====================================================
+
+    companyType String?
+
+    registrationNumber String?
+
+    taxCode String?
+
+    foundedYear Int?
+
+    employeeCount Int?
+
+    // =====================================================
+    // CONTACT INFORMATION
+    // =====================================================
+
+    email String?
+
+    phone String?
+
+    hotline String?
+
+    website String?
+
+    // =====================================================
+    // ADDRESS
+    // =====================================================
+
+    address String?
+
+    city String?
+
+    state String?
+
+    country String?
+
+    postalCode String?
+
+    latitude Float?
+
+    longitude Float?
+
+    // =====================================================
+    // SOCIAL MEDIA
+    // =====================================================
+
+    facebook String?
+
+    instagram String?
+
+    youtube String?
+
+    linkedin String?
+
+    // =====================================================
+    // TRUST & VERIFICATION
+    // =====================================================
+
+    verified Boolean @default(false)
+
+    status ProviderStatus @default(ACTIVE)
+
+    licenseNumber String?
+
+    // =====================================================
+    // OPERATION STATUS
+    // =====================================================
+
+    operatingStatus ProviderOperatingStatus @default(OPEN)
+
+    // =====================================================
+    // RATING & REVIEW
+    // =====================================================
+
+    averageRating Float @default(0)
+
+    totalReviews Int @default(0)
+
+    totalRatings Int @default(0)
+
+    fiveStarCount Int @default(0)
+
+    fourStarCount Int @default(0)
+
+    threeStarCount Int @default(0)
+
+    twoStarCount Int @default(0)
+
+    oneStarCount Int @default(0)
+
+    // =====================================================
+    // BOOKING STATISTICS
+    // =====================================================
+
+    totalBookings Int @default(0)
+
+    completedBookings Int @default(0)
+
+    cancelledBookings Int @default(0)
+
+    totalCustomers Int @default(0)
+
+    // =====================================================
+    // SERVICE CAPABILITY
+    // =====================================================
+
+    service typeServiceBooking[]
+
+    // =====================================================
+    // RELATIONS
+    // =====================================================
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
+
+    hotels          HotelInformation[]
+    carrentals      CarRental[]
+    buses           Bus[]
+    yacht           Yacht[]
+    airportTransfer AirportTransfer[]
+    fly             Fly[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+enum typeServiceBooking {
+    HOTEL
+    CARRENTAL
+    AIRPORTTRANSFER
+    TICKETFLY
+    TICKETBUS
+    YACHT
+}
+
+enum ProviderStatus {
+    ACTIVE
+
+    INACTIVE
+
+    PENDING
+
+    BLOCKED
+}
+
+enum ProviderOperatingStatus {
+    OPEN // Đang nhận booking
+    TEMPORARILY_CLOSED // Tạm đóng
+    CLOSED // Ngừng hoạt động
+    MAINTENANCE // Bảo trì hệ thống
+    SOLD_OUT // Hết chỗ / hết dịch vụ tạm thời
+    HOLIDAY // Nghỉ lễ / nghỉ theo lịch
+}

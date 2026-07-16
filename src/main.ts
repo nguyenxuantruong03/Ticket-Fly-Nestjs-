@@ -14,6 +14,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       process.env.NEST_PUBLIC_FRONT_END,
+      process.env.NEST_PUBLIC_FRONT_END_MANAGE,
       process.env.NEST_PUBLIC_BACK_END,
     ], // ✅ dùng mảng
     credentials: true,

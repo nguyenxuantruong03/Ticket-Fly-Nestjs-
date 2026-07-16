@@ -48,21 +48,21 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       // Kiểm tra nếu user không tồn tại
       if (!user) {
         return {
-          redirectUrl: `${process.env.NEST_PUBLIC_FRONT_END}/auth/login?errorGoogle=${encodeURIComponent('Không tìm thấy tài khoản. Vui lòng thử lại!')}`,
+          redirectUrl: `${process.env.NEST_PUBLIC_FRONT_END || process.env.NEST_PUBLIC_FRONT_END_MANAGE}/auth/login?errorGoogle=${encodeURIComponent('Không tìm thấy tài khoản. Vui lòng thử lại!')}`,
         };
       }
 
       // Kiểm tra nếu user không chứa Account hoặc Account không hợp lệ
       if (!user || !user.account || user.account.type !== 'oauth') {
         return {
-          redirectUrl: `${process.env.NEST_PUBLIC_FRONT_END}/auth/login?errorGoogle=${encodeURIComponent('Đăng nhập tài khoản không đúng. Tài khoản của bạn không dùng oauth!')}`,
+          redirectUrl: `${process.env.NEST_PUBLIC_FRONT_END || process.env.NEST_PUBLIC_FRONT_END_MANAGE}/auth/login?errorGoogle=${encodeURIComponent('Đăng nhập tài khoản không đúng. Tài khoản của bạn không dùng oauth!')}`,
         };
       }
 
       // Kiểm tra nếu user bị khóa
       if (user && user.banUntil && new Date() < user.banUntil) {
         return {
-          redirectUrl: `${process.env.NEST_PUBLIC_FRONT_END}/auth/login?errorGooglebanUntil=${encodeURIComponent(`${user.banUntil}`)}`,
+          redirectUrl: `${process.env.NEST_PUBLIC_FRONT_END || process.env.NEST_PUBLIC_FRONT_END_MANAGE}/auth/login?errorGooglebanUntil=${encodeURIComponent(`${user.banUntil}`)}`,
         };
       }
 
@@ -78,7 +78,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     } catch (error) {
       console.error(error);
       return {
-        redirectUrl: `${process.env.NEST_PUBLIC_FRONT_END}/auth/login?errorGoogle=${encodeURIComponent('Có lỗi xảy ra khi đăng nhập Google. Vui lòng thử lại!')}`,
+        redirectUrl: `${process.env.NEST_PUBLIC_FRONT_END || process.env.NEST_PUBLIC_FRONT_END_MANAGE}/auth/login?errorGoogle=${encodeURIComponent('Có lỗi xảy ra khi đăng nhập Google. Vui lòng thử lại!')}`,
       };
     }
   }

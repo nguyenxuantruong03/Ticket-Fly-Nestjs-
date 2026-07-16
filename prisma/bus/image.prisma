@@ -1,0 +1,20 @@
+model BusImage {
+    id String @id @default(cuid())
+
+    busId String
+    bus   Bus    @relation(fields: [busId], references: [id], onDelete: Cascade)
+
+    url String
+
+    category BusImageCategory
+    alt String?
+    isPrimary Boolean @default(false)
+    sortOrder Int @default(0)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([busId])
+    @@index([category])
+    @@index([sortOrder])
+}
+

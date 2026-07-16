@@ -1,0 +1,58 @@
+model Yacht {
+    id String @id @default(cuid())
+
+    providerBookingId String
+    providerBooking   ProviderBooking @relation(fields: [providerBookingId], references: [id])
+
+    marinaId String?
+    marina   YachtMarina? @relation(fields: [marinaId], references: [id], onDelete: SetNull)
+
+    vehicle YachtVehicle?
+
+    routes YachtRoute[]
+
+    trips YachtTrip[]
+
+    availability YachtAvailability?
+
+    price YachtPrice?
+
+    packages YachtPackage[]
+
+    extras YachtExtra[]
+
+    policies YachtPolicies?
+
+    notice YachtNotice?
+
+    bookings      YachtBooking[]
+    locks         YachtInventoryLock[]
+    reviews       YachtReview[]
+    image         YachtImage[]
+    favorites     YachtFavorite[]
+    ratingSummary YachtRatingSummary?
+    crew          YachtCrew[]
+    active        Boolean              @default(true)
+
+    name String
+
+    slug String @unique
+
+    aliases String[]
+
+    keywords String[]
+
+    tags String[]
+
+    searchText String?
+
+    featured Boolean @default(false)
+
+    searchable Boolean @default(true)
+
+    searchPriority Int @default(0)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}

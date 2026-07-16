@@ -1,0 +1,105 @@
+model YachtTrip {
+    id String @id @default(cuid())
+
+    yachtId String
+    yacht   Yacht  @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    routeId       String?
+    route         YachtRoute?    @relation(fields: [routeId], references: [id])
+    bookings      YachtBooking[]
+    departureTime DateTime
+
+    arrivalTime DateTime
+
+    status YachtTripStatus @default(active)
+
+    maxGuests Int?
+
+    schedule  YachtSchedule?
+    price     YachtTripPrice?
+    locks     YachtInventoryLock[]
+    createdAt DateTime             @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([departureTime])
+    @@index([status])
+}
+
+model YachtSchedule {
+    id String @id @default(cuid())
+
+    tripId String @unique
+
+    trip YachtTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    repeatType YachtRepeatType
+
+    daysOfWeek Int[]
+
+    startDate DateTime?
+
+    endDate DateTime?
+
+    departureTime String?
+}
+
+model YachtAvailability {
+    id String @id @default(cuid())
+
+    yachtId String @unique
+
+    yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    calendar YachtAvailabilityCalendar[]
+
+    locks YachtInventoryLock[]
+}
+
+model YachtAvailabilityCalendar {
+    id String @id @default(cuid())
+
+    availabilityId String
+
+    availability YachtAvailability @relation(fields: [availabilityId], references: [id], onDelete: Cascade)
+
+    date DateTime
+
+    available Boolean
+
+    booked Boolean @default(false)
+
+    stopSell Boolean @default(false)
+
+    @@unique([availabilityId, date])
+}
+
+model YachtInventoryLock {
+    id String @id @default(cuid())
+
+    availabilityId String?
+    availability   YachtAvailability? @relation(fields: [availabilityId], references: [id], onDelete: Cascade)
+
+    tripId String
+    trip   YachtTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    yachtId String
+    yacht   Yacht  @relation(fields: [yachtId], references: [id], onDelete: SetNull)
+
+    userId String?
+    user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+    bookingId String?
+    booking   YachtBooking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    startTime  DateTime
+    releasedAt DateTime?
+    status     InventoryLockStatus @default(locked)
+    endTime    DateTime
+    quantity   Int
+    expiresAt  DateTime
+
+    createdAt DateTime @default(now())
+
+    @@index([tripId])
+}

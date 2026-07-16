@@ -1,0 +1,107 @@
+model YachtVehicle {
+    id String @id @default(cuid())
+
+    yachtId String @unique
+
+    yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    name String?
+
+    manufacturer String?
+
+    model String?
+
+    year Int?
+
+    registrationNumber String?
+
+    lengthMeter Float?
+
+    widthMeter Float?
+
+    speedKnots Float?
+
+    fuelType YachtFuelType?
+
+    condition YachtCondition?
+
+    capacity        YachtCapacity?
+    facilities      YachtVehicleFacilities?
+    specification   YachtSpecification?
+    images          YachtVehicleImage[]
+    safetyEquipment YachtSafetyEquipment?
+    createdAt       DateTime                @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model YachtCapacity {
+    id String @id @default(cuid())
+
+    vehicleId String       @unique
+    vehicle   YachtVehicle @relation(fields: [vehicleId], references: [id])
+
+    guestCapacity Int
+
+    overnightCapacity Int?
+
+    cabinCount Int?
+
+    bathroomCount Int?
+
+    crewCapacity Int?
+}
+
+model YachtSpecification {
+    id String @id @default(cuid())
+
+    vehicleId String @unique
+
+    vehicle YachtVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    enginePowerHp Int?
+
+    cruisingSpeedKnots Float?
+
+    maxSpeedKnots Float?
+
+    fuelCapacityLiter Float?
+
+    rangeNm Float?
+}
+
+model YachtImage {
+    id String @id @default(cuid())
+
+    yachtId String
+
+    yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    url String
+
+    category YachtImageCategory
+
+    isPrimary Boolean @default(false)
+
+    sortOrder Int @default(0)
+
+    createdAt DateTime @default(now())
+}
+
+model YachtVehicleImage {
+    id String @id @default(cuid())
+
+    vehicleId String
+
+    vehicle YachtVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    url String
+
+    category YachtImageCategory
+
+    isPrimary Boolean @default(false)
+
+    sortOrder Int @default(0)
+
+    createdAt DateTime @default(now())
+}

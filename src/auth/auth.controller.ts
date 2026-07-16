@@ -81,7 +81,7 @@ export class AuthController {
     const redirectTo = (req.user as GoogleUser).redirect || '/';
 
     const finalRedirect =
-      `${process.env.NEST_PUBLIC_FRONT_END}/api/auth/google/callback` +
+      `${process.env.NEST_PUBLIC_FRONT_END || process.env.NEST_PUBLIC_FRONT_END_MANAGE}/api/auth/google/callback` +
       `?userId=${response.id}` +
       `&name=${response.name}` +
       `&accessToken=${response.accessToken}` +

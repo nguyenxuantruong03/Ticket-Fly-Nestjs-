@@ -1,0 +1,126 @@
+enum AirportTransferServiceType {
+    private
+    shared
+    shuttle
+    luxury
+    limousine
+}
+
+enum AirportTransferTripStatus {
+    scheduled
+    active
+    full
+    cancelled
+    completed
+}
+
+enum AirportTransferRouteType {
+    airport_to_city
+    city_to_airport
+    airport_to_airport
+    hotel_to_airport
+    airport_to_hotel
+    custom
+}
+
+enum AirportTransferVehicleType {
+    sedan
+    suv
+    mpv
+    van
+    minibus
+    bus
+    limousine
+    luxury
+}
+
+enum AirportTransferTransmission {
+    automatic
+    manual
+}
+
+enum AirportTransferFuelType {
+    gasoline
+    diesel
+    hybrid
+    electric
+}
+
+enum AirportTransferVehicleStatus {
+    available
+    reserved
+    maintenance
+    inactive
+}
+
+enum AirportTransferDriverLanguage {
+    english
+    vietnamese
+    chinese
+    japanese
+    korean
+    thai
+    french
+    german
+}
+
+enum AirportTransferVehicleImageCategory {
+    exterior
+    interior
+    seat
+    luggage
+    driver
+    other
+}
+
+enum AirportTransferPriceRuleType {
+    weekend
+    holiday
+    peak_hour
+    night
+    promotion
+    coupon
+    seasonal
+    member
+    custom
+}
+
+enum AirportTransferAdjustmentType {
+    fixed
+    percentage
+}
+
+enum AirportTransferExtraFeeType {
+    airport
+    parking
+    toll
+    waiting
+    child_seat
+    oversized_luggage
+    extra_stop
+    meet_and_greet
+    midnight
+    holiday
+    other
+}
+
+
+enum AirportTransferBookingStatus {
+
+    pending
+
+    confirmed
+
+    assigned
+
+    driver_arriving
+
+    passenger_picked_up
+
+    completed
+
+    cancelled
+
+    no_show
+
+}

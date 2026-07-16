@@ -1,0 +1,103 @@
+model CarRentalInsurance {
+    id String @id @default(cuid())
+
+    // =========================
+    // RELATION
+    // =========================
+
+    rentalId String
+
+    rental CarRental @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+
+    // =========================
+    // BASIC
+    // =========================
+
+    type CarRentalInsuranceType
+
+    name String
+
+    description String?
+
+    // =========================
+    // PRICE
+    // =========================
+
+    pricePerDay Float?
+
+    fixedPrice Float?
+
+    currency Currency
+
+    // =========================
+    // BENEFITS
+    // =========================
+
+    benefits CarRentalInsuranceBenefit[]
+    bookings CarRentalBookingInsurance[]
+
+    active Boolean @default(true)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([rentalId])
+    @@index([type])
+}
+
+model CarRentalInsuranceBenefit {
+    id String @id @default(cuid())
+
+    insuranceId String
+
+    insurance CarRentalInsurance @relation(fields: [insuranceId], references: [id], onDelete: Cascade)
+
+    type CarRentalInsuranceBenefitType
+
+    title String
+
+    description String?
+
+    coverageAmount Float?
+
+    excessAmount Float?
+
+    currency Currency?
+
+    createdAt DateTime @default(now())
+
+    @@index([insuranceId])
+    @@index([type])
+}
+
+model CarRentalBookingInsurance {
+    id String @id @default(cuid())
+
+    bookingId String
+    booking CarRentalBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    insuranceId String?
+    insurance CarRentalInsurance? @relation(fields: [insuranceId], references: [id], onDelete: SetNull)
+
+    // =========================
+    // SNAPSHOT
+    // =========================
+
+    name String
+
+    type CarRentalInsuranceType
+
+    price Float
+
+    currency Currency
+
+    quantity Int @default(1)
+
+    totalPrice Float
+
+    createdAt DateTime @default(now())
+
+    @@index([bookingId])
+    @@index([insuranceId])
+}

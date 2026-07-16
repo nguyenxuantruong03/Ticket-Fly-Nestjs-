@@ -1,0 +1,76 @@
+model YachtReview {
+    id String @id @default(cuid())
+
+    yachtId String
+    yacht   Yacht  @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    userId String?
+    user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+    bookingId String?
+    booking   YachtBooking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+    overallRating Float
+
+    captainRating Float?
+
+    crewRating Float?
+
+    cleanliness Float?
+
+    safety Float?
+
+    comfort Float?
+
+    experience Float?
+
+    valueForMoney Float?
+
+    title String?
+
+    comment String
+
+    images YachtReviewImage[]
+
+    verified Boolean @default(false)
+
+    status ReviewStatus @default(pending)
+
+    helpfulCount Int @default(0)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@unique([bookingId])
+}
+
+model YachtReviewImage {
+    id String @id @default(cuid())
+
+    reviewId String
+
+    review YachtReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+    url String
+
+    createdAt DateTime @default(now())
+}
+
+model YachtRatingSummary {
+    id String @id @default(cuid())
+
+    yachtId String @unique
+
+    yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    totalReviews Int @default(0)
+
+    averageRating Float @default(0)
+
+    captain Float @default(0)
+
+    crew Float @default(0)
+
+    safety Float @default(0)
+}

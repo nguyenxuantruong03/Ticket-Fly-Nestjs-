@@ -1,0 +1,25 @@
+model FlyNotice {
+    id String @id @default(cuid())
+
+    flyId String @unique
+
+    fly Fly @relation(fields: [flyId], references: [id], onDelete: Cascade)
+
+    title String?
+
+    content String?
+
+    baggageNotice String?
+
+    checkInNotice String?
+
+    visaNotice String?
+
+    covidNotice String?
+
+    refundNotice String?
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}

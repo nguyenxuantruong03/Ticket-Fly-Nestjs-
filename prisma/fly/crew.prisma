@@ -1,0 +1,83 @@
+model FlyCrew {
+    id String @id @default(cuid())
+
+    airlineId String
+
+    airline FlyAirline @relation(fields: [airlineId], references: [id], onDelete: Cascade)
+
+    employeeNumber String? @unique
+
+    firstName String
+
+    lastName String
+
+    gender Gender?
+
+    birthDate DateTime?
+
+    nationality String?
+
+    role FlyCrewRole
+
+    email String?
+
+    phone String?
+
+    active Boolean @default(true)
+
+    qualifications FlyCrewQualification[]
+
+    assignments  FlyCrewAssignment[]
+    crewSchedule FlyCrewSchedule[]
+    createdAt    DateTime            @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model FlyCrewQualification {
+    id String @id @default(cuid())
+
+    crewId String
+
+    crew FlyCrew @relation(fields: [crewId], references: [id], onDelete: Cascade)
+
+    aircraftType String
+
+    validUntil DateTime?
+
+    issuedAt DateTime?
+}
+
+model FlyCrewAssignment {
+    id String @id @default(cuid())
+
+    crewId String
+    crew   FlyCrew @relation(fields: [crewId], references: [id], onDelete: Cascade)
+
+    tripId String
+    trip   FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    inventoryId String
+    inventory   FlyInventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+
+    duty FlyCrewDuty
+
+    createdAt DateTime @default(now())
+}
+
+model FlyCrewSchedule {
+    id String @id @default(cuid())
+
+    crewId String
+
+    crew FlyCrew @relation(fields: [crewId], references: [id], onDelete: Cascade)
+
+    startTime DateTime
+
+    endTime DateTime
+
+    duty FlyCrewDuty
+
+    tripId String?
+    trip   FlyTrip? @relation(fields: [tripId], references: [id])
+}

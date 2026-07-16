@@ -1,0 +1,69 @@
+model Coupon {
+    id String @id @default(cuid())
+
+    code String @unique
+
+    name String
+
+    description String?
+
+    discountType DiscountType
+
+    value Float
+
+    maxDiscount Float?
+
+    minimumAmount Float?
+
+    target PromotionTargetType
+
+    active Boolean @default(true)
+
+    startDate DateTime?
+
+    endDate DateTime?
+
+    usageLimit Int?
+
+    usedCount Int @default(0)
+
+    usages CouponUsage[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([code])
+    @@index([active])
+}
+
+model CouponUsage {
+    id String @id @default(cuid())
+
+    couponId String
+    coupon Coupon @relation(fields: [couponId], references: [id], onDelete: Cascade)
+
+    userId String
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    referenceId String?
+
+    referenceType CounponReferenceType?
+
+    discountAmount Float
+
+    createdAt DateTime @default(now())
+
+    @@unique([couponId, userId, referenceType, referenceId])
+    @@index([couponId])
+    @@index([userId])
+}
+
+enum CounponReferenceType {
+    HOTEL_BOOKING
+    BUS_BOOKING
+    CAR_RENTAL_BOOKING
+    TRANSFER_BOOKING
+    FLIGHT_BOOKING
+    YACHT_BOOKING
+}

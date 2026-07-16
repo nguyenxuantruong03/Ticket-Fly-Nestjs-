@@ -1,0 +1,65 @@
+model User {
+    id            String    @id @default(cuid())
+    email         String    @unique
+    emailVerified DateTime?
+    reSendemail   Int       @default(0)
+
+    name  String
+    image String?
+
+    banUntil DateTime?
+
+    password              String
+    hashedRefreshToken    String?
+    isTwoFactorEnabled    Boolean                @default(false)
+    twoFactorConfirmation TwoFactorConfirmation?
+    role                  Role                   @default(USER)
+    account               Account?
+
+    providers               ProviderBooking[]
+    // Hotel
+    hotelReviews            HotelReview[]
+    hotelBookings           HotelBooking[]
+    hotelFavorite           HotelFavorite[]
+    hotelUserLock           HotelInventoryLock[]
+    // carrental
+    carrentalReviews        CarRentalReview[]
+    carRentalBooking        CarRentalBooking[]
+    carRentalFavorite       CarRentalFavorite[]
+    carRentalLock           CarRentalInventoryLock[]
+    // Bus
+    busesReviews            BusReview[]
+    BusFavorite             BusFavorite[]
+    BusBooking              BusBooking[]
+    busUserLock             BusSeatInventoryLock[]
+    // transfer
+    airportTransferReviews  AirportTransferReview[]
+    airporttransferFavorite AirportTransferFavorite[]
+    airportTransferBooking  AirportTransferBooking[]
+    airportTransferLock     AirportTransferInventoryLock[]
+    // yacht 
+    yachtReviews            YachtReview[]
+    yachtFavorite           YachtFavorite[]
+    yachtBooking            YachtBooking[]
+    yachtLock               YachtInventoryLock[]
+    // fly
+    airlineRating           FlyAirlineRating[]
+    flyFavorite             FlyFavorite[]
+    flyBooking              FlyBooking[]
+    flyLock                 FlyInventoryLock[]
+    flyseatLock             FlySeatInventoryLock[]
+
+    wishlists  Wishlist[]
+    payment    Payment[]
+    promotions PromotionUsage[]
+    coupons    CouponUsage[]
+}
+
+model TwoFactorConfirmation {
+    id String @id @default(cuid())
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
+
+    @@unique([userId])
+}

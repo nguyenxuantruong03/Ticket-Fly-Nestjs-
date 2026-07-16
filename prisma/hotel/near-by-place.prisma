@@ -1,0 +1,28 @@
+model HotelNearbyPlace {
+    id String @id @default(cuid())
+
+    hotelId String
+
+    hotel Hotel @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+    name String
+
+    type NearbyPlaceType
+
+    address String?
+
+    latitude Float?
+
+    longitude Float?
+
+    distanceKm Float?
+
+    travelTimeMinutes Int?
+
+    description String?
+
+    createdAt DateTime @default(now())
+
+    @@index([hotelId])
+    @@index([type])
+}

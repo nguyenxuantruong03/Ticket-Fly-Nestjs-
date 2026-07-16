@@ -1,0 +1,178 @@
+model FlyPrice {
+    id String @id @default(cuid())
+
+    flyId String @unique
+    fly   Fly    @relation(fields: [flyId], references: [id], onDelete: Cascade)
+
+    currency Currency
+
+    fromPrice Float
+
+    toPrice Float?
+
+    originalFromPrice Float?
+
+    originalToPrice Float?
+
+    fares FlyFare[]
+
+    priceRules FlyPriceRule[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([fromPrice])
+}
+
+model FlyFare {
+    id String @id @default(cuid())
+
+    priceId String
+
+    price FlyPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    name String
+
+    cabinClass FlyCabinClass
+
+    code String?
+
+    refundable Boolean @default(false)
+
+    changeable Boolean @default(false)
+
+    priorityBoarding Boolean @default(false)
+
+    loungeAccess Boolean @default(false)
+
+    seatSelectionIncluded Boolean @default(false)
+
+    mealsIncluded Boolean @default(false)
+
+    wifiIncluded Boolean @default(false)
+
+    baggage FlyFareBaggage?
+
+    taxes FlyFareTax[]
+
+    breakdown FlyFarePriceBreakdown?
+
+    rules          FlyFareRule[]
+    inventoryFares FlyInventoryFare[]
+    active         Boolean            @default(true)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([priceId])
+}
+
+model FlyFarePriceBreakdown {
+    id String @id @default(cuid())
+
+    fareId String @unique
+
+    fare FlyFare @relation(fields: [fareId], references: [id], onDelete: Cascade)
+
+    baseFare Float
+
+    taxes Float @default(0)
+
+    airportFee Float @default(0)
+
+    fuelSurcharge Float @default(0)
+
+    serviceFee Float @default(0)
+
+    bookingFee Float @default(0)
+
+    discount Float @default(0)
+
+    finalPrice Float
+
+    createdAt DateTime @default(now())
+}
+
+model FlyFareTax {
+    id String @id @default(cuid())
+
+    fareId String
+
+    fare FlyFare @relation(fields: [fareId], references: [id], onDelete: Cascade)
+
+    name String
+
+    amount Float
+
+    currency Currency
+
+    createdAt DateTime @default(now())
+}
+
+model FlyFareBaggage {
+    id String @id @default(cuid())
+
+    fareId String @unique
+
+    fare FlyFare @relation(fields: [fareId], references: [id], onDelete: Cascade)
+
+    cabinWeightKg Float?
+
+    checkedWeightKg Float?
+
+    extraBaggageAllowed Boolean @default(true)
+
+    extraBaggagePrice Float?
+
+    createdAt DateTime @default(now())
+}
+
+model FlyFareRule {
+    id String @id @default(cuid())
+
+    fareId String
+
+    fare FlyFare @relation(fields: [fareId], references: [id], onDelete: Cascade)
+
+    type FlyFareRuleType
+
+    value String
+
+    createdAt DateTime @default(now())
+}
+
+model FlyPriceRule {
+    id String @id @default(cuid())
+
+    priceId String
+
+    price FlyPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    name String
+
+    type FlyPriceRuleType
+
+    percentage Float?
+
+    amount Float?
+
+    couponCode String?
+
+    minimumSpend Float?
+
+    maximumDiscount Float?
+
+    validFrom DateTime?
+
+    validTo DateTime?
+
+    active Boolean @default(true)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([priceId])
+}

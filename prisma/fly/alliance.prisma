@@ -1,0 +1,133 @@
+model FlyAlliance {
+    id String @id @default(cuid())
+
+    name String
+
+    code String @unique
+
+    logo String?
+
+    description String?
+
+    airlines  FlyAllianceMember[]
+    createdAt DateTime            @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model FlyAllianceMember {
+    id String @id @default(cuid())
+
+    allianceId String
+    alliance   FlyAlliance @relation(fields: [allianceId], references: [id], onDelete: Cascade)
+
+    airlineId String
+    airline   FlyAirline @relation(fields: [airlineId], references: [id], onDelete: Cascade)
+
+    joinedAt DateTime?
+
+    @@unique([allianceId, airlineId])
+}
+
+model FlyCodeshare {
+    id String @id @default(cuid())
+
+    tripId String
+    trip FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    marketingAirlineId String
+    marketingAirline FlyAirline @relation("MarketingAirline", fields: [marketingAirlineId], references: id)
+
+    marketingFlightNumber String
+
+    operatingAirlineId String
+    operatingAirline FlyAirline @relation("OperatingAirline", fields: [operatingAirlineId], references: [id])
+
+    operatingFlightNumber String
+
+    createdAt DateTime @default(now())
+
+    @@index([tripId])
+}
+
+model FlyInterline {
+    id String @id @default(cuid())
+
+    bookingId String
+    booking   FlyBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    validatingAirlineId String
+    validatingAirline   FlyAirline @relation(fields: [validatingAirlineId], references: [id])
+
+    baggageTransfer Boolean
+
+    protectedConnection Boolean
+}
+
+model FlyItinerary {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking FlyBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    segments FlyItinerarySegment[]
+}
+
+model FlyItinerarySegment {
+    id String @id @default(cuid())
+
+    itineraryId String
+
+    itinerary FlyItinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+
+    tripId String
+
+    trip FlyTrip @relation(fields: [tripId], references: [id])
+
+    order Int
+}
+
+model FlyConnection {
+    id String @id @default(cuid())
+
+    firstTripId String
+
+    firstTrip FlyTrip @relation("FirstConnection", fields: [firstTripId], references: [id])
+
+    secondTripId String
+
+    secondTrip FlyTrip @relation("SecondConnection", fields: [secondTripId], references: [id])
+
+    layoverMinutes Int
+
+    airportChange   Boolean
+    baggageTransfer FlyBaggageTransfer[]
+    terminalChange  Boolean
+}
+
+model FlyBaggageTransfer {
+    id String @id @default(cuid())
+
+    connectionId String @unique
+
+    connection FlyConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+
+    automaticTransfer Boolean
+
+    customsRequired Boolean
+
+    collectAgain Boolean
+}
+
+model FlyMinimumConnectionTime {
+    id String @id @default(cuid())
+
+    airportId String
+
+    airport FlyAirport @relation(fields: [airportId], references: [id])
+
+    domesticMinutes Int
+
+    internationalMinutes Int
+}

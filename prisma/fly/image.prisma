@@ -1,0 +1,23 @@
+model FlyImage {
+    id String @id @default(cuid())
+
+    flyId String
+    fly Fly @relation(fields: [flyId], references: [id], onDelete: Cascade)
+
+    url String
+
+    category FlyImageCategory
+
+    alt String?
+
+    isPrimary Boolean @default(false)
+
+    sortOrder Int @default(0)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([flyId])
+}
+

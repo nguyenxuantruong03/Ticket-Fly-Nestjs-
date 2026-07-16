@@ -18,6 +18,11 @@ export class UserController {
     return this.userService.findById(req.user.id);
   }
 
+  @Get('users')
+  async getUsers() {
+    return this.userService.findAll();
+  }
+
   @Roles(Role.USER)
   @Get('protected')
   async getAll(@Request() req) {

@@ -1,0 +1,332 @@
+model CarRentalBooking {
+    id String @id @default(cuid())
+
+    // =========================
+    // RELATIONS
+    // =========================
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    rentalId String
+    rental   CarRental @relation(fields: [rentalId], references: [id], onDelete: Restrict)
+
+    vehicleId String?
+    vehicle   CarRentalVehicle?        @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+    carLocks  CarRentalInventoryLock[]
+    // =========================
+    // BOOKING INFO
+    // =========================
+
+    bookingCode   String                 @unique
+    type          CarRentalBookingType
+    status        CarRentalBookingStatus @default(pending)
+    paymentStatus CarRentalPaymentStatus @default(unpaid)
+
+    // =========================
+    // RENTAL TIME
+    // =========================
+
+    pickupDate DateTime
+    returnDate DateTime
+    totalHours Int?
+    totalDays  Int?
+
+    // =========================
+    // LOCATION SNAPSHOT
+    // =========================
+
+    locations CarRentalLocation[]
+
+    // =========================
+    // SNAPSHOT VEHICLE
+    // =========================
+
+    vehicleBrand        String?
+    vehicleModel        String?
+    vehicleType         String?
+    vehicleTransmission String?
+    vehicleFuelType     String?
+    licensePlate        String?
+    year                String?
+    color               String?
+
+    // =========================
+    // DRIVER OPTION
+    // =========================
+
+    driverRequired Boolean @default(false)
+
+    // =========================
+    // PRICE
+    // =========================
+
+    price CarRentalBookingPrice?
+
+    // =========================
+    // EXTRA
+    // =========================
+
+    extras CarRentalBookingExtra[]
+
+    // =========================
+    // DRIVER
+    // =========================
+
+    driver CarRentalBookingDriver?
+
+    // =========================
+    // PASSENGER
+    // =========================
+
+    passengers CarRentalBookingPassenger[]
+
+    // =========================
+    // STATUS LOG
+    // =========================
+
+    statusHistory    CarRentalBookingStatusHistory[]
+    calendarDays     CarRentalAvailabilityCalendar[]
+    reviews          CarRentalReview[]
+    bookingInsurance CarRentalBookingInsurance[]
+    expiresAt        DateTime?
+    createdAt        DateTime                        @default(now())
+    updatedAt        DateTime                        @updatedAt
+
+    @@index([userId])
+    @@index([rentalId])
+    @@index([vehicleId])
+    @@index([status])
+    @@index([bookingCode])
+    @@index([pickupDate])
+}
+
+model CarRentalBookingPrice {
+    id String @id @default(cuid())
+
+    bookingId String @unique
+
+    booking CarRentalBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    // base
+
+    rentalPrice Float
+
+    // fee
+
+    deliveryFee Float @default(0)
+
+    pickupFee Float @default(0)
+
+    insuranceFee Float @default(0)
+
+    serviceFee Float @default(0)
+
+    tax Float @default(0)
+
+    discount Float @default(0)
+
+    couponDiscount Float @default(0)
+
+    totalPrice Float
+
+    currency Currency
+
+    createdAt DateTime @default(now())
+}
+
+model CarRentalBookingPassenger {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking CarRentalBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    firstName String
+
+    lastName String?
+
+    email String?
+
+    phone String?
+
+    createdAt DateTime @default(now())
+
+    @@index([bookingId])
+}
+
+model CarRentalBookingDriver {
+    id String @id @default(cuid())
+
+    bookingId String @unique
+
+    booking CarRentalBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    name String
+
+    phone String?
+
+    licenseNumber String?
+
+    nationality String?
+
+    experienceYears Int?
+
+    note String?
+
+    createdAt DateTime @default(now())
+}
+
+model CarRentalBookingStatusHistory {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking CarRentalBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    fromStatus CarRentalBookingStatus?
+
+    toStatus CarRentalBookingStatus
+
+    note String?
+
+    createdAt DateTime @default(now())
+
+    @@index([bookingId])
+}
+
+model CarRentalExtra {
+    id String @id @default(cuid())
+
+    // =========================
+    // RELATION
+    // =========================
+
+    rentalId String
+
+    rental CarRental @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+
+    // =========================
+    // BASIC
+    // =========================
+
+    type CarRentalExtraType
+
+    name String
+
+    description String?
+
+    image String?
+
+    // =========================
+    // RULE
+    // =========================
+
+    required Boolean @default(false)
+
+    available Boolean @default(true)
+
+    // =========================
+    // PRICE
+    // =========================
+
+    prices        CarRentalExtraPrice[]
+    bookingExtras CarRentalBookingExtra[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([rentalId])
+    @@index([type])
+}
+
+model CarRentalExtraPrice {
+    id String @id @default(cuid())
+
+    extraId String
+
+    extra CarRentalExtra @relation(fields: [extraId], references: [id], onDelete: Cascade)
+
+    pricingType CarRentalExtraPricingType
+
+    amount Float
+
+    currency Currency
+
+    minimumQuantity Int?
+
+    maximumQuantity Int?
+
+    startDate DateTime?
+
+    endDate DateTime?
+
+    createdAt DateTime @default(now())
+
+    @@index([extraId])
+}
+
+model CarRentalBookingExtra {
+    id String @id @default(cuid())
+
+    bookingId String
+    booking   CarRentalBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    extraId String?
+    extra   CarRentalExtra? @relation(fields: [extraId], references: [id], onDelete: SetNull)
+
+    // snapshot
+
+    name       String
+    type       CarRentalExtraType
+    quantity   Int                @default(1)
+    unitPrice  Float
+    totalPrice Float
+    currency   Currency
+    createdAt  DateTime           @default(now())
+
+    @@index([bookingId])
+    @@index([extraId])
+}
+
+model CarRentalAvailabilityCalendar {
+    id String @id @default(cuid())
+
+    vehicleId String
+    vehicle   CarRentalVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    startTime String
+    endTime   String
+
+    status CarRentalCalendarStatus
+
+    bookingId String?
+    booking   CarRentalBooking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+    note String?
+
+    createdAt DateTime @default(now())
+
+    @@unique([vehicleId])
+    @@index([bookingId])
+}
+
+model CarRentalBusinessHour {
+    id String @id @default(cuid())
+
+    rentalId String
+    rental   CarRental @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+
+    day WeekDay
+
+    openTime String
+
+    closeTime String
+
+    closed Boolean @default(false)
+
+    createdAt DateTime @default(now())
+
+    @@index([rentalId])
+}

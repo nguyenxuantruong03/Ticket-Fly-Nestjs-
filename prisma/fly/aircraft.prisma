@@ -1,0 +1,209 @@
+model FlyAircraft {
+    id String @id @default(cuid())
+
+    trips FlyTrip[]
+
+    airlineId String
+    airline   FlyAirline @relation(fields: [airlineId], references: [id], onDelete: Cascade)
+
+    manufacturer String?
+    model        String?
+
+    code String?
+
+    registrationNumber String?
+
+    active Boolean @default(true)
+
+    specification FlyAircraftSpecification?
+
+    features FlyAircraftFeatures?
+
+    cabins FlyCabin[]
+
+    images FlyAircraftImage[]
+
+    seatMap  FlySeatMap?
+    schedule FlySchedule[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([airlineId])
+}
+
+model FlyAircraftSpecification {
+    id String @id @default(cuid())
+
+    aircraftId String @unique
+
+    aircraft FlyAircraft @relation(fields: [aircraftId], references: [id], onDelete: Cascade)
+
+    maxRangeKm Float?
+
+    cruiseSpeed Float?
+
+    maxPassengers Int?
+
+    engineType String?
+
+    engineCount Int?
+
+    wingspan Float?
+
+    length Float?
+
+    height Float?
+
+    firstFlightYear Int?
+}
+
+model FlyAircraftFeatures {
+    id String @id @default(cuid())
+
+    aircraftId String @unique
+
+    aircraft FlyAircraft @relation(fields: [aircraftId], references: [id], onDelete: Cascade)
+
+    wifi Boolean?
+
+    powerOutlet Boolean?
+
+    usbPort Boolean?
+
+    entertainment Boolean?
+
+    liveTV Boolean?
+
+    recliningSeat Boolean?
+
+    lieFlatSeat Boolean?
+
+    mealService Boolean?
+
+    alcoholService Boolean?
+
+    blanket Boolean?
+
+    pillow Boolean?
+}
+
+model FlyAircraftImage {
+    id String @id @default(cuid())
+
+    aircraftId String
+
+    aircraft FlyAircraft @relation(fields: [aircraftId], references: [id], onDelete: Cascade)
+
+    url String
+
+    category FlyAircraftImageCategory
+
+    isPrimary Boolean @default(false)
+
+    sortOrder Int @default(0)
+
+    alt String?
+
+    createdAt DateTime @default(now())
+}
+
+model FlyCabin {
+    id String @id @default(cuid())
+
+    aircraftId String
+
+    aircraft FlyAircraft @relation(fields: [aircraftId], references: [id], onDelete: Cascade)
+
+    class FlyCabinClass
+
+    name String?
+
+    rows Int?
+
+    totalSeats Int
+
+    seats FlySeat[]
+
+    createdAt DateTime @default(now())
+}
+
+model FlySeat {
+    id String @id @default(cuid())
+
+    cabinId String
+
+    cabin FlyCabin @relation(fields: [cabinId], references: [id], onDelete: Cascade)
+
+    seatNumber String
+
+    row Int?
+
+    column String?
+
+    type FlySeatType
+
+    extraLegroom Boolean @default(false)
+
+    emergencyExit Boolean @default(false)
+
+    nearWindow Boolean?
+
+    nearAisle Boolean?
+
+    nearWing Boolean?
+
+    available      Boolean                @default(true)
+    locks          FlySeatInventoryLock[]
+    seatAssignment FlySeatAssignment[]
+    createdAt      DateTime               @default(now())
+
+    @@unique([cabinId, seatNumber])
+}
+
+model FlySeatMap {
+    id String @id @default(cuid())
+
+    aircraftId String @unique
+
+    aircraft FlyAircraft @relation(fields: [aircraftId], references: [id], onDelete: Cascade)
+
+    imageUrl String?
+
+    svgUrl String?
+
+    jsonLayout Json?
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model FlySeatInventoryLock {
+    id String @id @default(cuid())
+
+    tripId String
+    trip   FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    seatId String
+    seat   FlySeat @relation(fields: [seatId], references: [id], onDelete: Cascade)
+
+    userId String?
+    user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+    bookingId String?
+    booking   FlyBooking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    startTime  DateTime
+    releasedAt DateTime?
+    status     InventoryLockStatus @default(locked)
+    endTime    DateTime
+    quantity   Int
+    expiresAt  DateTime
+
+    createdAt DateTime @default(now())
+
+    @@index([tripId])
+    @@index([expiresAt])
+}

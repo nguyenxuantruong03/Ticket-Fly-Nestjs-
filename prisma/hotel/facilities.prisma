@@ -1,0 +1,226 @@
+model HotelRoomFacilities {
+    id String @id @default(cuid())
+
+    roomId String    @unique
+    room   HotelRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+    tv                Boolean?
+    minibar           Boolean?
+    refrigerator      Boolean?
+    microwave         Boolean?
+    coffeeMachine     Boolean?
+    kettle            Boolean?
+    safe              Boolean?
+    wardrobe          Boolean?
+    hairDryer         Boolean?
+    ironingFacilities Boolean?
+    slippers          Boolean?
+    bathrobe          Boolean?
+    telephone         Boolean?
+    desk              Boolean?
+    sofa              Boolean?
+    balcony           Boolean?
+    bathtub           Boolean?
+    shower            Boolean?
+    streamingService  Boolean?
+}
+
+model HotelFacilities {
+    id String @id @default(cuid())
+
+    hotelId String @unique
+    hotel   Hotel  @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+    wifi             HotelWifi?
+    parking          HotelParking?
+    swimmingPool     HotelPool?
+    gym              HotelGym?
+    spa              HotelSpa?
+    restaurants      HotelRestaurant[]
+    bar              Boolean?
+    roomService      Boolean?
+    laundry          Boolean?
+    meetingRoom      Boolean?
+    businessCenter   Boolean?
+    familyRoom       Boolean?
+    kidsClub         Boolean?
+    playground       Boolean?
+    atm              Boolean?
+    giftShop         Boolean?
+    currencyExchange Boolean?
+    concierge        Boolean?
+    luggageStorage   Boolean?
+    sharedKitchen    Boolean?
+    vendingMachine   Boolean?
+    library          Boolean?
+    casino           Boolean?
+    nightClub        Boolean?
+    beachAccess      Boolean?
+    privateBeach     Boolean?
+    waterPark        Boolean?
+    golfCourse       Boolean?
+    tennisCourt      Boolean?
+    transportation   HotelTransportation?
+    accessibility    HotelAccessibility?
+    safety           HotelSafety?
+}
+
+model HotelWifi {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    available Boolean
+
+    free Boolean?
+
+    speedMbps Float?
+
+    availableInRooms       Boolean?
+    availableInPublicAreas Boolean?
+}
+
+model HotelParking {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    available Boolean
+
+    free                Boolean?
+    valet               Boolean?
+    covered             Boolean?
+    evCharging          Boolean?
+    reservationRequired Boolean?
+}
+
+model HotelPool {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    available Boolean
+
+    indoor   Boolean?
+    outdoor  Boolean?
+    infinity Boolean?
+    heated   Boolean?
+    kidsPool Boolean?
+}
+
+model HotelGym {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    available Boolean
+
+    open24Hours     Boolean?
+    personalTrainer Boolean?
+}
+
+model HotelSpa {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    available Boolean
+
+    massage   Boolean?
+    sauna     Boolean?
+    steamRoom Boolean?
+    hotTub    Boolean?
+}
+
+model HotelRestaurant {
+    id String @id @default(cuid())
+
+    facilitiesId String
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    name String
+
+    cuisineTypes String[]
+
+    breakfast Boolean?
+    lunch     Boolean?
+    dinner    Boolean?
+    buffet    Boolean?
+
+    reservation Boolean?
+    capacity    Int?
+    opening     String?
+    images      HotelRestaurantImage[]
+    price       Float
+    currency    Currency
+}
+
+model HotelRestaurantImage {
+    id           String            @id @default(cuid())
+    restaurantId String
+    restaurant   HotelRestaurant   @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+    url          String
+    category     RetaurentCategory
+    isPrimary    Boolean           @default(false)
+    sortOrder    Int               @default(0)
+    createdAt    DateTime          @default(now())
+
+    @@index([restaurantId])
+}
+
+model HotelTransportation {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    airportShuttle Boolean?
+
+    shuttleFee Float?
+
+    taxiService          Boolean?
+    carRental            Boolean?
+    bicycleRental        Boolean?
+    trainStationTransfer Boolean?
+}
+
+model HotelAccessibility {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    wheelchairAccessible Boolean?
+
+    accessibleRoom     Boolean?
+    elevator           Boolean?
+    brailleSignage     Boolean?
+    accessibleBathroom Boolean?
+    hearingAccessible  Boolean?
+    visualAccessible   Boolean?
+    ramp               Boolean?
+}
+
+model HotelSafety {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    security24Hours Boolean?
+
+    cctv Boolean?
+
+    smokeDetector    Boolean?
+    fireAlarm        Boolean?
+    fireExtinguisher Boolean?
+    firstAidKit      Boolean?
+    emergencyExit    Boolean?
+    securityBox      Boolean?
+    inRoomSafe       Boolean?
+}

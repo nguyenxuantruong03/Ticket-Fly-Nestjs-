@@ -1,0 +1,17 @@
+model HotelAreaGuide {
+    id String @id @default(cuid())
+
+    hotelId String
+
+    hotel Hotel @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+    title String
+
+    description String
+
+    images String[]
+
+    createdAt DateTime @default(now())
+
+    @@index([hotelId])
+}

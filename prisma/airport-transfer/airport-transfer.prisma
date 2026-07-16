@@ -1,0 +1,43 @@
+model AirportTransfer {
+    id String @id @default(cuid())
+
+    providerBookingId String
+    providerBooking   ProviderBooking @relation(fields: [providerBookingId], references: [id])
+
+    availability         AirportTransferAvailability?
+    capacity             AirportTransferCapacity?
+    routes               AirportTransferRoute[]
+    trips                AirportTransferTrip[]
+    vehicle              AirportTransferVehicle[]
+    bookings             AirportTransferBooking[]
+    // policy
+    flightSupport        AirportTransferFlightSupport?
+    meetAndGreet         AirportTransferMeetAndGreet?
+    waitingPolicy        AirportTransferWaitingPolicy?
+    luggagePolicy        AirportTransferLuggagePolicy?
+    passengerRequirement AirportTransferPassengerRequirement?
+    contactInformation   AirportTransferContactInformation?
+    specialRequest       AirportTransferSpecialRequest?
+    price                AirportTransferPrice?
+    notice               AirportTransferNotice?
+    reviews              AirportTransferReview[]
+    ratingSummary        AirportTransferRatingSummary?
+    favorites            AirportTransferFavorite[]
+    schedules            AirportTransferSchedule[]
+    active               Boolean                              @default(true)
+    serviceType          AirportTransferServiceType
+    instantConfirmation  Boolean                              @default(true)
+    // Search metadata
+    name                 String
+    slug                 String                               @unique
+    aliases              String[]
+    keywords             String[]
+    tags                 String[]
+    searchText           String?
+    featured             Boolean                              @default(false)
+    searchable           Boolean                              @default(true)
+    searchPriority       Int                                  @default(0)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}

@@ -1,0 +1,39 @@
+// ======================================================
+// CAR RENTAL
+// ======================================================
+
+model CarRental {
+    id String @id @default(cuid())
+
+    driverOption DriverOption
+    trip         CarRentalTrip?
+    policies     CarRentalPolicies?
+    // new
+    vehicle      CarRentalVehicle[]
+    reviews       CarRentalReview[]
+    images       CarRentalImage[]
+
+    // new
+    extras             CarRentalExtra[]
+    bookings           CarRentalBooking[]
+    insurances         CarRentalInsurance[]
+    businessHours      CarRentalBusinessHour[]
+    pickupInstructions CarRentalPickupInstruction[]
+    drivers            CarRentalDriver[]
+    favorites          CarRentalFavorite[]
+
+    active         Boolean  @default(false)
+    name           String
+    slug           String   @unique
+    aliases        String[]
+    keywords       String[]
+    searchText     String?
+    featured       Boolean  @default(false)
+    searchPriority Int      @default(0)
+
+    providerBookingId String
+    providerBooking   ProviderBooking @relation(fields: [providerBookingId], references: [id])
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
