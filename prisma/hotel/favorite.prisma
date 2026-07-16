@@ -1,0 +1,15 @@
+model HotelFavorite {
+    id String @id @default(cuid())
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    hotelId String
+    hotel   Hotel  @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+
+    @@unique([userId, hotelId])
+    @@index([userId])
+    @@index([hotelId])
+}

@@ -1,0 +1,64 @@
+// ======================================================
+// FLIGHT
+// ======================================================
+
+model Fly {
+    id String @id @default(cuid())
+
+    // ======================================================
+    // RELATIONS
+    // ======================================================
+
+    providerBookingId String
+    providerBooking   ProviderBooking @relation(fields: [providerBookingId], references: [id])
+
+    airlineId String
+    airline   FlyAirline @relation(fields: [airlineId], references: [id])
+
+    routes FlyRoute[]
+
+    trips FlyTrip[]
+
+    policies FlyPolicies?
+
+    price FlyPrice?
+
+    notice FlyNotice?
+
+    images FlyImage[]
+
+    favorites FlyFavorite[]
+    schedule  FlySchedule[]
+
+    active Boolean @default(true)
+
+    // ======================================================
+    // SEARCH
+    // ======================================================
+
+    name String
+
+    slug String @unique
+
+    aliases String[]
+
+    keywords String[]
+
+    tags String[]
+
+    searchText String?
+
+    featured Boolean @default(false)
+
+    searchable Boolean @default(true)
+
+    searchPriority Int @default(0)
+
+    // ======================================================
+    // TIMESTAMP
+    // ======================================================
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}

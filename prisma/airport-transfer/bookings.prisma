@@ -1,0 +1,143 @@
+model AirportTransferBooking {
+    id String @id @default(cuid())
+
+    transferId String
+    transfer   AirportTransfer @relation(fields: [transferId], references: [id])
+
+    tripId String?
+
+    trip AirportTransferTrip? @relation(fields: [tripId], references: [id])
+
+    vehicleId String?
+
+    vehicle AirportTransferVehicle? @relation(fields: [vehicleId], references: [id])
+
+    userId String
+
+    user User @relation(fields: [userId], references: [id])
+
+    status AirportTransferBookingStatus
+
+    pickupTime DateTime
+
+    totalAmount Float
+
+    currency Currency
+
+    paymentStatus PaymentStatus
+
+    passengers AirportTransferBookingPassenger[]
+
+    contact AirportTransferBookingContact?
+
+    flight AirportTransferBookingFlight?
+
+    extras AirportTransferBookingExtra[]
+
+    timeline AirportTransferBookingTimeline[]
+
+    histories AirportTransferBookingStatusHistory[]
+    locks     AirportTransferInventoryLock[]
+    reviews   AirportTransferReview[]
+    createdAt DateTime                              @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model AirportTransferBookingPassenger {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking AirportTransferBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    firstName String
+
+    lastName String
+
+    phone String?
+
+    email String?
+
+    adult Boolean
+
+    luggage Int?
+}
+
+model AirportTransferBookingContact {
+    id String @id @default(cuid())
+
+    bookingId String @unique
+
+    booking AirportTransferBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    fullName String
+
+    phone String
+
+    email String
+
+    emergencyPhone String?
+}
+
+model AirportTransferBookingFlight {
+    id String @id @default(cuid())
+
+    bookingId String @unique
+
+    booking AirportTransferBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    airline String?
+
+    flightNumber String?
+
+    terminal String?
+
+    expectedArrival DateTime?
+
+    actualArrival DateTime?
+}
+
+model AirportTransferBookingExtra {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking AirportTransferBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    name String
+
+    quantity Int
+
+    amount Float
+}
+
+model AirportTransferBookingTimeline {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking AirportTransferBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    title String
+
+    description String?
+
+    eventTime DateTime
+}
+
+model AirportTransferBookingStatusHistory {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking AirportTransferBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    fromStatus AirportTransferBookingStatus?
+
+    toStatus AirportTransferBookingStatus
+
+    note String?
+
+    createdAt DateTime @default(now())
+}

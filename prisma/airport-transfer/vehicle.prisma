@@ -1,0 +1,189 @@
+model AirportTransferVehicle {
+    id String @id @default(cuid())
+
+    transferId String
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    type AirportTransferVehicleType
+
+    name String?
+
+    manufacturer String?
+
+    model String?
+
+    year Int?
+
+    color String?
+
+    licensePlate String?
+
+    transmission AirportTransferTransmission?
+
+    fuelType AirportTransferFuelType?
+
+    status AirportTransferVehicleStatus @default(available)
+
+    capacity AirportTransferVehicleCapacity?
+
+    features AirportTransferVehicleFeatures?
+
+    specification AirportTransferVehicleSpecification?
+
+    images AirportTransferVehicleImage[]
+
+    availability AirportTransferVehicleAvailability[]
+
+    drivers AirportTransferDriver[]
+
+    bookings    AirportTransferBooking[]
+    locks       AirportTransferInventoryLock[]
+    assignments AirportTransferVehicleAssignment[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model AirportTransferVehicleCapacity {
+    id String @id @default(cuid())
+
+    vehicleId String @unique
+
+    vehicle AirportTransferVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    passengerCount Int
+
+    luggageCount Int?
+
+    cabinBaggageCount Int?
+
+    oversizedLuggage Int?
+}
+
+model AirportTransferVehicleFeatures {
+    id String @id @default(cuid())
+
+    vehicleId String @unique
+
+    vehicle AirportTransferVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    airConditioner Boolean?
+
+    wifi Boolean?
+
+    usbCharger Boolean?
+
+    bottledWater Boolean?
+
+    childSeat Boolean?
+
+    wheelchairAccessible Boolean?
+
+    petFriendly Boolean?
+
+    phoneCharger Boolean?
+
+    music Boolean?
+
+    gpsTracking Boolean?
+}
+
+model AirportTransferVehicleSpecification {
+    id String @id @default(cuid())
+
+    vehicleId String @unique
+
+    vehicle AirportTransferVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    engineSizeCc Int?
+
+    fuelCapacity Float?
+
+    mileageKm Float?
+
+    vin String?
+}
+
+model AirportTransferVehicleImage {
+    id String @id @default(cuid())
+
+    vehicleId String
+
+    vehicle AirportTransferVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    url String
+
+    category AirportTransferVehicleImageCategory
+
+    isPrimary Boolean @default(false)
+
+    sortOrder Int @default(0)
+
+    alt String?
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([vehicleId])
+}
+
+model AirportTransferVehicleAvailability {
+    id String @id @default(cuid())
+
+    vehicleId String
+
+    vehicle AirportTransferVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    startDate DateTime
+
+    endDate DateTime
+
+    available Boolean
+
+    note String?
+
+    createdAt DateTime @default(now())
+
+    @@index([vehicleId])
+    @@index([startDate])
+    @@index([endDate])
+}
+
+model AirportTransferDriver {
+    id String @id @default(cuid())
+
+    vehicleId String
+
+    vehicle AirportTransferVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    firstName String
+
+    lastName String
+
+    avatar String?
+
+    phone String?
+
+    email String?
+
+    licenseNumber String?
+
+    licenseExpiry DateTime?
+
+    experienceYears Int?
+
+    rating Float?
+
+    totalTrips Int @default(0)
+
+    languages   AirportTransferDriverLanguage[]
+    assignments AirportTransferVehicleAssignment[]
+    active      Boolean                            @default(true)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([vehicleId])
+}

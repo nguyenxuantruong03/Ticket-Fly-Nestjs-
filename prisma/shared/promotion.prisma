@@ -1,0 +1,123 @@
+model Promotion {
+    id String @id @default(cuid())
+
+    name String
+
+    description String?
+
+    code String? @unique
+
+    target PromotionTargetType
+
+    status PromotionStatus @default(draft)
+
+    // =====================
+    // TIME
+    // =====================
+
+    startDate DateTime
+
+    endDate DateTime
+
+    // =====================
+    // LIMIT
+    // =====================
+
+    usageLimit Int?
+
+    usedCount Int @default(0)
+
+    // =====================
+    // RELATION
+    // =====================
+
+    rules PromotionRule[]
+
+    usages PromotionUsage[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([status])
+    @@index([target])
+    @@index([startDate])
+    @@index([endDate])
+}
+
+model PromotionRule {
+    id String @id @default(cuid())
+
+    promotionId String
+    promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+
+    discountType DiscountType
+
+    value         Float
+    maxDiscount   Float?
+    minimumAmount Float?
+    maximumAmount Float?
+    createdAt     DateTime @default(now())
+
+    @@index([promotionId])
+}
+
+model PromotionUsage {
+    id String @id @default(cuid())
+
+    promotionId String
+    promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    referenceId    String?
+    referenceType  PromotionReferenceType?
+    discountAmount Float
+    createdAt      DateTime                @default(now())
+
+    @@unique([promotionId, userId, referenceType, referenceId])
+    @@index([promotionId])
+    @@index([userId])
+}
+
+enum PromotionTargetType {
+    all
+
+    hotel
+
+    flight
+
+    bus
+
+    transfer
+
+    car_rental
+
+    yacht
+}
+
+enum PromotionStatus {
+    draft
+
+    active
+
+    paused
+
+    expired
+}
+
+enum DiscountType {
+    percentage
+
+    fixed_amount
+}
+
+enum PromotionReferenceType {
+    HOTEL_BOOKING
+    BUS_BOOKING
+    CAR_RENTAL_BOOKING
+    TRANSFER_BOOKING
+    FLIGHT_BOOKING
+    YACHT_BOOKING
+}

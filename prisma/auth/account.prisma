@@ -1,0 +1,11 @@
+model Account {
+    id                String @id @default(cuid())
+    userId            String @unique
+    type              String
+    provider          String
+    providerAccountId String
+
+    user User @relation(fields: [userId], references: [id])
+
+    @@unique([provider, providerAccountId])
+}

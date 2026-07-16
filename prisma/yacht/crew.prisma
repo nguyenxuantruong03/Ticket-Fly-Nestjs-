@@ -1,0 +1,16 @@
+model YachtCrew {
+    id String @id @default(cuid())
+
+    yachtId String
+
+    yacht Yacht  @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+    name  String
+
+    role YachtCrewRole
+
+    avatar String?
+
+    experienceYears Int?
+
+    languages String[]
+}

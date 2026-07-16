@@ -1,0 +1,15 @@
+model AirportTransferFavorite {
+    id String @id @default(cuid())
+
+    transferId String
+
+    transfer AirportTransfer  @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    userId String
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+
+    @@unique([transferId, userId])
+}

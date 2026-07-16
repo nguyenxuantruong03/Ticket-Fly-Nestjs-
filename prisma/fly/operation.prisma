@@ -1,0 +1,136 @@
+model FlyOperation {
+    id String @id @default(cuid())
+
+    tripId String @unique
+
+    trip FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    status FlyOperationStatus
+
+    departureTerminal String?
+
+    departureGate String?
+
+    arrivalTerminal String?
+
+    arrivalGate String?
+
+    baggageClaim String?
+
+    checkInCounter String?
+
+    boardingTime DateTime?
+
+    boardingEndTime DateTime?
+
+    gateOpenTime DateTime?
+
+    gateCloseTime DateTime?
+
+    actualDepartureTime DateTime?
+
+    actualArrivalTime DateTime?
+
+    estimatedDepartureTime DateTime?
+
+    estimatedArrivalTime DateTime?
+
+    timeline FlyOperationTimeline[]
+
+    delays FlyDelay[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model FlyOperationTimeline {
+    id String @id @default(cuid())
+
+    operationId String
+
+    operation FlyOperation @relation(fields: [operationId], references: [id], onDelete: Cascade)
+
+    type FlyTimelineType
+
+    eventTime DateTime
+
+    note String?
+}
+
+model FlyDelay {
+    id String @id @default(cuid())
+
+    operationId String
+
+    operation FlyOperation @relation(fields: [operationId], references: [id], onDelete: Cascade)
+
+    minutes Int
+
+    reason FlyDelayReason
+
+    description String?
+
+    createdAt DateTime @default(now())
+}
+
+model FlyCancellation {
+    id String @id @default(cuid())
+
+    tripId String @unique
+
+    trip FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    reason String?
+
+    cancelledAt DateTime
+
+    compensationRequired Boolean?
+}
+
+model FlyDiversion {
+    id String @id @default(cuid())
+
+    tripId String @unique
+
+    trip FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    divertedAirportId String
+    divertedAirport FlyAirport @relation(fields: [divertedAirportId], references: [id])
+
+    reason String?
+}
+
+model FlyTracking {
+    id String @id @default(cuid())
+
+    tripId String 
+
+    trip FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    latitude Float?
+
+    longitude Float?
+
+    altitudeFt Float?
+
+    speedKmh Float?
+
+    heading Float?
+
+    lastUpdated DateTime?
+}
+
+model FlyTripHistory {
+    id String @id @default(cuid())
+
+    tripId String
+
+    trip FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    oldStatus FlyOperationStatus
+
+    newStatus FlyOperationStatus
+
+    changedAt DateTime @default(now())
+}

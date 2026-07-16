@@ -1,0 +1,151 @@
+model AirportTransferFlightSupport {
+    id String @id @default(cuid())
+
+    transferId String @unique
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    flightNumberRequired Boolean @default(true)
+
+    airlineRequired Boolean @default(true)
+
+    terminalSupported Boolean @default(true)
+
+    arrivalFlightOnly Boolean?
+
+    departureFlightOnly Boolean?
+
+    flightTracking Boolean @default(true)
+
+    delayMonitoring Boolean @default(true)
+
+    createdAt DateTime @default(now())
+}
+
+model AirportTransferMeetAndGreet {
+    id String @id @default(cuid())
+
+    transferId String @unique
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    available Boolean @default(true)
+
+    included Boolean @default(false)
+
+    additionalFee Float?
+
+    nameBoard Boolean @default(true)
+
+    airportRepresentative Boolean?
+
+    multilingualSupport Boolean?
+
+    createdAt DateTime @default(now())
+}
+
+model AirportTransferWaitingPolicy {
+    id String @id @default(cuid())
+
+    transferId String @unique
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    freeWaitingMinutes Int?
+
+    airportFreeWaitingMinutes Int?
+
+    waitingFeePerHour Float?
+
+    maximumWaitingMinutes Int?
+
+    createdAt DateTime @default(now())
+}
+
+model AirportTransferLuggagePolicy {
+    id String @id @default(cuid())
+
+    transferId String @unique
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    checkedBaggage Int?
+
+    cabinBaggage Int?
+
+    oversizedAllowed Boolean?
+
+    oversizedFee Float?
+
+    sportsEquipmentAllowed Boolean?
+
+    strollerAllowed Boolean?
+
+    wheelchairAllowed Boolean?
+
+    createdAt DateTime @default(now())
+}
+
+model AirportTransferPassengerRequirement {
+    id String @id @default(cuid())
+
+    transferId String @unique
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    passportRequired Boolean?
+
+    phoneRequired Boolean @default(true)
+
+    emailRequired Boolean @default(true)
+
+    minimumPassenger Int?
+
+    maximumPassenger Int?
+
+    createdAt DateTime @default(now())
+}
+
+model AirportTransferContactInformation {
+    id String @id @default(cuid())
+
+    transferId String @unique
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+    
+    hotline String?
+    whatsapp String?
+    telegram String?
+    emergencyPhone String?
+    supportEmail String?
+    createdAt DateTime @default(now())
+}
+
+model AirportTransferSpecialRequest {
+    id String @id @default(cuid())
+
+    transferId String @unique
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    childSeat Boolean?
+
+    babySeat Boolean?
+
+    boosterSeat Boolean?
+
+    wheelchair Boolean?
+
+    petTransport Boolean?
+
+    bicycle Boolean?
+
+    skiEquipment Boolean?
+
+    golfBag Boolean?
+
+    additionalStop Boolean?
+
+    noteSupported Boolean @default(true)
+
+    createdAt DateTime @default(now())
+}

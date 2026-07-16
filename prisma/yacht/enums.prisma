@@ -1,0 +1,245 @@
+enum YachtType {
+    yacht
+
+    catamaran
+
+    sailboat
+
+    speedboat
+
+    motorboat
+
+    luxury_yacht
+
+    fishing_boat
+
+    house_boat
+
+    other
+}
+
+enum YachtServiceType {
+    private_charter
+
+    shared_cruise
+
+    hourly_rental
+
+    daily_rental
+
+    overnight
+
+    fishing_trip
+
+    diving_trip
+
+    island_hopping
+}
+
+enum YachtFuelType {
+    diesel
+
+    gasoline
+
+    electric
+
+    hybrid
+}
+
+enum YachtCondition {
+    new
+
+    excellent
+
+    good
+
+    normal
+}
+
+enum YachtImageCategory {
+    exterior
+
+    deck
+
+    cabin
+
+    bedroom
+
+    bathroom
+
+    kitchen
+
+    dining
+
+    lounge
+
+    activity
+
+    crew
+
+    safety
+
+    marina
+
+    other
+}
+
+enum YachtCrewRole {
+    captain
+
+    co_captain
+
+    sailor
+
+    chef
+
+    guide
+
+    host
+
+    instructor
+}
+
+enum YachtTripStatus {
+    active
+
+    sold_out
+
+    cancelled
+
+    completed
+}
+
+enum YachtRepeatType {
+    once
+
+    daily
+
+    weekly
+
+    monthly
+}
+
+enum YachtPricingType {
+    private_charter
+
+    per_person
+
+    shared_trip
+
+    custom
+}
+
+enum YachtDurationType {
+    hourly
+
+    half_day
+
+    daily
+
+    overnight
+
+    multi_day
+}
+
+enum YachtFeeType {
+    fuel
+
+    captain
+
+    crew
+
+    port
+
+    marina
+
+    cleaning
+
+    overtime
+
+    tax
+
+    service
+
+    other
+}
+
+enum YachtDiscountType {
+    early_booking
+
+    last_minute
+
+    seasonal
+
+    promotion
+
+    coupon
+}
+
+enum YachtExtraCategory {
+    food
+
+    beverage
+
+    activity
+
+    equipment
+
+    service
+
+    decoration
+
+    entertainment
+
+    other
+}
+
+enum YachtExtraPricingType {
+    fixed
+
+    per_person
+
+    per_hour
+
+    per_day
+}
+
+enum YachtRefundType {
+    full
+
+    partial
+
+    none
+}
+
+enum YachtBookingStatus {
+    pending
+
+    awaiting_payment
+
+    confirmed
+
+    cancelled
+
+    completed
+
+    rejected
+
+    expired
+}
+
+enum YachtPassengerType {
+    adult
+
+    child
+
+    infant
+}
+
+enum CancellationActor {
+    customer
+
+    provider
+
+    system
+}

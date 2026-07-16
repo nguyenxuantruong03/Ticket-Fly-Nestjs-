@@ -1,0 +1,17 @@
+model YachtNotice {
+    id String @id @default(cuid())
+
+    yachtId String @unique
+
+    yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    important String?
+
+    beforeBooking String?
+
+    afterBooking String?
+
+    safetyNotice String?
+
+    createdAt DateTime @default(now())
+}

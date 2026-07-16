@@ -1,0 +1,15 @@
+model CarRentalFavorite {
+    id String @id @default(cuid())
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    rentalId String
+    rental   CarRental @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+
+    @@unique([userId, rentalId])
+    @@index([rentalId])
+    @@index([userId])
+}

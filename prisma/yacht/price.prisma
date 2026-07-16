@@ -1,0 +1,197 @@
+model YachtPrice {
+    id String @id @default(cuid())
+
+    yachtId String @unique
+
+    yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    currency Currency
+
+    pricingType YachtPricingType
+
+    basePrices YachtPriceOption[]
+
+    fees YachtPriceFee[]
+
+    discounts YachtPriceRule[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model YachtPriceOption {
+    id String @id @default(cuid())
+
+    priceId String
+
+    price YachtPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    name String
+
+    duration Int?
+
+    durationType YachtDurationType
+
+    minGuests Int?
+
+    maxGuests Int?
+
+    originalPrice Float?
+
+    includedItems String[]
+
+    createdAt DateTime @default(now())
+}
+
+model YachtTripPrice {
+    id String @id @default(cuid())
+
+    tripId String    @unique
+    trip   YachtTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    currency Currency
+
+    amount Float
+
+    originalAmount Float?
+
+    tax Float @default(0)
+
+    serviceFee Float @default(0)
+
+    discount Float @default(0)
+
+    finalAmount Float
+
+    createdAt DateTime @default(now())
+}
+
+model YachtPriceFee {
+    id String @id @default(cuid())
+
+    priceId String
+
+    price YachtPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    type YachtFeeType
+
+    amount Float
+
+    mandatory Boolean @default(false)
+
+    description String?
+}
+
+model YachtPriceRule {
+    id String @id @default(cuid())
+
+    priceId String
+
+    price YachtPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    type YachtDiscountType
+
+    percentage Float?
+
+    amount Float?
+
+    startDate DateTime?
+
+    endDate DateTime?
+
+    active Boolean @default(true)
+}
+
+model YachtExtra {
+    id String @id @default(cuid())
+
+    yachtId String
+
+    yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    name String
+
+    description String?
+
+    category      YachtExtraCategory
+    bookingExtras YachtBookingExtra[]
+    pricingType   YachtExtraPricingType
+    packageExtras YachtPackageExtra[]
+    price         Float
+
+    currency Currency
+
+    active Boolean @default(true)
+
+    images YachtExtraImage[]
+}
+
+model YachtExtraImage {
+    id String @id @default(cuid())
+
+    extraId String
+
+    extra YachtExtra @relation(fields: [extraId], references: [id], onDelete: Cascade)
+
+    url String
+
+    isPrimary Boolean @default(false)
+
+    sortOrder Int @default(0)
+}
+
+model YachtPackage {
+    id String @id @default(cuid())
+
+    yachtId  String
+    yacht    Yacht          @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+    bookings YachtBooking[]
+    name     String
+
+    description String?
+
+    duration Int?
+
+    durationType YachtDurationType
+
+    maxGuests Int?
+
+    price Float
+
+    currency Currency
+
+    includedItems String[]
+
+    extras YachtPackageExtra[]
+
+    images YachtPackageImage[]
+
+    active Boolean @default(true)
+
+    createdAt DateTime @default(now())
+}
+
+model YachtPackageExtra {
+    id String @id @default(cuid())
+
+    packageId String
+    package   YachtPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+    extraId String
+    extra   YachtExtra @relation(fields: [extraId], references: [id], onDelete: Cascade)
+
+    @@unique([packageId, extraId])
+}
+
+model YachtPackageImage {
+    id String @id @default(cuid())
+
+    packageId String
+
+    package YachtPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+    url String
+
+    sortOrder Int @default(0)
+}

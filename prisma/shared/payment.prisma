@@ -1,0 +1,238 @@
+model Payment {
+    id String @id @default(cuid())
+
+    // =========================
+    // RELATION
+    // =========================
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    // =========================
+    // POLYMORPHIC BOOKING
+    // =========================
+
+    // dùng cho mọi service
+
+    referenceId   String
+    referenceType PaymentReferenceType
+
+    // Ví dụ:
+    // HOTEL_BOOKING
+    // BUS_BOOKING
+    // CAR_RENTAL_BOOKING
+
+    // =========================
+    // MONEY
+    // =========================
+
+    amount Float
+
+    currency Currency
+
+    status PaymentStatus @default(pending)
+
+    method PaymentMethodType?
+
+    // =========================
+    // RELATIONS
+    // =========================
+
+    transactions PaymentTransaction[]
+
+    refunds Refund[]
+
+    invoices Invoice[]
+
+    statusHistory PaymentStatusHistory[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([userId])
+    @@index([status])
+    @@index([referenceType, referenceId])
+}
+
+model PaymentTransaction {
+    id String @id @default(cuid())
+
+    paymentId String
+
+    payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+    type PaymentTransactionType
+
+    provider String?
+
+    providerTransactionId String?
+
+    amount Float
+
+    currency Currency
+
+    status PaymentStatus
+
+    rawResponse Json?
+
+    createdAt DateTime @default(now())
+
+    @@index([paymentId])
+    @@index([providerTransactionId])
+}
+
+model PaymentStatusHistory {
+    id String @id @default(cuid())
+
+    paymentId String
+
+    payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+    fromStatus PaymentStatus?
+
+    toStatus PaymentStatus
+
+    note String?
+
+    createdAt DateTime @default(now())
+
+    @@index([paymentId])
+}
+
+model Refund {
+    id String @id @default(cuid())
+
+    paymentId String
+
+    payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+    amount Float
+
+    currency Currency
+
+    status RefundStatus @default(pending)
+
+    reason String?
+
+    providerRefundId String?
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([paymentId])
+    @@index([status])
+}
+
+model Invoice {
+    id String @id @default(cuid())
+
+    paymentId String
+
+    payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+    invoiceNumber String @unique
+
+    customerName String
+
+    customerEmail String?
+
+    customerPhone String?
+
+    address String?
+
+    subtotal Float
+
+    tax Float @default(0)
+
+    discount Float @default(0)
+
+    total Float
+
+    currency Currency
+
+    pdfUrl String?
+
+    createdAt DateTime @default(now())
+
+    @@index([paymentId])
+}
+
+model PaymentWebhook {
+    id String @id @default(cuid())
+
+    provider String
+
+    event String
+
+    payload Json
+
+    processed Boolean @default(false)
+
+    createdAt DateTime @default(now())
+
+    @@index([provider])
+    @@index([processed])
+}
+
+enum PaymentStatus {
+    pending
+    processing
+    paid
+    failed
+    cancelled
+    refunded
+    partially_refunded
+}
+
+enum PaymentMethodType {
+    credit_card
+
+    debit_card
+
+    bank_transfer
+
+    e_wallet
+
+    cash
+
+    paypal
+
+    apple_pay
+
+    google_pay
+
+    crypto
+
+    other
+}
+
+enum PaymentTransactionType {
+    payment
+
+    refund
+
+    partial_refund
+}
+
+enum RefundStatus {
+    pending
+
+    processing
+
+    completed
+
+    rejected
+
+    failed
+}
+
+enum PaymentReferenceType {
+    HOTEL_BOOKING
+    BUS_BOOKING
+    CAR_RENTAL_BOOKING
+    TRANSFER_BOOKING
+    FLIGHT_BOOKING
+    YACHT_BOOKING
+}

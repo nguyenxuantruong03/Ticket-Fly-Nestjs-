@@ -6,6 +6,10 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "prisma:build": "node prisma/build-schema.cjs",
+    "prisma:generate": "npm run prisma:build && prisma generate",
+"prisma:push": "npm run prisma:build && prisma db push",
+"prisma:migrate": "npm run prisma:build && prisma migrate dev",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",

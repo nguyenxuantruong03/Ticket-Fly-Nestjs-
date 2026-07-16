@@ -1,0 +1,35 @@
+model Hotel {
+    id String @id @default(cuid())
+
+    information HotelInformation?
+    hotelImage  HotelImage[]
+    inventory   HotelInventory[]
+    // new
+    roomTypes   HotelRoomType[]
+
+    reviews         HotelReview[]
+    facilitiesHotel HotelFacilities?
+
+    // new
+    bookings     HotelBooking[]
+    extras       HotelExtra[]
+    mealOptions  HotelMealOption[]
+    favorites    HotelFavorite[]
+    nearbyPlaces HotelNearbyPlace[]
+    areaGuides   HotelAreaGuide[]
+
+    status HotelStatus @default(DRAFT)
+
+    name           String
+    slug           String   @unique
+    aliases        String[] @default([])
+    keywords       String[] @default([])
+    tags           String[] @default([])
+    searchText     String?
+    featured       Boolean  @default(false)
+    searchable     Boolean  @default(true)
+    searchPriority Int      @default(0)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}

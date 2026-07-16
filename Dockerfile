@@ -21,7 +21,7 @@ COPY --from=builder /app/dist ./dist
 
 # Thay vì copy cả folder, hãy copy từng file quan trọng
 COPY --from=builder /app/prisma/schema.prisma ./prisma/schema.prisma
-COPY --from=builder /app/prisma/config.ts ./prisma/config.ts
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 
 # Thay đổi dòng cuối trong Dockerfile của NestJS:
 CMD ["sh", "-c", "if [ \"$NODE_ENV\" = \"development\" ]; then npm run start:dev; else node -r tsconfig-paths/register dist/src/main.js; fi"]

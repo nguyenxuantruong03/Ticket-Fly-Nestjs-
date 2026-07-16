@@ -1,0 +1,146 @@
+enum BusBookingStatus {
+    pending
+    confirmed
+    cancelled
+    completed
+    rejected
+    no_show
+}
+
+enum PassengerDocumentType {
+    passport
+
+    national_id
+
+    driving_license
+
+    other
+}
+
+enum BusPaymentStatus {
+    unpaid
+    pending
+    paid
+    refunded
+    partially_refunded
+}
+
+enum BusImageCategory {
+    cover
+    exterior
+    interior
+    seat
+    sleeper
+    cabin
+    amenity
+    luggage
+    route
+    other
+}
+
+enum BusLuggageUnit {
+    kg
+    piece
+}
+
+enum BusTicketChangeType {
+    not_allowed
+    allowed_with_fee
+    free
+}
+
+enum BusRefundType {
+    not_refundable
+    partial
+    full
+}
+
+enum BusPriceRuleType {
+    discount
+    promotion
+    coupon
+    seasonal
+    holiday
+}
+
+enum BusSeatType {
+    seat
+    sleeper
+    limousine
+    vip
+    cabin
+}
+
+enum BusVehicleType {
+    seater
+    sleeper
+    limousine
+    vip
+    cabin
+    minibus
+    shuttle
+}
+
+enum BusVehicleStatus {
+    active
+    inactive
+}
+
+enum BusFuelType {
+    diesel
+    gasoline
+    electric
+    hybrid
+}
+
+enum BusVehicleImageCategory {
+    exterior
+    interior
+    seat
+    cabin
+    driver
+    luggage
+    amenity
+    other
+}
+
+enum BusSeatAvailabilityStatus {
+    available
+    locked
+    booked
+    blocked
+    maintenance
+}
+
+enum BusBoardingStatus {
+    not_checked_in
+    checked_in
+    waiting_boarding
+    boarded
+    missed
+    cancelled
+}
+
+enum BusTripStatus {
+    active
+    sold_out
+    cancelled
+    completed
+}
+
+enum BoardingPassStatus {
+    issued // Đã phát boarding pass
+    checked_in // Đã check-in tại quầy/app
+    boarded // Đã lên xe
+    expired // Hết hiệu lực (xe đã chạy hoặc quá giờ)
+    cancelled // Boarding pass bị hủy
+}
+
+enum BusTicketStatus {
+    pending // Chờ phát hành (chưa thanh toán hoặc đang xử lý)
+    issued // Đã phát hành
+    used // Đã sử dụng (đã lên xe)
+    cancelled // Vé bị hủy
+    refunded // Vé đã hoàn tiền
+    expired // Vé hết hiệu lực
+}

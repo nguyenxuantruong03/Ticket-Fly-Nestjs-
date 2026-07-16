@@ -1,0 +1,22 @@
+model CarRentalImage {
+    id String @id @default(cuid())
+
+    rentalId String
+    rental   CarRental @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+
+    url String
+
+    category CarRentalImageCategory
+
+    alt String?
+
+    isPrimary Boolean @default(false)
+
+    sortOrder Int @default(0)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([rentalId])
+    @@index([category])
+}

@@ -1,0 +1,331 @@
+enum FlyImageCategory {
+    cover
+
+    aircraft
+
+    cabin
+
+    business
+
+    economy
+
+    first_class
+
+    crew
+
+    lounge
+
+    meal
+
+    baggage
+
+    seat
+
+    logo
+
+    other
+}
+
+enum FlyAirlineImageCategory {
+    logo
+
+    banner
+
+    aircraft
+
+    lounge
+
+    office
+
+    other
+}
+
+enum FlyTripStatus {
+    scheduled
+
+    boarding
+
+    departed
+
+    delayed
+
+    landed
+
+    cancelled
+}
+
+enum FlyRouteType {
+    domestic
+
+    international
+}
+
+enum FlyCabinClass {
+    economy
+
+    premium_economy
+
+    business
+
+    first
+}
+
+enum FlyAircraftImageCategory {
+    exterior
+
+    cabin
+
+    cockpit
+
+    economy
+
+    premium_economy
+
+    business
+
+    first
+
+    seat
+
+    galley
+
+    lavatory
+
+    other
+}
+
+enum FlySeatType {
+    standard
+
+    preferred
+
+    extra_legroom
+
+    emergency_exit
+
+    bassinet
+
+    premium
+
+    business
+
+    first
+}
+
+enum FlyFareRuleType {
+    refundable
+
+    cancellation
+
+    change
+
+    no_show
+
+    baggage
+
+    meal
+
+    seat
+
+    lounge
+
+    upgrade
+}
+
+enum FlyPriceRuleType {
+    discount
+
+    coupon
+
+    promotion
+
+    holiday
+
+    seasonal
+
+    member
+}
+
+enum FlyRefundType {
+    none
+    partial
+    full
+}
+
+enum FlyBookingStatus {
+    pending
+
+    waiting_payment
+
+    confirmed
+
+    ticketed
+
+    checked_in
+
+    boarded
+
+    completed
+
+    cancelled
+
+    refunded
+}
+
+enum PassengerType {
+    adult
+
+    child
+
+    infant
+}
+
+enum PassengerTitle {
+    mr
+
+    ms
+
+    mrs
+
+    miss
+
+    master
+}
+
+enum FlyMealType {
+    standard
+
+    vegetarian
+
+    vegan
+
+    halal
+
+    kosher
+
+    gluten_free
+
+    diabetic
+
+    child
+
+    seafood
+
+    premium
+}
+
+enum FlyAddonType {
+    seat
+
+    baggage
+
+    meal
+
+    insurance
+
+    lounge
+
+    wifi
+
+    fast_track
+
+    priority_boarding
+
+    airport_transfer
+
+    airport_hotel
+
+    sim
+
+    esim
+
+    carbon_offset
+
+    pet
+
+    sports_equipment
+
+    musical_instrument
+
+    wheelchair
+
+    assistance
+
+    other
+}
+
+enum FlyOperationStatus {
+    scheduled
+
+    check_in
+
+    boarding
+
+    gate_closed
+
+    departed
+
+    delayed
+
+    diverted
+
+    landed
+
+    cancelled
+}
+
+enum FlyTimelineType {
+    scheduled
+
+    check_in_open
+
+    boarding
+
+    final_call
+
+    gate_closed
+
+    departed
+
+    arrived
+}
+
+enum FlyDelayReason {
+    weather
+
+    technical
+
+    airport
+
+    crew
+
+    security
+
+    air_traffic
+
+    operational
+
+    other
+}
+
+enum FlyCrewRole {
+    captain
+
+    first_officer
+
+    cabin_manager
+
+    cabin_crew
+}
+
+enum FlyCrewDuty {
+    flight
+
+    standby
+
+    training
+
+    leave
+
+    office
+}

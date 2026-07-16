@@ -6,6 +6,9 @@ export class ValidateTurnstileService {
     'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
   async validateToken(token: string, remoteIp?: string): Promise<void> {
+    if (process.env.NODE_ENV === 'development' && token === 'test-token') {
+      return;
+    }
     const secret = process.env.TURNSTILE_SECRET_KEY!;
 
     const params = new URLSearchParams();

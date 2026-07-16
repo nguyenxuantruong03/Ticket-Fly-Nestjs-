@@ -1,0 +1,145 @@
+model CarRentalVehicle {
+    id String @id @default(cuid())
+
+    rentalId           String
+    rental             CarRental                      @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+    bookings           CarRentalBooking[]
+    price              CarRentalPrice[]
+    active             Boolean                        @default(false)
+    type               RentalVehicleType
+    status             RentalVehicleStatus?
+    brand              String?
+    model              String?
+    year               Int?
+    color              String?
+    licensePlate       String?
+    transmission       RentalTransmission?
+    fuelType           RentalFuelType?
+    fuelCapacityLiters Float?
+    mileageKm          Float?
+    mileageLimitPerDay Float?
+    unlimitedMileage   Boolean?
+    capacity           CarRentalVehicleCapacity?
+    features           CarRentalVehicleFeatures?
+    specification      CarRentalVehicleSpecification?
+    locationCurrent    CarRentalVehicleLocation?
+
+    carLocks CarRentalInventoryLock[]
+
+    images      CarRentalVehicleImage[]
+    maintenance CarRentalVehicleMaintenance[]
+    document    CarRentalVehicleDocument[]
+    calendar    CarRentalAvailabilityCalendar[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model CarRentalVehicleSpecification {
+    id String @id @default(cuid())
+
+    vehicleId String           @unique
+    vehicle   CarRentalVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    vin                String?
+    engineSizeCc       Int?
+    horsePower         Int?
+    batteryCapacityKwh Float?
+    rangeKm            Float?
+    condition          RentalVehicleCondition?
+    previousOwners     Int?
+}
+
+model CarRentalVehicleDocument {
+    id        String           @id @default(cuid())
+    vehicleId String
+    vehicle   CarRentalVehicle @relation(fields: [vehicleId], references: [id])
+
+    type       RentalVehicleDocumentType
+    url        String
+    expiryDate DateTime?
+
+    @@index([vehicleId])
+}
+
+model CarRentalVehicleMaintenance {
+    id String @id @default(cuid())
+
+    vehicleId String
+    vehicle CarRentalVehicle @relation(fields: [vehicleId], references: [id])
+
+    type String?
+    description String?
+    mileageKm Float?
+    serviceDate DateTime?
+    cost Float?
+
+    @@index([vehicleId])
+}
+
+model CarRentalVehicleLocation {
+    id String @id @default(cuid())
+
+    vehicleId String           @unique
+    vehicle   CarRentalVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    address String?
+    lat     Float?
+    lng     Float?
+}
+
+model CarRentalVehicleImage {
+    id String @id @default(cuid())
+
+    vehicleId String
+    vehicle   CarRentalVehicle @relation(fields: [vehicleId], references: [id])
+
+    url String
+
+    category RentalVehicleImageCategory
+    position RentalVehicleImagePosition?
+
+    alt       String?
+    isPrimary Boolean @default(false)
+    sortOrder Int     @default(0)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model CarRentalVehicleCapacity {
+    id           String           @id @default(cuid())
+    vehicleId    String           @unique
+    vehicle      CarRentalVehicle @relation(fields: [vehicleId], references: [id])
+    seatCount    Int?
+    luggageCount Int?
+    doorCount    Int?
+}
+
+model CarRentalVehicleFeatures {
+    id String @id @default(cuid())
+
+    vehicleId String @unique
+
+    vehicle            CarRentalVehicle @relation(fields: [vehicleId], references: [id])
+    airConditioner     Boolean?
+    bluetooth          Boolean?
+    gps                Boolean?
+    usbCharger         Boolean?
+    wirelessCharging   Boolean?
+    appleCarPlay       Boolean?
+    androidAuto        Boolean?
+    cruiseControl      Boolean?
+    reverseCamera      Boolean?
+    parkingSensor      Boolean?
+    dashCamera         Boolean?
+    sunroof            Boolean?
+    leatherSeats       Boolean?
+    heatedSeats        Boolean?
+    childSeatAvailable Boolean?
+    phoneHolder        Boolean?
+    helmetIncluded     Boolean?
+    raincoatIncluded   Boolean?
+    luggageRack        Boolean?
+    skiRack            Boolean?
+}

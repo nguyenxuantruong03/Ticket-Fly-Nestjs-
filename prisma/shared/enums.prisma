@@ -1,0 +1,23 @@
+enum Role {
+    ADMIN
+    EDITOR
+    USER
+}
+
+enum Currency {
+    VND
+    USD
+}
+
+enum ReviewStatus {
+    pending
+    approved
+    rejected
+    hidden
+}
+
+enum Gender {
+    Female
+    Male
+    Other
+}

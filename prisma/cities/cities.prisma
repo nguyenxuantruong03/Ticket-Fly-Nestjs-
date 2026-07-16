@@ -1,0 +1,124 @@
+// ======================================================
+// CITY
+// ======================================================
+
+model City {
+    id String @id @default(cuid())
+    // =========================
+    // BASIC
+    // =========================
+
+    name             String
+    nativeName       String?
+    slug             String  @unique
+    code             String? @unique
+    iataCode         String? @unique
+    subtitle         String?
+    shortDescription String?
+    description      String?
+
+    // =========================
+    // COUNTRY
+    // =========================
+
+    countryId          String
+    country            Country @relation(fields: [countryId], references: [id], onDelete: Restrict)
+    administrativeArea String?
+    region             String?
+    isCapital          Boolean @default(false)
+
+    // =========================
+    // LOCATION
+    // =========================
+
+    latitude  Float?
+    longitude Float?
+    elevation Float?
+    timezone  String?
+    utcOffset String?
+
+    // =========================
+    // SEARCH
+    // =========================
+
+    priority        Int      @default(0)
+    displayOrder    Int      @default(0)
+    popularityScore Float    @default(0)
+    featured        Boolean  @default(false)
+    popular         Boolean  @default(false)
+    searchable      Boolean  @default(true)
+    aliases         String[]
+    keywords        String[]
+    tags            String[]
+
+    // =========================
+    // MEDIA
+    // =========================
+
+    thumbnail   String?
+    coverImage  String?
+    bannerImage String?
+    images      String[]
+    video       String?
+
+    // =========================
+    // TRAVEL
+    // =========================
+
+    bestMonths  String[]
+    rainyMonths String[]
+
+    // =========================
+    // SEO
+    // =========================
+
+    seoTitle       String?
+    seoDescription String?
+    seoKeywords    String[]
+
+    // =========================
+    // STATUS
+    // =========================
+
+    verified Boolean    @default(false)
+    status   CityStatus @default(ACTIVE)
+
+    // =========================
+    // RELATIONS
+    // =========================
+
+    addresses Address[]
+
+    // Future
+    // tours Tour[]
+    // activities Activity[]
+    // restaurants Restaurant[]
+
+    // =========================
+    // TIMESTAMP
+    // =========================
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+// ======================================================
+// ENUMS
+// ======================================================
+
+enum CityStatus {
+    ACTIVE
+    HIDDEN
+    COMING_SOON
+    DISABLED
+}
+
+enum Continent {
+    AFRICA
+    ANTARCTICA
+    ASIA
+    EUROPE
+    NORTH_AMERICA
+    SOUTH_AMERICA
+    OCEANIA
+}

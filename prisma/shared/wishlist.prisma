@@ -1,0 +1,32 @@
+model Wishlist {
+    id String @id @default(cuid())
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    name      String
+    items     WishlistItem[]
+    createdAt DateTime       @default(now())
+}
+
+model WishlistItem {
+    id String @id @default(cuid())
+
+    itemType WishlistItemType
+
+    wishlistId String
+    wishlist   Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+
+    @@index([wishlistId])
+}
+
+enum WishlistItemType {
+   HOTEL_BOOKING
+    BUS_BOOKING
+    CAR_RENTAL_BOOKING
+    TRANSFER_BOOKING
+    FLIGHT_BOOKING
+    YACHT_BOOKING
+}

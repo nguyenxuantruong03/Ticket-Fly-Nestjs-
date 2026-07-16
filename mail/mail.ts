@@ -8,4 +8,5 @@ if (!apiKey) {
 }
 
 export const resend = new Resend(apiKey);
-export const domain = process.env.NEST_PUBLIC_FRONT_END;
+export const domain =
+  process.env.NEST_PUBLIC_FRONT_END || process.env.NEST_PUBLIC_FRONT_END_MANAGE;

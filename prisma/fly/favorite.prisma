@@ -1,0 +1,14 @@
+model FlyFavorite {
+    id String @id @default(cuid())
+
+    flyId String
+    fly Fly @relation(fields: [flyId], references: [id], onDelete: Cascade)
+
+    userId String
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+
+    @@unique([flyId, userId])
+    @@index([userId])
+}

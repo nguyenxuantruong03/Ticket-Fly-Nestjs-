@@ -1,0 +1,12 @@
+model HotelImage {
+    id String @id @default(cuid())
+
+    hotelId String
+    hotel   Hotel  @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+    url       String
+    category  HotelImageCategory
+    sortOrder Int
+    isPrimary Boolean            @default(false)
+    createdAt DateTime           @default(now())
+}

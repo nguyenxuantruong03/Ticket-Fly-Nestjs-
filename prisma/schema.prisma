@@ -1,86 +1,9486 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// =====================================
+// AUTO GENERATED
+// DO NOT EDIT
+// =====================================
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+model AirportTransfer {
+    id String @id @default(cuid())
 
-generator client {
-  provider = "prisma-client-js"
+    providerBookingId String
+    providerBooking   ProviderBooking @relation(fields: [providerBookingId], references: [id])
+
+    availability         AirportTransferAvailability?
+    capacity             AirportTransferCapacity?
+    routes               AirportTransferRoute[]
+    trips                AirportTransferTrip[]
+    vehicle              AirportTransferVehicle[]
+    bookings             AirportTransferBooking[]
+    // policy
+    flightSupport        AirportTransferFlightSupport?
+    meetAndGreet         AirportTransferMeetAndGreet?
+    waitingPolicy        AirportTransferWaitingPolicy?
+    luggagePolicy        AirportTransferLuggagePolicy?
+    passengerRequirement AirportTransferPassengerRequirement?
+    contactInformation   AirportTransferContactInformation?
+    specialRequest       AirportTransferSpecialRequest?
+    price                AirportTransferPrice?
+    notice               AirportTransferNotice?
+    reviews              AirportTransferReview[]
+    ratingSummary        AirportTransferRatingSummary?
+    favorites            AirportTransferFavorite[]
+    schedules            AirportTransferSchedule[]
+    active               Boolean                              @default(true)
+    serviceType          AirportTransferServiceType
+    instantConfirmation  Boolean                              @default(true)
+    // Search metadata
+    name                 String
+    slug                 String                               @unique
+    aliases              String[]
+    keywords             String[]
+    tags                 String[]
+    searchText           String?
+    featured             Boolean                              @default(false)
+    searchable           Boolean                              @default(true)
+    searchPriority       Int                                  @default(0)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
-datasource db {
-  provider = "postgresql"
+model AirportTransferBooking {
+    id String @id @default(cuid())
+
+    transferId String
+    transfer   AirportTransfer @relation(fields: [transferId], references: [id])
+
+    tripId String?
+
+    trip AirportTransferTrip? @relation(fields: [tripId], references: [id])
+
+    vehicleId String?
+
+    vehicle AirportTransferVehicle? @relation(fields: [vehicleId], references: [id])
+
+    userId String
+
+    user User @relation(fields: [userId], references: [id])
+
+    status AirportTransferBookingStatus
+
+    pickupTime DateTime
+
+    totalAmount Float
+
+    currency Currency
+
+    paymentStatus PaymentStatus
+
+    passengers AirportTransferBookingPassenger[]
+
+    contact AirportTransferBookingContact?
+
+    flight AirportTransferBookingFlight?
+
+    extras AirportTransferBookingExtra[]
+
+    timeline AirportTransferBookingTimeline[]
+
+    histories AirportTransferBookingStatusHistory[]
+    locks     AirportTransferInventoryLock[]
+    reviews   AirportTransferReview[]
+    createdAt DateTime                              @default(now())
+
+    updatedAt DateTime @updatedAt
 }
 
-model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  emailVerified DateTime?
-  reSendemail   Int       @default(0)
+model AirportTransferBookingPassenger {
+    id String @id @default(cuid())
 
-  name  String
-  image String?
+    bookingId String
 
-  banUntil DateTime?
+    booking AirportTransferBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
-  password              String
-  hashedRefreshToken    String?
-  isTwoFactorEnabled    Boolean                @default(false)
-  twoFactorConfirmation TwoFactorConfirmation?
-  role                  Role                   @default(USER)
-  account               Account?
+    firstName String
+
+    lastName String
+
+    phone String?
+
+    email String?
+
+    adult Boolean
+
+    luggage Int?
+}
+
+model AirportTransferBookingContact {
+    id String @id @default(cuid())
+
+    bookingId String @unique
+
+    booking AirportTransferBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    fullName String
+
+    phone String
+
+    email String
+
+    emergencyPhone String?
+}
+
+model AirportTransferBookingFlight {
+    id String @id @default(cuid())
+
+    bookingId String @unique
+
+    booking AirportTransferBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    airline String?
+
+    flightNumber String?
+
+    terminal String?
+
+    expectedArrival DateTime?
+
+    actualArrival DateTime?
+}
+
+model AirportTransferBookingExtra {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking AirportTransferBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    name String
+
+    quantity Int
+
+    amount Float
+}
+
+model AirportTransferBookingTimeline {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking AirportTransferBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    title String
+
+    description String?
+
+    eventTime DateTime
+}
+
+model AirportTransferBookingStatusHistory {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking AirportTransferBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    fromStatus AirportTransferBookingStatus?
+
+    toStatus AirportTransferBookingStatus
+
+    note String?
+
+    createdAt DateTime @default(now())
+}
+
+enum AirportTransferServiceType {
+    private
+    shared
+    shuttle
+    luxury
+    limousine
+}
+
+enum AirportTransferTripStatus {
+    scheduled
+    active
+    full
+    cancelled
+    completed
+}
+
+enum AirportTransferRouteType {
+    airport_to_city
+    city_to_airport
+    airport_to_airport
+    hotel_to_airport
+    airport_to_hotel
+    custom
+}
+
+enum AirportTransferVehicleType {
+    sedan
+    suv
+    mpv
+    van
+    minibus
+    bus
+    limousine
+    luxury
+}
+
+enum AirportTransferTransmission {
+    automatic
+    manual
+}
+
+enum AirportTransferFuelType {
+    gasoline
+    diesel
+    hybrid
+    electric
+}
+
+enum AirportTransferVehicleStatus {
+    available
+    reserved
+    maintenance
+    inactive
+}
+
+enum AirportTransferDriverLanguage {
+    english
+    vietnamese
+    chinese
+    japanese
+    korean
+    thai
+    french
+    german
+}
+
+enum AirportTransferVehicleImageCategory {
+    exterior
+    interior
+    seat
+    luggage
+    driver
+    other
+}
+
+enum AirportTransferPriceRuleType {
+    weekend
+    holiday
+    peak_hour
+    night
+    promotion
+    coupon
+    seasonal
+    member
+    custom
+}
+
+enum AirportTransferAdjustmentType {
+    fixed
+    percentage
+}
+
+enum AirportTransferExtraFeeType {
+    airport
+    parking
+    toll
+    waiting
+    child_seat
+    oversized_luggage
+    extra_stop
+    meet_and_greet
+    midnight
+    holiday
+    other
+}
+
+
+enum AirportTransferBookingStatus {
+
+    pending
+
+    confirmed
+
+    assigned
+
+    driver_arriving
+
+    passenger_picked_up
+
+    completed
+
+    cancelled
+
+    no_show
+
+}
+
+model AirportTransferFavorite {
+    id String @id @default(cuid())
+
+    transferId String
+
+    transfer AirportTransfer  @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    userId String
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+
+    @@unique([transferId, userId])
+}
+
+model AirportTransferFlightSupport {
+    id String @id @default(cuid())
+
+    transferId String @unique
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    flightNumberRequired Boolean @default(true)
+
+    airlineRequired Boolean @default(true)
+
+    terminalSupported Boolean @default(true)
+
+    arrivalFlightOnly Boolean?
+
+    departureFlightOnly Boolean?
+
+    flightTracking Boolean @default(true)
+
+    delayMonitoring Boolean @default(true)
+
+    createdAt DateTime @default(now())
+}
+
+model AirportTransferMeetAndGreet {
+    id String @id @default(cuid())
+
+    transferId String @unique
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    available Boolean @default(true)
+
+    included Boolean @default(false)
+
+    additionalFee Float?
+
+    nameBoard Boolean @default(true)
+
+    airportRepresentative Boolean?
+
+    multilingualSupport Boolean?
+
+    createdAt DateTime @default(now())
+}
+
+model AirportTransferWaitingPolicy {
+    id String @id @default(cuid())
+
+    transferId String @unique
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    freeWaitingMinutes Int?
+
+    airportFreeWaitingMinutes Int?
+
+    waitingFeePerHour Float?
+
+    maximumWaitingMinutes Int?
+
+    createdAt DateTime @default(now())
+}
+
+model AirportTransferLuggagePolicy {
+    id String @id @default(cuid())
+
+    transferId String @unique
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    checkedBaggage Int?
+
+    cabinBaggage Int?
+
+    oversizedAllowed Boolean?
+
+    oversizedFee Float?
+
+    sportsEquipmentAllowed Boolean?
+
+    strollerAllowed Boolean?
+
+    wheelchairAllowed Boolean?
+
+    createdAt DateTime @default(now())
+}
+
+model AirportTransferPassengerRequirement {
+    id String @id @default(cuid())
+
+    transferId String @unique
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    passportRequired Boolean?
+
+    phoneRequired Boolean @default(true)
+
+    emailRequired Boolean @default(true)
+
+    minimumPassenger Int?
+
+    maximumPassenger Int?
+
+    createdAt DateTime @default(now())
+}
+
+model AirportTransferContactInformation {
+    id String @id @default(cuid())
+
+    transferId String @unique
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+    
+    hotline String?
+    whatsapp String?
+    telegram String?
+    emergencyPhone String?
+    supportEmail String?
+    createdAt DateTime @default(now())
+}
+
+model AirportTransferSpecialRequest {
+    id String @id @default(cuid())
+
+    transferId String @unique
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    childSeat Boolean?
+
+    babySeat Boolean?
+
+    boosterSeat Boolean?
+
+    wheelchair Boolean?
+
+    petTransport Boolean?
+
+    bicycle Boolean?
+
+    skiEquipment Boolean?
+
+    golfBag Boolean?
+
+    additionalStop Boolean?
+
+    noteSupported Boolean @default(true)
+
+    createdAt DateTime @default(now())
+}
+
+model AirportTransferNotice {
+    id String @id @default(cuid())
+
+    transferId String @unique
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    title String
+
+    description String?
+
+    color String?
+
+    icon String?
+
+    priority Int @default(0)
+
+    active Boolean @default(true)
+}
+
+model AirportTransferPrice {
+    id String @id @default(cuid())
+
+    transferId String @unique
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    currency Currency
+
+    fromPrice Float
+
+    toPrice Float?
+
+    originalFromPrice Float?
+
+    originalToPrice Float?
+
+    routePrices AirportTransferRoutePrice[]
+
+    tripPrices AirportTransferTripPrice[]
+
+    rules AirportTransferPriceRule[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+
+model AirportTransferRoutePrice {
+
+    id String @id @default(cuid())
+
+    priceId String
+    price AirportTransferPrice   @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    routeId String
+    route AirportTransferRoute    @relation(fields: [routeId], references: [id], onDelete: Cascade)
+    
+    vehicleType AirportTransferVehicleType
+
+    basePrice Float
+
+    originalPrice Float?
+
+    breakdown AirportTransferPriceBreakdown?
+
+    @@unique([routeId, vehicleType])
+
+}
+
+model AirportTransferTripPrice {
+
+    id String @id @default(cuid())
+
+    priceId String
+    price AirportTransferPrice    @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    tripId String @unique
+    trip AirportTransferTrip  @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    finalPrice Float
+    originalPrice Float?
+
+}
+
+model AirportTransferPriceBreakdown {
+
+    id String @id @default(cuid())
+
+    routePriceId String @unique
+
+    routePrice AirportTransferRoutePrice    @relation(fields: [routePriceId], references: [id], onDelete: Cascade)
+
+    baseFare Float
+
+    airportFee Float @default(0)
+
+    parkingFee Float @default(0)
+
+    tollFee Float @default(0)
+
+    serviceFee Float @default(0)
+
+    taxes Float @default(0)
+
+    discount Float @default(0)
+
+    totalPrice Float
+
+    includedItems String[] @default([])
+
+    extraFees AirportTransferExtraFee[]
+
+}
+
+model AirportTransferExtraFee {
+
+    id String @id @default(cuid())
+
+    breakdownId String
+
+    breakdown AirportTransferPriceBreakdown   @relation(fields: [breakdownId], references: [id], onDelete: Cascade)
+
+    type AirportTransferExtraFeeType
+
+    name String
+
+    amount Float
+
+    required Boolean @default(false)
+
+}
+
+model AirportTransferPriceRule {
+
+    id String @id @default(cuid())
+
+    priceId String
+
+    price AirportTransferPrice     @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    name String
+
+    type AirportTransferPriceRuleType
+
+    adjustmentType AirportTransferAdjustmentType
+
+    value Float
+
+    minimumSpend Float?
+
+    maximumDiscount Float?
+
+    couponCode String?
+
+    validFrom DateTime?
+
+    validTo DateTime?
+
+    priority Int @default(0)
+
+    combinable Boolean @default(false)
+
+    active Boolean @default(true)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+}
+
+model AirportTransferReview {
+    id String @id @default(cuid())
+
+    transferId String
+    transfer   AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    bookingId String?
+    booking   AirportTransferBooking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+    userId String?
+    user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+    overallRating Float
+
+    driverRating Float?
+
+    vehicleRating Float?
+
+    punctuality Float?
+
+    cleanliness Float?
+
+    communication Float?
+
+    pickupExperience Float?
+
+    valueForMoney Float?
+
+    safety Float?
+
+    comfort Float?
+
+    title String?
+
+    comment String
+
+    pros String?
+
+    cons String?
+
+    recommend Boolean?
+
+    verified Boolean @default(false)
+
+    status ReviewStatus @default(pending)
+
+    travelDate DateTime?
+
+    helpfulCount Int @default(0)
+
+    response String?
+
+    responseAt DateTime?
+
+    images AirportTransferReviewImage[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@unique([bookingId])
+    @@index([transferId])
+    @@index([overallRating])
+    @@index([verified])
+    @@index([status])
+}
+
+model AirportTransferReviewImage {
+    id String @id @default(cuid())
+
+    reviewId String
+
+    review AirportTransferReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+    url String
+
+    createdAt DateTime @default(now())
+}
+
+model AirportTransferRatingSummary {
+    id String @id @default(cuid())
+
+    transferId String @unique
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    averageRating Float @default(0)
+
+    totalReviews Int @default(0)
+
+    driverRating Float @default(0)
+
+    vehicleRating Float @default(0)
+
+    punctuality Float @default(0)
+
+    cleanliness Float @default(0)
+
+    communication Float @default(0)
+
+    pickupExperience Float @default(0)
+
+    valueForMoney Float @default(0)
+
+    safety Float @default(0)
+
+    comfort Float @default(0)
+
+    fiveStar Int @default(0)
+
+    fourStar Int @default(0)
+
+    threeStar Int @default(0)
+
+    twoStar Int @default(0)
+
+    oneStar Int @default(0)
+
+    updatedAt DateTime @updatedAt
+}
+
+model AirportTransferRoute {
+    id String @id @default(cuid())
+
+    transferId String
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    type               AirportTransferRouteType
+    prices             AirportTransferRoutePrice[]
+    departureAddressId String
+
+    departureAddress Address @relation("AirportTransferDepartureAddress", fields: [departureAddressId], references: [id])
+
+    arrivalAddressId String
+
+    arrivalAddress Address @relation("AirportTransferArrivalAddress", fields: [arrivalAddressId], references: [id])
+
+    distanceKm Float?
+
+    estimatedDuration Int?
+
+    trips AirportTransferTrip[]
+
+    stops AirportTransferRouteStop[]
+
+    active Boolean @default(true)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([transferId])
+    @@index([type])
+}
+
+model AirportTransferRouteStop {
+    id String @id @default(cuid())
+
+    routeId String
+
+    route AirportTransferRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
+
+    addressId String
+
+    address Address @relation(fields: [addressId], references: [id])
+
+    stopOrder Int
+
+    estimatedArrival Int?
+
+    waitingMinutes Int?
+
+    createdAt DateTime @default(now())
+
+    @@unique([routeId, stopOrder])
+    @@index([routeId])
+}
+
+model AirportTransferSchedule {
+    id String @id @default(cuid())
+
+    transferId String
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    departureTime String
+
+    operatingDays Weekday[]
+
+    startDate DateTime
+
+    endDate DateTime?
+
+    active Boolean @default(true)
+
+    trips AirportTransferTrip[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model AirportTransferTrip {
+    id String @id @default(cuid())
+
+    transferId String
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    routeId String
+
+    route AirportTransferRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
+
+    scheduleId String?
+
+    schedule      AirportTransferSchedule? @relation(fields: [scheduleId], references: [id])
+    bookings      AirportTransferBooking[]
+    departureTime DateTime
+
+    estimatedArrivalTime DateTime
+
+    totalSeats Int
+
+    availableSeats    Int
+    price             AirportTransferTripPrice?
+    status            AirportTransferTripStatus          @default(scheduled)
+    locks             AirportTransferInventoryLock[]
+    vehicleAssignment AirportTransferVehicleAssignment[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([routeId])
+    @@index([departureTime])
+    @@index([status])
+}
+
+model AirportTransferAvailabilityCalendar {
+    id String @id @default(cuid())
+
+    availabilityId String
+
+    availability AirportTransferAvailability @relation(fields: [availabilityId], references: [id], onDelete: Cascade)
+
+    date DateTime
+
+    available Boolean
+
+    totalVehicles Int
+
+    remainingVehicles Int
+
+    stopSell Boolean @default(false)
+
+    minimumNoticeMinutes Int?
+
+    createdAt DateTime @default(now())
+
+    @@unique([availabilityId, date])
+    @@index([date])
+}
+
+model AirportTransferInventoryLock {
+    id String @id @default(cuid())
+
+    availabilityId String
+    availability   AirportTransferAvailability @relation(fields: [availabilityId], references: [id], onDelete: Cascade)
+
+    tripId String?
+    trip   AirportTransferTrip? @relation(fields: [tripId], references: [id])
+
+    vehicleId String?
+    vehicle   AirportTransferVehicle? @relation(fields: [vehicleId], references: [id])
+
+    bookingId String?
+    booking   AirportTransferBooking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    startTime  DateTime
+    releasedAt DateTime?
+    status     InventoryLockStatus @default(locked)
+    endTime    DateTime
+    quantity   Int
+    expiresAt  DateTime
+
+    createdAt DateTime @default(now())
+
+    @@index([expiresAt])
+}
+
+model AirportTransferBlackoutDate {
+    id String @id @default(cuid())
+
+    availabilityId String
+
+    availability AirportTransferAvailability @relation(fields: [availabilityId], references: [id], onDelete: Cascade)
+
+    date DateTime
+
+    reason String?
+
+    createdAt DateTime @default(now())
+
+    @@index([date])
+}
+
+model AirportTransferVehicleAssignment {
+    id String @id @default(cuid())
+
+    tripId String
+
+    trip AirportTransferTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    vehicleId String
+
+    vehicle AirportTransferVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    driverId String?
+
+    driver AirportTransferDriver? @relation(fields: [driverId], references: [id])
+
+    assignedAt DateTime @default(now())
+
+    @@unique([tripId, vehicleId])
+}
+
+model AirportTransferCapacity {
+    id String @id @default(cuid())
+
+    transferId String @unique
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    maxTripsPerDay Int?
+
+    maxVehiclesPerDay Int?
+
+    overbookingAllowed Boolean @default(false)
+}
+
+model AirportTransferAvailability {
+    id String @id @default(cuid())
+
+    transferId String @unique
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    available Boolean @default(true)
+
+    calendars AirportTransferAvailabilityCalendar[]
+
+    locks AirportTransferInventoryLock[]
+
+    blackoutDates AirportTransferBlackoutDate[]
+
+    updatedAt DateTime @updatedAt
+
+    createdAt DateTime @default(now())
+}
+
+model AirportTransferVehicle {
+    id String @id @default(cuid())
+
+    transferId String
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    type AirportTransferVehicleType
+
+    name String?
+
+    manufacturer String?
+
+    model String?
+
+    year Int?
+
+    color String?
+
+    licensePlate String?
+
+    transmission AirportTransferTransmission?
+
+    fuelType AirportTransferFuelType?
+
+    status AirportTransferVehicleStatus @default(available)
+
+    capacity AirportTransferVehicleCapacity?
+
+    features AirportTransferVehicleFeatures?
+
+    specification AirportTransferVehicleSpecification?
+
+    images AirportTransferVehicleImage[]
+
+    availability AirportTransferVehicleAvailability[]
+
+    drivers AirportTransferDriver[]
+
+    bookings    AirportTransferBooking[]
+    locks       AirportTransferInventoryLock[]
+    assignments AirportTransferVehicleAssignment[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model AirportTransferVehicleCapacity {
+    id String @id @default(cuid())
+
+    vehicleId String @unique
+
+    vehicle AirportTransferVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    passengerCount Int
+
+    luggageCount Int?
+
+    cabinBaggageCount Int?
+
+    oversizedLuggage Int?
+}
+
+model AirportTransferVehicleFeatures {
+    id String @id @default(cuid())
+
+    vehicleId String @unique
+
+    vehicle AirportTransferVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    airConditioner Boolean?
+
+    wifi Boolean?
+
+    usbCharger Boolean?
+
+    bottledWater Boolean?
+
+    childSeat Boolean?
+
+    wheelchairAccessible Boolean?
+
+    petFriendly Boolean?
+
+    phoneCharger Boolean?
+
+    music Boolean?
+
+    gpsTracking Boolean?
+}
+
+model AirportTransferVehicleSpecification {
+    id String @id @default(cuid())
+
+    vehicleId String @unique
+
+    vehicle AirportTransferVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    engineSizeCc Int?
+
+    fuelCapacity Float?
+
+    mileageKm Float?
+
+    vin String?
+}
+
+model AirportTransferVehicleImage {
+    id String @id @default(cuid())
+
+    vehicleId String
+
+    vehicle AirportTransferVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    url String
+
+    category AirportTransferVehicleImageCategory
+
+    isPrimary Boolean @default(false)
+
+    sortOrder Int @default(0)
+
+    alt String?
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([vehicleId])
+}
+
+model AirportTransferVehicleAvailability {
+    id String @id @default(cuid())
+
+    vehicleId String
+
+    vehicle AirportTransferVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    startDate DateTime
+
+    endDate DateTime
+
+    available Boolean
+
+    note String?
+
+    createdAt DateTime @default(now())
+
+    @@index([vehicleId])
+    @@index([startDate])
+    @@index([endDate])
+}
+
+model AirportTransferDriver {
+    id String @id @default(cuid())
+
+    vehicleId String
+
+    vehicle AirportTransferVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    firstName String
+
+    lastName String
+
+    avatar String?
+
+    phone String?
+
+    email String?
+
+    licenseNumber String?
+
+    licenseExpiry DateTime?
+
+    experienceYears Int?
+
+    rating Float?
+
+    totalTrips Int @default(0)
+
+    languages   AirportTransferDriverLanguage[]
+    assignments AirportTransferVehicleAssignment[]
+    active      Boolean                            @default(true)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([vehicleId])
 }
 
 model Account {
-  id                String @id @default(cuid())
-  userId            String @unique
-  type              String
-  provider          String
-  providerAccountId String
+    id                String @id @default(cuid())
+    userId            String @unique
+    type              String
+    provider          String
+    providerAccountId String
 
-  user User @relation(fields: [userId], references: [id])
+    user User @relation(fields: [userId], references: [id])
 
-  @@unique([provider, providerAccountId])
+    @@unique([provider, providerAccountId])
 }
 
 model VerificationToken {
-  id      String   @id @default(cuid())
-  email   String
-  token   String   @unique
-  expires DateTime
+    id      String   @id @default(cuid())
+    email   String
+    token   String   @unique
+    expires DateTime
 
-  @@unique([email, token])
+    @@unique([email, token])
 }
 
 model PasswordResetToken {
-  id      String   @id @default(cuid())
-  email   String
-  token   String   @unique
-  expires DateTime
+    id      String   @id @default(cuid())
+    email   String
+    token   String   @unique
+    expires DateTime
 
-  @@unique([email, token])
+    @@unique([email, token])
 }
 
 model TwoFactorToken {
-  id      String   @id @default(cuid())
-  email   String
-  token   String   @unique
-  expires DateTime
+    id      String   @id @default(cuid())
+    email   String
+    token   String   @unique
+    expires DateTime
 
-  @@unique([email, token])
+    @@unique([email, token])
+}
+
+model User {
+    id            String    @id @default(cuid())
+    email         String    @unique
+    emailVerified DateTime?
+    reSendemail   Int       @default(0)
+
+    name  String
+    image String?
+
+    banUntil DateTime?
+
+    password              String
+    hashedRefreshToken    String?
+    isTwoFactorEnabled    Boolean                @default(false)
+    twoFactorConfirmation TwoFactorConfirmation?
+    role                  Role                   @default(USER)
+    account               Account?
+
+    providers               ProviderBooking[]
+    // Hotel
+    hotelReviews            HotelReview[]
+    hotelBookings           HotelBooking[]
+    hotelFavorite           HotelFavorite[]
+    hotelUserLock           HotelInventoryLock[]
+    // carrental
+    carrentalReviews        CarRentalReview[]
+    carRentalBooking        CarRentalBooking[]
+    carRentalFavorite       CarRentalFavorite[]
+    carRentalLock           CarRentalInventoryLock[]
+    // Bus
+    busesReviews            BusReview[]
+    BusFavorite             BusFavorite[]
+    BusBooking              BusBooking[]
+    busUserLock             BusSeatInventoryLock[]
+    // transfer
+    airportTransferReviews  AirportTransferReview[]
+    airporttransferFavorite AirportTransferFavorite[]
+    airportTransferBooking  AirportTransferBooking[]
+    airportTransferLock     AirportTransferInventoryLock[]
+    // yacht 
+    yachtReviews            YachtReview[]
+    yachtFavorite           YachtFavorite[]
+    yachtBooking            YachtBooking[]
+    yachtLock               YachtInventoryLock[]
+    // fly
+    airlineRating           FlyAirlineRating[]
+    flyFavorite             FlyFavorite[]
+    flyBooking              FlyBooking[]
+    flyLock                 FlyInventoryLock[]
+    flyseatLock             FlySeatInventoryLock[]
+
+    wishlists  Wishlist[]
+    payment    Payment[]
+    promotions PromotionUsage[]
+    coupons    CouponUsage[]
 }
 
 model TwoFactorConfirmation {
-  id   String   @id @default(cuid())
+    id String @id @default(cuid())
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
 
-  @@unique([userId])
+    @@unique([userId])
+}
+
+model BusBooking {
+    id String @id @default(cuid())
+
+    busId String
+    bus   Bus    @relation(fields: [busId], references: [id])
+
+    tripId String
+    trip   BusTrip @relation(fields: [tripId], references: [id])
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
+
+    ticket         BusTicket[]
+    note           String?
+    specialRequest String?
+    status         BusBookingStatus
+    statusHistory  BusBookingStatusHistory[]
+    passengers     BusBookingPassenger[]
+    reviews        BusReview[]
+    seats          BusBookingSeat[]
+    expiresAt      DateTime?
+    priceSnapshot  BusBookingPriceSnapshot?
+    locks          BusSeatInventoryLock[]
+    paymentStatus  BusPaymentStatus          @default(unpaid)
+    createdAt      DateTime                  @default(now())
+    updatedAt      DateTime                  @updatedAt
+
+    @@index([status])
+    @@index([createdAt])
+    @@index([tripId])
+    @@index([userId])
+}
+
+model BusBookingStatusHistory {
+    id String @id @default(cuid())
+
+    bookingId String
+    booking   BusBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    status BusBookingStatus
+
+    note String?
+
+    createdAt DateTime @default(now())
+
+    @@index([bookingId])
+}
+
+model BusBookingPassenger {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking     BusBooking @relation(fields: [bookingId], references: [id])
+    nationality String?
+
+    firstName      String
+    lastName       String
+    phone          String
+    email          String
+    documentType   PassengerDocumentType
+    documentNumber String
+
+    dateOfBirth DateTime?
+
+    gender Gender?
+}
+
+model BusBookingSeat {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking BusBooking @relation(fields: [bookingId], references: [id])
+
+    seatId String
+
+    seat BusSeat @relation(fields: [seatId], references: [id])
+
+    price Float
+
+    @@unique([bookingId, seatId])
+}
+
+model BusBookingPriceSnapshot {
+    id String @id @default(cuid())
+
+    bookingId String @unique
+
+    booking BusBooking @relation(fields: [bookingId], references: [id])
+
+    subtotal Float
+
+    taxes Float
+
+    serviceFee Float
+
+    discount Float
+
+    total Float
+
+    currency Currency
+}
+
+model Bus {
+    id String @id @default(cuid())
+
+    providerBookingId String
+    providerBooking   ProviderBooking @relation(fields: [providerBookingId], references: [id])
+
+    routes    BusRoute[]
+    policies BusPolicies?
+    vehicle  BusVehicle?
+    reviews  BusReview[]
+
+    images     BusImage[]
+    favorites  BusFavorite[]
+    price      BusPrice[]
+    booking    BusBooking[]
+    active     Boolean       @default(true)
+    // Search Metadata
+    name       String
+    slug       String        @unique
+    aliases    String[]
+    keywords   String[]
+    searchText String?
+    featured   Boolean       @default(false)
+    tags       String[]
+
+    searchPriority Int @default(0)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+enum BusBookingStatus {
+    pending
+    confirmed
+    cancelled
+    completed
+    rejected
+    no_show
+}
+
+enum PassengerDocumentType {
+    passport
+
+    national_id
+
+    driving_license
+
+    other
+}
+
+enum BusPaymentStatus {
+    unpaid
+    pending
+    paid
+    refunded
+    partially_refunded
+}
+
+enum BusImageCategory {
+    cover
+    exterior
+    interior
+    seat
+    sleeper
+    cabin
+    amenity
+    luggage
+    route
+    other
+}
+
+enum BusLuggageUnit {
+    kg
+    piece
+}
+
+enum BusTicketChangeType {
+    not_allowed
+    allowed_with_fee
+    free
+}
+
+enum BusRefundType {
+    not_refundable
+    partial
+    full
+}
+
+enum BusPriceRuleType {
+    discount
+    promotion
+    coupon
+    seasonal
+    holiday
+}
+
+enum BusSeatType {
+    seat
+    sleeper
+    limousine
+    vip
+    cabin
+}
+
+enum BusVehicleType {
+    seater
+    sleeper
+    limousine
+    vip
+    cabin
+    minibus
+    shuttle
+}
+
+enum BusVehicleStatus {
+    active
+    inactive
+}
+
+enum BusFuelType {
+    diesel
+    gasoline
+    electric
+    hybrid
+}
+
+enum BusVehicleImageCategory {
+    exterior
+    interior
+    seat
+    cabin
+    driver
+    luggage
+    amenity
+    other
+}
+
+enum BusSeatAvailabilityStatus {
+    available
+    locked
+    booked
+    blocked
+    maintenance
+}
+
+enum BusBoardingStatus {
+    not_checked_in
+    checked_in
+    waiting_boarding
+    boarded
+    missed
+    cancelled
+}
+
+enum BusTripStatus {
+    active
+    sold_out
+    cancelled
+    completed
+}
+
+enum BoardingPassStatus {
+    issued // Đã phát boarding pass
+    checked_in // Đã check-in tại quầy/app
+    boarded // Đã lên xe
+    expired // Hết hiệu lực (xe đã chạy hoặc quá giờ)
+    cancelled // Boarding pass bị hủy
+}
+
+enum BusTicketStatus {
+    pending // Chờ phát hành (chưa thanh toán hoặc đang xử lý)
+    issued // Đã phát hành
+    used // Đã sử dụng (đã lên xe)
+    cancelled // Vé bị hủy
+    refunded // Vé đã hoàn tiền
+    expired // Vé hết hiệu lực
+}
+
+model BusFavorite {
+    id String @id @default(cuid())
+
+    userId String
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    busId String
+    bus Bus @relation(fields: [busId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+
+    @@unique([userId, busId])
+    @@index([userId])
+    @@index([busId])
+}
+
+model BusImage {
+    id String @id @default(cuid())
+
+    busId String
+    bus   Bus    @relation(fields: [busId], references: [id], onDelete: Cascade)
+
+    url String
+
+    category BusImageCategory
+    alt String?
+    isPrimary Boolean @default(false)
+    sortOrder Int @default(0)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([busId])
+    @@index([category])
+    @@index([sortOrder])
+}
+
+model BusPolicies {
+    id String @id @default(cuid())
+
+    busId String @unique
+    bus   Bus    @relation(fields: [busId], references: [id], onDelete: Cascade)
+
+    cancellation BusCancellationPolicy?
+    luggage      BusLuggagePolicy?
+    child        BusChildPolicy?
+    boarding     BusBoardingPolicy?
+    change       BusTicketChangePolicy?
+    passenger    BusPassengerPolicy?
+    createdAt    DateTime               @default(now())
+    updatedAt    DateTime               @updatedAt
+}
+
+model BusCancellationPolicy {
+    id String @id @default(cuid())
+
+    policiesId String      @unique
+    policies   BusPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    refundable                  Boolean       @default(false)
+    refundType                  BusRefundType
+    freeCancellation            Boolean       @default(false)
+    freeCancellationBeforeHours Int?
+    cancellationFee             Float?
+    noShowFee                   Float?
+    createdAt                   DateTime      @default(now())
+}
+
+model BusTicketChangePolicy {
+    id String @id @default(cuid())
+
+    policiesId String      @unique
+    policies   BusPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    type                       BusTicketChangeType
+    changeFee                  Float?
+    maxChanges                 Int?
+    changeBeforeDepartureHours Int?
+    createdAt                  DateTime            @default(now())
+}
+
+model BusLuggagePolicy {
+    id String @id @default(cuid())
+
+    policiesId String      @unique
+    policies   BusPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    includedLuggage     Float?
+    unit                BusLuggageUnit @default(kg)
+    extraLuggageAllowed Boolean        @default(false)
+    extraLuggageFee     Float?
+    createdAt           DateTime       @default(now())
+}
+
+model BusChildPolicy {
+    id String @id @default(cuid())
+
+    policiesId String      @unique
+    policies   BusPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    freeAgeUnder         Int?
+    childTicketAgeFrom   Int?
+    childTicketAgeTo     Int?
+    childDiscountPercent Float?
+    createdAt            DateTime @default(now())
+}
+
+model BusBoardingPolicy {
+    id String @id @default(cuid())
+
+    policiesId String      @unique
+    policies   BusPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    checkInBeforeMinutes     Int?
+    boardingGateCloseMinutes Int?
+    digitalTicketAccepted    Boolean  @default(true)
+    printedTicketRequired    Boolean  @default(false)
+    createdAt                DateTime @default(now())
+}
+
+model BusPassengerPolicy {
+    id String @id @default(cuid())
+
+    policiesId String      @unique
+    policies   BusPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    petsAllowed                Boolean  @default(false)
+    smokingAllowed             Boolean  @default(false)
+    foodAllowed                Boolean  @default(true)
+    alcoholAllowed             Boolean  @default(false)
+    wheelchairAccessible       Boolean  @default(false)
+    specialAssistanceAvailable Boolean  @default(false)
+    createdAt                  DateTime @default(now())
+}
+
+model BusPrice {
+    id String @id @default(cuid())
+
+    busId String @unique
+    bus   Bus    @relation(fields: [busId], references: [id], onDelete: Cascade)
+
+    currency  Currency
+    // Giá hiển thị ngoài danh sách
+    fromPrice Float
+
+    // Giá cao nhất (nếu muốn hiển thị khoảng giá)
+    toPrice Float?
+
+    // Giá trước giảm
+    originalFromPrice Float?
+    originalToPrice   Float?
+    breakdowns        BusPriceBreakdown[]
+    rules             BusPriceRule[]
+
+    effectiveFrom DateTime?
+    effectiveTo   DateTime?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([fromPrice])
+}
+
+model BusPriceBreakdown {
+    id String @id @default(cuid())
+
+    priceId String
+    price   BusPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    seatType BusSeatType
+
+    basePrice Float
+
+    originalPrice Float?
+
+    taxes Float @default(0)
+
+    serviceFee Float @default(0)
+
+    bookingFee Float @default(0)
+
+    discount Float @default(0)
+
+    finalPrice Float
+
+    availableSeats Int?
+
+    includedItems String[] @default([])
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([priceId])
+    @@index([seatType])
+}
+
+model BusPriceRule {
+    id String @id @default(cuid())
+
+    priceId String
+    price   BusPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    name String
+
+    type     BusPriceRuleType
+    priority Int              @default(0)
+
+    combinable Boolean @default(false)
+    percentage Float?
+
+    amount Float?
+
+    minimumSpend Float?
+
+    maximumDiscount Float?
+
+    couponCode String?
+
+    startDate DateTime?
+
+    endDate DateTime?
+
+    active Boolean @default(true)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([priceId])
+    @@index([type])
+    @@index([active])
+}
+
+model BusTripPrice {
+    id String @id @default(cuid())
+
+    tripId String @unique
+
+    trip BusTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    seatPrices BusSeatPrice[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model BusSeatPrice {
+    id String @id @default(cuid())
+
+    tripPriceId String
+
+    tripPrice BusTripPrice @relation(fields: [tripPriceId], references: [id], onDelete: Cascade)
+
+    seatType BusSeatType
+
+    price Float
+
+    originalPrice Float?
+
+    taxes Float @default(0)
+
+    serviceFee Float @default(0)
+
+    bookingFee Float @default(0)
+
+    discount Float @default(0)
+
+    finalPrice Float
+
+    availableSeats Int?
+
+    createdAt DateTime @default(now())
+
+    @@index([tripPriceId])
+    @@index([seatType])
+}
+
+model BusReview {
+    id String @id @default(cuid())
+
+    // ======================================================
+    // RELATIONS
+    // ======================================================
+
+    busId String
+    bus   Bus    @relation(fields: [busId], references: [id], onDelete: Cascade)
+
+    tripId String
+    trip   BusTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    // Nên dùng nếu hệ thống có booking
+    bookingId String?
+    booking   BusBooking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+    userId String?
+    user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+    // ======================================================
+    // RATINGS
+    // ======================================================
+    anonymous          Boolean @default(false)
+    overallRating      Float
+    cleanliness        Float?
+    comfort            Float?
+    busCondition       Float?
+    driverService      Float?
+    staffService       Float?
+    punctuality        Float?
+    boardingExperience Float?
+    bookingExperience  Float?
+    valueForMoney      Float?
+
+    // ======================================================
+    // REVIEW CONTENT
+    // ======================================================
+
+    title     String?
+    comment   String
+    pros      String?
+    cons      String?
+    recommend Boolean?
+
+    // ======================================================
+    // REVIEW INFO
+    // ======================================================
+
+    verified     Boolean      @default(false)
+    status       ReviewStatus @default(pending)
+    travelDate   DateTime?
+    helpfulCount Int          @default(0)
+    response     String?
+    responseAt   DateTime?
+
+    // ======================================================
+    // MEDIA
+    // ======================================================
+
+    images BusReviewImage[]
+
+    // ======================================================
+    // TIMESTAMP
+    // ======================================================
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@unique([bookingId])
+    @@index([busId])
+    @@index([userId])
+    @@index([overallRating])
+    @@index([verified])
+    @@index([status])
+    @@index([createdAt])
+}
+
+model BusReviewImage {
+    id        String    @id @default(cuid())
+    reviewId  String
+    review    BusReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+    url       String
+    createdAt DateTime  @default(now())
+
+    @@index([reviewId])
+}
+
+model BusRoute {
+    id String @id @default(cuid())
+
+    busId String
+    bus   Bus    @relation(fields: [busId], references: [id], onDelete: Cascade)
+
+    departureAddressId String
+    departureAddress   Address @relation("BusDepartureAddress", fields: [departureAddressId], references: [id])
+
+    arrivalAddressId String
+    arrivalAddress   Address @relation("BusArrivalAddress", fields: [arrivalAddressId], references: [id])
+
+    distanceKm Float?
+
+    estimatedDuration Int?
+
+    boardingPoints BusBoardingPoint[]
+
+    dropoffPoints BusDropoffPoint[]
+
+    trips     BusTrip[]
+    code      String?
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+
+    @@index([busId])
+}
+
+model BusTrip {
+    id    String @id @default(cuid())
+
+    routeId          String
+    route            BusRoute               @relation(fields: [routeId], references: [id], onDelete: Cascade)
+    bookings         BusBooking[]
+    seatAvailability BusSeatAvailability[]
+    stops            BusRouteStop[]
+    locks            BusSeatInventoryLock[]
+
+    departureTime DateTime
+
+    arrivalTime DateTime
+
+    status         BusTripStatus     @default(active)
+    boardingStatus BusBoardingStatus
+    price          BusTripPrice?
+    review         BusReview[]
+    createdAt      DateTime          @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([routeId])
+    @@index([departureTime])
+}
+
+model BusBoardingPoint {
+    id String @id @default(cuid())
+
+    routeId String
+    route   BusRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
+
+    addressId String
+    address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
+
+    name String?
+
+    departureTime String
+
+    order Int
+
+    createdAt DateTime @default(now())
+
+    @@unique([routeId, order])
+}
+
+model BusDropoffPoint {
+    id String @id @default(cuid())
+
+    routeId String
+    route   BusRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
+
+    addressId String
+    address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
+    name      String?
+
+    arrivalTime String?
+
+    order Int
+
+    createdAt DateTime @default(now())
+}
+
+model BusRouteStop {
+    id String @id @default(cuid())
+
+    tripId String
+
+    trip BusTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    addressId   String
+    address     Address   @relation(fields: [addressId], references: [id], onDelete: Cascade)
+    arrivalTime DateTime?
+
+    departureTime DateTime?
+
+    stopOrder Int
+
+    createdAt DateTime @default(now())
+}
+
+model BusSeatInventoryLock {
+    id String @id @default(cuid())
+
+    bookingId String?
+    booking   BusBooking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    vehicleId String
+    vehicle   BusVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    userId String?
+    user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+    tripId String
+    trip   BusTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    startTime  DateTime
+    releasedAt DateTime?
+    status     InventoryLockStatus @default(locked)
+    endTime    DateTime
+    quantity   Int
+    expiresAt  DateTime
+
+    createdAt DateTime @default(now())
+
+    @@index([expiresAt])
+}
+
+model BusSeatAvailability {
+    id String @id @default(cuid())
+
+    tripId String
+    trip   BusTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    seatId String
+    seat   BusSeat @relation(fields: [seatId], references: [id], onDelete: Cascade)
+
+    status         BusSeatAvailabilityStatus
+    availableSeats Int
+    soldSeats      Int
+    reservedSeats  Int
+
+    totalSeats   Int
+    currentPrice Float
+    currency     Currency
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@unique([tripId, seatId])
+    @@index([tripId])
+    @@index([status])
+}
+
+model BusTicket {
+    id        String     @id @default(cuid())
+    bookingId String
+    booking   BusBooking @relation(fields: [bookingId], references: [id])
+
+    ticketNumber String    @unique
+    issuedAt     DateTime?
+
+    status BusTicketStatus
+
+    seatNumber   String?
+    qrCode       String?
+    boardingPass BusBoardingPass?
+    barcode      String?
+}
+
+model BusBoardingPass {
+    id String @id @default(cuid())
+
+    ticketId String    @unique
+    ticket   BusTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+    status BoardingPassStatus @default(issued)
+
+    boardingTime DateTime?
+    scannedAt    DateTime?
+    gate         String?
+    platform     String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model BusVehicle {
+    id String @id @default(cuid())
+
+    busId String @unique
+    bus   Bus    @relation(fields: [busId], references: [id], onDelete: Cascade)
+
+    type   BusVehicleType
+    active Boolean        @default(true)
+    name   String?
+
+    manufacturer String?
+
+    model String?
+
+    year Int?
+
+    status BusVehicleStatus?
+
+    capacity BusVehicleCapacity?
+
+    features      BusVehicleFeatures?
+    seats         BusSeat[]
+    locks         BusSeatInventoryLock[]
+    specification BusVehicleSpecification?
+    seatLayout    BusSeatLayout[]
+
+    images    BusVehicleImage[]
+    seatMap   BusSeatMap?
+    createdAt DateTime          @default(now())
+    updatedAt DateTime          @updatedAt
+}
+
+model BusVehicleSpecification {
+    id String @id @default(cuid())
+
+    vehicleId String     @unique
+    vehicle   BusVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    engineType String?
+
+    transmission String?
+
+    fuelType BusFuelType?
+
+    suspension String?
+
+    airConditioning Boolean?
+
+    wifiAvailable Boolean?
+
+    toiletAvailable Boolean?
+
+    createdAt DateTime @default(now())
+}
+
+model BusVehicleCapacity {
+    id String @id @default(cuid())
+
+    vehicleId String     @unique
+    vehicle   BusVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    totalSeats Int
+
+    sleeperBeds Int?
+
+    cabinRooms Int?
+
+    luggageCapacityKg Float?
+
+    createdAt DateTime @default(now())
+}
+
+model BusVehicleFeatures {
+    id String @id @default(cuid())
+
+    vehicleId String     @unique
+    vehicle   BusVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    airConditioner Boolean?
+
+    wifi Boolean?
+
+    usbCharger Boolean?
+
+    powerOutlet Boolean?
+
+    readingLight Boolean?
+
+    blanket Boolean?
+
+    pillow Boolean?
+
+    drinkingWater Boolean?
+
+    snack Boolean?
+
+    toilet Boolean?
+
+    tv Boolean?
+
+    entertainment Boolean?
+
+    gpsTracking Boolean?
+
+    recliningSeat Boolean?
+
+    massageSeat Boolean?
+
+    wheelchairAccessible Boolean?
+
+    createdAt DateTime @default(now())
+}
+
+model BusVehicleImage {
+    id String @id @default(cuid())
+
+    vehicleId String
+    vehicle   BusVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    url String
+
+    category BusVehicleImageCategory
+
+    isPrimary Boolean @default(false)
+
+    sortOrder Int @default(0)
+
+    alt String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model BusSeat {
+    id String @id @default(cuid())
+
+    vehicleId String
+    vehicle   BusVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    seatNumber String
+
+    type BusSeatType
+
+    floor Int?
+
+    row Int?
+
+    column       Int?
+    availability BusSeatAvailability[]
+    bookingSeat  BusBookingSeat[]
+    createdAt    DateTime              @default(now())
+
+    @@unique([vehicleId, seatNumber])
+}
+
+model BusSeatLayout {
+    id String @id @default(cuid())
+
+    vehicleId String
+
+    vehicle BusVehicle @relation(fields: [vehicleId], references: [id])
+
+    name String
+
+    seatRows Int
+
+    seatColumns Int
+}
+
+model BusSeatMap {
+    id String @id @default(cuid())
+
+    vehicleId String     @unique
+    vehicle   BusVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    imageUrl String?
+
+    svgUrl String?
+
+    jsonLayout Json?
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model CarRentalBooking {
+    id String @id @default(cuid())
+
+    // =========================
+    // RELATIONS
+    // =========================
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    rentalId String
+    rental   CarRental @relation(fields: [rentalId], references: [id], onDelete: Restrict)
+
+    vehicleId String?
+    vehicle   CarRentalVehicle?        @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+    carLocks  CarRentalInventoryLock[]
+    // =========================
+    // BOOKING INFO
+    // =========================
+
+    bookingCode   String                 @unique
+    type          CarRentalBookingType
+    status        CarRentalBookingStatus @default(pending)
+    paymentStatus CarRentalPaymentStatus @default(unpaid)
+
+    // =========================
+    // RENTAL TIME
+    // =========================
+
+    pickupDate DateTime
+    returnDate DateTime
+    totalHours Int?
+    totalDays  Int?
+
+    // =========================
+    // LOCATION SNAPSHOT
+    // =========================
+
+    locations CarRentalLocation[]
+
+    // =========================
+    // SNAPSHOT VEHICLE
+    // =========================
+
+    vehicleBrand        String?
+    vehicleModel        String?
+    vehicleType         String?
+    vehicleTransmission String?
+    vehicleFuelType     String?
+    licensePlate        String?
+    year                String?
+    color               String?
+
+    // =========================
+    // DRIVER OPTION
+    // =========================
+
+    driverRequired Boolean @default(false)
+
+    // =========================
+    // PRICE
+    // =========================
+
+    price CarRentalBookingPrice?
+
+    // =========================
+    // EXTRA
+    // =========================
+
+    extras CarRentalBookingExtra[]
+
+    // =========================
+    // DRIVER
+    // =========================
+
+    driver CarRentalBookingDriver?
+
+    // =========================
+    // PASSENGER
+    // =========================
+
+    passengers CarRentalBookingPassenger[]
+
+    // =========================
+    // STATUS LOG
+    // =========================
+
+    statusHistory    CarRentalBookingStatusHistory[]
+    calendarDays     CarRentalAvailabilityCalendar[]
+    reviews          CarRentalReview[]
+    bookingInsurance CarRentalBookingInsurance[]
+    expiresAt        DateTime?
+    createdAt        DateTime                        @default(now())
+    updatedAt        DateTime                        @updatedAt
+
+    @@index([userId])
+    @@index([rentalId])
+    @@index([vehicleId])
+    @@index([status])
+    @@index([bookingCode])
+    @@index([pickupDate])
+}
+
+model CarRentalBookingPrice {
+    id String @id @default(cuid())
+
+    bookingId String @unique
+
+    booking CarRentalBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    // base
+
+    rentalPrice Float
+
+    // fee
+
+    deliveryFee Float @default(0)
+
+    pickupFee Float @default(0)
+
+    insuranceFee Float @default(0)
+
+    serviceFee Float @default(0)
+
+    tax Float @default(0)
+
+    discount Float @default(0)
+
+    couponDiscount Float @default(0)
+
+    totalPrice Float
+
+    currency Currency
+
+    createdAt DateTime @default(now())
+}
+
+model CarRentalBookingPassenger {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking CarRentalBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    firstName String
+
+    lastName String?
+
+    email String?
+
+    phone String?
+
+    createdAt DateTime @default(now())
+
+    @@index([bookingId])
+}
+
+model CarRentalBookingDriver {
+    id String @id @default(cuid())
+
+    bookingId String @unique
+
+    booking CarRentalBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    name String
+
+    phone String?
+
+    licenseNumber String?
+
+    nationality String?
+
+    experienceYears Int?
+
+    note String?
+
+    createdAt DateTime @default(now())
+}
+
+model CarRentalBookingStatusHistory {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking CarRentalBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    fromStatus CarRentalBookingStatus?
+
+    toStatus CarRentalBookingStatus
+
+    note String?
+
+    createdAt DateTime @default(now())
+
+    @@index([bookingId])
+}
+
+model CarRentalExtra {
+    id String @id @default(cuid())
+
+    // =========================
+    // RELATION
+    // =========================
+
+    rentalId String
+
+    rental CarRental @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+
+    // =========================
+    // BASIC
+    // =========================
+
+    type CarRentalExtraType
+
+    name String
+
+    description String?
+
+    image String?
+
+    // =========================
+    // RULE
+    // =========================
+
+    required Boolean @default(false)
+
+    available Boolean @default(true)
+
+    // =========================
+    // PRICE
+    // =========================
+
+    prices        CarRentalExtraPrice[]
+    bookingExtras CarRentalBookingExtra[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([rentalId])
+    @@index([type])
+}
+
+model CarRentalExtraPrice {
+    id String @id @default(cuid())
+
+    extraId String
+
+    extra CarRentalExtra @relation(fields: [extraId], references: [id], onDelete: Cascade)
+
+    pricingType CarRentalExtraPricingType
+
+    amount Float
+
+    currency Currency
+
+    minimumQuantity Int?
+
+    maximumQuantity Int?
+
+    startDate DateTime?
+
+    endDate DateTime?
+
+    createdAt DateTime @default(now())
+
+    @@index([extraId])
+}
+
+model CarRentalBookingExtra {
+    id String @id @default(cuid())
+
+    bookingId String
+    booking   CarRentalBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    extraId String?
+    extra   CarRentalExtra? @relation(fields: [extraId], references: [id], onDelete: SetNull)
+
+    // snapshot
+
+    name       String
+    type       CarRentalExtraType
+    quantity   Int                @default(1)
+    unitPrice  Float
+    totalPrice Float
+    currency   Currency
+    createdAt  DateTime           @default(now())
+
+    @@index([bookingId])
+    @@index([extraId])
+}
+
+model CarRentalAvailabilityCalendar {
+    id String @id @default(cuid())
+
+    vehicleId String
+    vehicle   CarRentalVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    startTime String
+    endTime   String
+
+    status CarRentalCalendarStatus
+
+    bookingId String?
+    booking   CarRentalBooking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+    note String?
+
+    createdAt DateTime @default(now())
+
+    @@unique([vehicleId])
+    @@index([bookingId])
+}
+
+model CarRentalBusinessHour {
+    id String @id @default(cuid())
+
+    rentalId String
+    rental   CarRental @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+
+    day WeekDay
+
+    openTime String
+
+    closeTime String
+
+    closed Boolean @default(false)
+
+    createdAt DateTime @default(now())
+
+    @@index([rentalId])
+}
+
+// ======================================================
+// CAR RENTAL
+// ======================================================
+
+model CarRental {
+    id String @id @default(cuid())
+
+    driverOption DriverOption
+    trip         CarRentalTrip?
+    policies     CarRentalPolicies?
+    // new
+    vehicle      CarRentalVehicle[]
+    reviews       CarRentalReview[]
+    images       CarRentalImage[]
+
+    // new
+    extras             CarRentalExtra[]
+    bookings           CarRentalBooking[]
+    insurances         CarRentalInsurance[]
+    businessHours      CarRentalBusinessHour[]
+    pickupInstructions CarRentalPickupInstruction[]
+    drivers            CarRentalDriver[]
+    favorites          CarRentalFavorite[]
+
+    active         Boolean  @default(false)
+    name           String
+    slug           String   @unique
+    aliases        String[]
+    keywords       String[]
+    searchText     String?
+    featured       Boolean  @default(false)
+    searchPriority Int      @default(0)
+
+    providerBookingId String
+    providerBooking   ProviderBooking @relation(fields: [providerBookingId], references: [id])
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+enum CarRentalCalendarStatus {
+    available
+
+    reserved
+
+    blocked
+
+    maintenance
+}
+
+enum CarRentalBookingStatus {
+    pending
+    confirmed
+    awaiting_payment
+    paid
+    cancelled
+    completed
+    rejected
+    expired
+}
+
+enum CarRentalPaymentStatus {
+    unpaid
+    pending
+    paid
+    refunded
+    partially_refunded
+}
+
+enum CarRentalBookingType {
+    self_drive
+    with_driver
+}
+
+enum CarRentalExtraType {
+    gps
+    child_seat
+    extra_driver
+    wifi
+    delivery
+    pickup
+    snow_chain
+    luggage_rack
+    baby_seat
+    other
+}
+
+enum CarRentalExtraPricingType {
+    fixed
+    per_day
+    per_hour
+    per_rental
+}
+
+enum CarRentalBookingLocationType {
+    pickup
+    dropoff
+}
+
+enum CarRentalImageCategory {
+    cover
+    banner
+    gallery
+    promotion
+}
+
+enum CarRentalInsuranceType {
+    basic
+
+    standard
+
+    premium
+
+    full_protection
+}
+
+enum CarRentalInsuranceBenefitType {
+    damage
+
+    theft
+
+    accident
+
+    liability
+
+    medical
+
+    roadside_assistance
+
+    windshield
+
+    tire
+
+    other
+}
+
+enum PickupInstructionType {
+    airport
+
+    office
+
+    hotel
+
+    delivery
+
+    meeting_point
+}
+
+enum RentalVehicleCondition {
+    new
+    excellent
+    good
+    fair
+}
+
+enum RentalVehicleDocumentType {
+    registration
+    insurance
+    inspection
+    permit
+}
+
+enum RentalVehicleImageCategory {
+    exterior
+    interior
+    trunk
+    engine
+    wheel
+    roof
+    document
+    damage
+    accessory
+    other
+}
+
+// ======================================================
+// VEHICLE ENUMS
+// ======================================================
+
+enum RentalVehicleStatus {
+    available
+    reserved
+    maintenance
+    out_of_service
+}
+
+enum RentalTransmission {
+    manual
+    automatic
+}
+
+enum RentalVehicleType {
+    car
+    luxury_car
+    suv
+    pickup
+    van
+    minibus
+    motorbike
+    electric_bicycle
+    other
+}
+
+enum RentalFuelType {
+    gasoline
+    diesel
+    electric
+    hybrid
+}
+
+enum RentalVehicleImagePosition {
+    front
+    rear
+    left
+    right
+    front_left
+    front_right
+    rear_left
+    rear_right
+    dashboard
+    driver_seat
+    front_seats
+    rear_seats
+    cargo
+    engine_bay
+    full_view
+    detail
+    other
+}
+
+enum RentalLocationType {
+    PICKUP
+    DROPOFF
+}
+
+enum DriverStatus {
+    active
+
+    inactive
+}
+
+enum DriverOption {
+    self_drive
+    with_driver
+}
+
+enum RentalDurationType {
+    hourly
+    daily
+    weekly
+    monthly
+}
+
+enum WeekDay {
+    monday
+
+    tuesday
+
+    wednesday
+
+    thursday
+
+    friday
+
+    saturday
+
+    sunday
+}
+
+enum CarRentalPriceRuleType {
+    weekend
+    weekday
+    holiday
+    peak_season
+    low_season
+    early_bird
+    last_minute
+    long_rental
+    promotional
+    member
+    custom
+}
+
+model CarRentalFavorite {
+    id String @id @default(cuid())
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    rentalId String
+    rental   CarRental @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+
+    @@unique([userId, rentalId])
+    @@index([rentalId])
+    @@index([userId])
+}
+
+model CarRentalImage {
+    id String @id @default(cuid())
+
+    rentalId String
+    rental   CarRental @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+
+    url String
+
+    category CarRentalImageCategory
+
+    alt String?
+
+    isPrimary Boolean @default(false)
+
+    sortOrder Int @default(0)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([rentalId])
+    @@index([category])
+}
+
+model CarRentalInsurance {
+    id String @id @default(cuid())
+
+    // =========================
+    // RELATION
+    // =========================
+
+    rentalId String
+
+    rental CarRental @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+
+    // =========================
+    // BASIC
+    // =========================
+
+    type CarRentalInsuranceType
+
+    name String
+
+    description String?
+
+    // =========================
+    // PRICE
+    // =========================
+
+    pricePerDay Float?
+
+    fixedPrice Float?
+
+    currency Currency
+
+    // =========================
+    // BENEFITS
+    // =========================
+
+    benefits CarRentalInsuranceBenefit[]
+    bookings CarRentalBookingInsurance[]
+
+    active Boolean @default(true)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([rentalId])
+    @@index([type])
+}
+
+model CarRentalInsuranceBenefit {
+    id String @id @default(cuid())
+
+    insuranceId String
+
+    insurance CarRentalInsurance @relation(fields: [insuranceId], references: [id], onDelete: Cascade)
+
+    type CarRentalInsuranceBenefitType
+
+    title String
+
+    description String?
+
+    coverageAmount Float?
+
+    excessAmount Float?
+
+    currency Currency?
+
+    createdAt DateTime @default(now())
+
+    @@index([insuranceId])
+    @@index([type])
+}
+
+model CarRentalBookingInsurance {
+    id String @id @default(cuid())
+
+    bookingId String
+    booking CarRentalBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    insuranceId String?
+    insurance CarRentalInsurance? @relation(fields: [insuranceId], references: [id], onDelete: SetNull)
+
+    // =========================
+    // SNAPSHOT
+    // =========================
+
+    name String
+
+    type CarRentalInsuranceType
+
+    price Float
+
+    currency Currency
+
+    quantity Int @default(1)
+
+    totalPrice Float
+
+    createdAt DateTime @default(now())
+
+    @@index([bookingId])
+    @@index([insuranceId])
+}
+
+// ======================================================
+// ENUMS
+// ======================================================
+
+enum UnitOption {
+    km
+    m
+}
+
+enum FuelPolicy {
+    full_to_full
+    same_level
+    prepaid
+    electric_charge
+}
+
+enum RentalDocument {
+    passport
+    driver_license
+    international_driver_license
+    identity_card
+    credit_card
+}
+
+model CarRentalPolicies {
+    id String @id @default(cuid())
+
+    rentalId            String                       @unique
+    rental              CarRental                    @relation(fields: [rentalId], references: [id])
+    minimumDriverAge    Int?
+    minimumLicenseYears Int?
+    depositAmount       Float?
+    mileage             CarRentalMileagePolicy?
+    cancellation        CarRentalCancellationPolicy?
+    rules               CarRentalRules?
+    requiredDocuments   CarRentalRequiredDocuments?
+    fuelPolicy          FuelPolicy?
+
+    damagePolicy CarRentalDamagePolicy?
+}
+
+model CarRentalDamagePolicy {
+    id String @id @default(cuid())
+
+    policiesId String            @unique
+    policies   CarRentalPolicies @relation(fields: [policiesId], references: [id])
+
+    insuranceIncluded Boolean?
+    excessAmount      Float?
+    depositRequired   Boolean?
+}
+
+model CarRentalMileagePolicy {
+    id String @id @default(cuid())
+
+    unlimited Boolean
+
+    unit UnitOption
+
+    dailyLimitKm Float?
+
+    extraKmFee Float?
+
+    policiesId String            @unique
+    policies   CarRentalPolicies @relation(fields: [policiesId], references: [id])
+}
+
+model CarRentalCancellationPolicy {
+    id String @id @default(cuid())
+
+    refundable Boolean
+
+    freeCancellation Boolean
+
+    freeCancellationBeforeHours Float?
+
+    partialRefund Boolean?
+
+    cancellationFee Float?
+
+    noShowFee Float
+
+    policiesId String            @unique
+    policies   CarRentalPolicies @relation(fields: [policiesId], references: [id])
+}
+
+model CarRentalRules {
+    id String @id @default(cuid())
+
+    minimumAge Int?
+
+    maximumAge Int?
+
+    requiresDriverLicense Boolean?
+
+    requiresInternationalLicense Boolean?
+
+    minimumDrivingExperienceYears Int?
+
+    smokingAllowed Boolean?
+
+    petsAllowed Boolean?
+
+    offRoadAllowed Boolean?
+
+    crossBorderAllowed Boolean?
+
+    additionalDriverAllowed Boolean?
+
+    lateReturnFeePerHour Float?
+
+    policiesId String            @unique
+    policies   CarRentalPolicies @relation(fields: [policiesId], references: [id])
+}
+
+model CarRentalRequiredDocuments {
+    id String @id @default(cuid())
+
+    documents RentalDocument[]
+
+    policiesId String            @unique
+    policies   CarRentalPolicies @relation(fields: [policiesId], references: [id])
+}
+
+model CarRentalPrice {
+    id String @id @default(cuid())
+
+    vehicleId String
+
+    vehicle CarRentalVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    // =====================
+    // VALID TIME
+    // =====================
+
+    startDate DateTime?
+
+    endDate DateTime?
+
+    // =====================
+    // PRICE TYPE
+    // =====================
+
+    pricingType RentalDurationType
+
+    // =====================
+    // PRICE
+    // =====================
+
+    currency Currency
+
+    pricePerHour Float?
+
+    pricePerDay Float?
+
+    pricePerWeek Float?
+
+    pricePerMonth Float?
+
+    originalPrice Float?
+
+    // =====================
+    // RULE
+    // =====================
+
+    minimumDays Int?
+
+    maximumDays Int?
+
+    // =====================
+    // EXTRA
+    // =====================
+
+    breakdown  CarRentalPriceBreakdown?
+    priceRules CarRentalPriceRule[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([vehicleId, startDate, endDate])
+}
+
+model CarRentalPriceBreakdown {
+    id String @id @default(cuid())
+
+    priceId String @unique
+
+    price CarRentalPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    // giá thuê thực tế
+    rentalRate Float @default(0)
+
+    // số giờ/ngày thuê thực tế
+    duration     Int                @default(1)
+    durationType RentalDurationType @default(hourly)
+
+    // phí bắt buộc
+    taxes      Float @default(0)
+    serviceFee Float @default(0)
+
+    // bảo hiểm
+    insuranceFee Float @default(0)
+
+    // dịch vụ thêm
+    deliveryFee    Float    @default(0)
+    extraDriverFee Float    @default(0)
+    childSeatFee   Float    @default(0)
+    gpsFee         Float    @default(0)
+    helmetFee      Float    @default(0)
+    // giảm giá
+    discount       Float    @default(0)
+    includedItems  String[] @default([])
+}
+
+model CarRentalPriceRule {
+    id String @id @default(cuid())
+
+    priceId String
+    price   CarRentalPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    type       CarRentalPriceRuleType
+    percentage Float?
+    amount     Float?
+    startDate  DateTime?
+    endDate    DateTime?
+}
+
+model CarRentalReview {
+    id String @id @default(cuid())
+
+    rentalId String
+    rental   CarRental @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+
+    bookingId String?
+    booking   CarRentalBooking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+    userId String?
+    user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+    overallRating    Float
+    cleanliness      Float?
+    vehicleCondition Float?
+    service          Float?
+    pickupExperience Float?
+    valueForMoney    Float?
+    title            String?
+    comment          String
+    pros             String?
+    cons             String?
+    verified         Boolean      @default(false)
+    status           ReviewStatus @default(pending)
+    anonymous        Boolean      @default(false)
+    rentalDate       DateTime?
+    helpfulCount     Int          @default(0)
+    response         String?
+    responseAt       DateTime?
+
+    images CarRentalReviewImage[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([bookingId])
+    @@index([rentalId])
+    @@index([overallRating])
+    @@index([verified])
+    @@index([status])
+    @@index([createdAt])
+}
+
+model CarRentalReviewImage {
+    id        String          @id @default(cuid())
+    reviewId  String
+    review    CarRentalReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+    url       String
+    createdAt DateTime        @default(now())
+
+    @@index([reviewId])
+}
+
+model CarRentalTrip {
+    id String @id @default(cuid())
+
+    rentalId  String              @unique
+    rental    CarRental           @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+    locations CarRentalLocation[]
+    schedule  CarRentalSchedule?
+    tripFee   CarRentalTripFee?
+}
+
+model CarRentalTripFee {
+    id String @id @default(cuid())
+
+    tripId      String        @unique
+    trip        CarRentalTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+    airportFee  Float?
+    oneWayFee   Float?
+    deliveryFee Float?
+    pickupFee   Float?
+    dropoffFee  Float?
+}
+
+model CarRentalLocation {
+    id String @id @default(cuid())
+
+    tripId String
+    trip   CarRentalTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    bookingId String?
+    booking   CarRentalBooking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    type RentalLocationType
+
+    name String
+
+    addressId String
+    address   Address @relation(fields: [addressId], references: [id], onDelete: Restrict)
+
+    available Boolean  @default(true)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([bookingId, type])
+    @@index([tripId])
+    @@index([type])
+    @@index([addressId])
+}
+
+model CarRentalSchedule {
+    id String @id @default(cuid())
+
+    tripId String        @unique
+    trip   CarRentalTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    durationType RentalDurationType
+    minimumHours Int?
+    minimumDays  Int?
+    maximumDays  Int?
+    pickupTime   String?
+    returnTime   String?
+}
+
+model CarRentalInventoryLock {
+    id String @id @default(cuid())
+
+    bookingId String?
+    booking   CarRentalBooking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    vehicleId String
+    vehicle   CarRentalVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    userId String?
+    user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+    startTime  DateTime
+    releasedAt DateTime?
+    status     InventoryLockStatus @default(locked)
+    endTime    DateTime
+    quantity   Int
+    expiresAt  DateTime
+
+    createdAt DateTime @default(now())
+
+    @@index([expiresAt])
+}
+
+model CarRentalDriver {
+    id String @id @default(cuid())
+
+    rentalId String
+    rental   CarRental @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+
+    name  String
+    phone String?
+
+    languages String[]
+
+    experienceYears Int?
+
+    rating Float @default(0)
+
+    status DriverStatus @default(active)
+
+    image String?
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([rentalId])
+}
+
+model CarRentalPickupInstruction {
+    id String @id @default(cuid())
+
+    rentalId String
+    rental   CarRental @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+
+    type PickupInstructionType
+
+    title String
+
+    description String?
+
+    location String?
+
+    contactPhone String?
+
+    createdAt DateTime @default(now())
+
+    @@index([rentalId])
+}
+
+model CarRentalVehicle {
+    id String @id @default(cuid())
+
+    rentalId           String
+    rental             CarRental                      @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+    bookings           CarRentalBooking[]
+    price              CarRentalPrice[]
+    active             Boolean                        @default(false)
+    type               RentalVehicleType
+    status             RentalVehicleStatus?
+    brand              String?
+    model              String?
+    year               Int?
+    color              String?
+    licensePlate       String?
+    transmission       RentalTransmission?
+    fuelType           RentalFuelType?
+    fuelCapacityLiters Float?
+    mileageKm          Float?
+    mileageLimitPerDay Float?
+    unlimitedMileage   Boolean?
+    capacity           CarRentalVehicleCapacity?
+    features           CarRentalVehicleFeatures?
+    specification      CarRentalVehicleSpecification?
+    locationCurrent    CarRentalVehicleLocation?
+
+    carLocks CarRentalInventoryLock[]
+
+    images      CarRentalVehicleImage[]
+    maintenance CarRentalVehicleMaintenance[]
+    document    CarRentalVehicleDocument[]
+    calendar    CarRentalAvailabilityCalendar[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model CarRentalVehicleSpecification {
+    id String @id @default(cuid())
+
+    vehicleId String           @unique
+    vehicle   CarRentalVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    vin                String?
+    engineSizeCc       Int?
+    horsePower         Int?
+    batteryCapacityKwh Float?
+    rangeKm            Float?
+    condition          RentalVehicleCondition?
+    previousOwners     Int?
+}
+
+model CarRentalVehicleDocument {
+    id        String           @id @default(cuid())
+    vehicleId String
+    vehicle   CarRentalVehicle @relation(fields: [vehicleId], references: [id])
+
+    type       RentalVehicleDocumentType
+    url        String
+    expiryDate DateTime?
+
+    @@index([vehicleId])
+}
+
+model CarRentalVehicleMaintenance {
+    id String @id @default(cuid())
+
+    vehicleId String
+    vehicle CarRentalVehicle @relation(fields: [vehicleId], references: [id])
+
+    type String?
+    description String?
+    mileageKm Float?
+    serviceDate DateTime?
+    cost Float?
+
+    @@index([vehicleId])
+}
+
+model CarRentalVehicleLocation {
+    id String @id @default(cuid())
+
+    vehicleId String           @unique
+    vehicle   CarRentalVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    address String?
+    lat     Float?
+    lng     Float?
+}
+
+model CarRentalVehicleImage {
+    id String @id @default(cuid())
+
+    vehicleId String
+    vehicle   CarRentalVehicle @relation(fields: [vehicleId], references: [id])
+
+    url String
+
+    category RentalVehicleImageCategory
+    position RentalVehicleImagePosition?
+
+    alt       String?
+    isPrimary Boolean @default(false)
+    sortOrder Int     @default(0)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model CarRentalVehicleCapacity {
+    id           String           @id @default(cuid())
+    vehicleId    String           @unique
+    vehicle      CarRentalVehicle @relation(fields: [vehicleId], references: [id])
+    seatCount    Int?
+    luggageCount Int?
+    doorCount    Int?
+}
+
+model CarRentalVehicleFeatures {
+    id String @id @default(cuid())
+
+    vehicleId String @unique
+
+    vehicle            CarRentalVehicle @relation(fields: [vehicleId], references: [id])
+    airConditioner     Boolean?
+    bluetooth          Boolean?
+    gps                Boolean?
+    usbCharger         Boolean?
+    wirelessCharging   Boolean?
+    appleCarPlay       Boolean?
+    androidAuto        Boolean?
+    cruiseControl      Boolean?
+    reverseCamera      Boolean?
+    parkingSensor      Boolean?
+    dashCamera         Boolean?
+    sunroof            Boolean?
+    leatherSeats       Boolean?
+    heatedSeats        Boolean?
+    childSeatAvailable Boolean?
+    phoneHolder        Boolean?
+    helmetIncluded     Boolean?
+    raincoatIncluded   Boolean?
+    luggageRack        Boolean?
+    skiRack            Boolean?
+}
+
+model Address {
+    id                 String  @id @default(cuid())
+    // ======================================================
+    // ADDRESS
+    // ======================================================
+    name               String?
+    houseNumber        String?
+    street             String?
+    ward               String?
+    district           String?
+    administrativeArea String?
+    region             String?
+    postcode           String?
+    countryCode        String
+    cityId             String
+    city               City    @relation(fields: [cityId], references: [id], onDelete: Restrict)
+
+    // ======================================================
+    // MAP
+    // ======================================================
+    latitude                       Float?
+    longitude                      Float?
+    timezone                       String?
+    plusCode                       String?
+    precision                      AddressPrecision           @default(ADDRESS)
+    // ======================================================
+    // RELATIONS
+    // ======================================================
+    hotelInformations              HotelInformation[]
+    airport                        FlyAirport[]
+    busRouteStop                   BusRouteStop[]
+    busBoardingPoint               BusBoardingPoint[]
+    busDropoffPoint                BusDropoffPoint[]
+    yachtRouteStop                 YachtRouteStop[]
+    yachtMarina                    YachtMarina[]
+    yachtBookingPickups            YachtBookingPickup[]
+    departureBusRoutes             BusRoute[]                 @relation("BusDepartureAddress")
+    arrivalBusRoutes               BusRoute[]                 @relation("BusArrivalAddress")
+    departureAirportTransferRoutes AirportTransferRoute[]     @relation("AirportTransferDepartureAddress")
+    arrivalAirportTransferRoutes   AirportTransferRoute[]     @relation("AirportTransferArrivalAddress")
+    carRentalLocations             CarRentalLocation[]
+    airportTransferRouteStop       AirportTransferRouteStop[]
+
+    // ======================================================
+    // TIMESTAMP
+    // ======================================================
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+enum AddressPrecision {
+    COUNTRY
+    CITY
+    DISTRICT
+    STREET
+    ADDRESS
+    POINT
+}
+
+// ======================================================
+// CITY
+// ======================================================
+
+model City {
+    id String @id @default(cuid())
+    // =========================
+    // BASIC
+    // =========================
+
+    name             String
+    nativeName       String?
+    slug             String  @unique
+    code             String? @unique
+    iataCode         String? @unique
+    subtitle         String?
+    shortDescription String?
+    description      String?
+
+    // =========================
+    // COUNTRY
+    // =========================
+
+    countryId          String
+    country            Country @relation(fields: [countryId], references: [id], onDelete: Restrict)
+    administrativeArea String?
+    region             String?
+    isCapital          Boolean @default(false)
+
+    // =========================
+    // LOCATION
+    // =========================
+
+    latitude  Float?
+    longitude Float?
+    elevation Float?
+    timezone  String?
+    utcOffset String?
+
+    // =========================
+    // SEARCH
+    // =========================
+
+    priority        Int      @default(0)
+    displayOrder    Int      @default(0)
+    popularityScore Float    @default(0)
+    featured        Boolean  @default(false)
+    popular         Boolean  @default(false)
+    searchable      Boolean  @default(true)
+    aliases         String[]
+    keywords        String[]
+    tags            String[]
+
+    // =========================
+    // MEDIA
+    // =========================
+
+    thumbnail   String?
+    coverImage  String?
+    bannerImage String?
+    images      String[]
+    video       String?
+
+    // =========================
+    // TRAVEL
+    // =========================
+
+    bestMonths  String[]
+    rainyMonths String[]
+
+    // =========================
+    // SEO
+    // =========================
+
+    seoTitle       String?
+    seoDescription String?
+    seoKeywords    String[]
+
+    // =========================
+    // STATUS
+    // =========================
+
+    verified Boolean    @default(false)
+    status   CityStatus @default(ACTIVE)
+
+    // =========================
+    // RELATIONS
+    // =========================
+
+    addresses Address[]
+
+    // Future
+    // tours Tour[]
+    // activities Activity[]
+    // restaurants Restaurant[]
+
+    // =========================
+    // TIMESTAMP
+    // =========================
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+// ======================================================
+// ENUMS
+// ======================================================
+
+enum CityStatus {
+    ACTIVE
+    HIDDEN
+    COMING_SOON
+    DISABLED
+}
+
+enum Continent {
+    AFRICA
+    ANTARCTICA
+    ASIA
+    EUROPE
+    NORTH_AMERICA
+    SOUTH_AMERICA
+    OCEANIA
+}
+
+// ======================================================
+// COUNTRY
+// ======================================================
+
+model Country {
+    id String @id @default(cuid())
+
+    // =========================
+    // BASIC
+    // =========================
+
+    name String
+
+    officialName String?
+
+    slug String @unique
+
+    code String @unique // VN
+
+    iso2 String @unique // VN
+
+    iso3 String @unique // VNM
+
+    phoneCode String? // +84
+
+    capital String?
+
+    // =========================
+    // LOCATION
+    // =========================
+
+    continent Continent
+
+    timezone String?
+
+    currency Currency?
+
+    languages String[]
+
+    // =========================
+    // MEDIA
+    // =========================
+
+    flag String?
+
+    thumbnail String?
+
+    coverImage String?
+
+    // =========================
+    // SEARCH
+    // =========================
+
+    aliases String[]
+
+    keywords String[]
+
+    priority Int @default(0)
+
+    featured Boolean @default(false)
+
+    searchable Boolean @default(true)
+
+    // =========================
+    // STATUS
+    // =========================
+
+    active Boolean @default(true)
+
+    // =========================
+    // RELATIONS
+    // =========================
+
+    cities City[]
+
+    // =========================
+    // TIMESTAMP
+    // =========================
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model FlyAircraft {
+    id String @id @default(cuid())
+
+    trips FlyTrip[]
+
+    airlineId String
+    airline   FlyAirline @relation(fields: [airlineId], references: [id], onDelete: Cascade)
+
+    manufacturer String?
+    model        String?
+
+    code String?
+
+    registrationNumber String?
+
+    active Boolean @default(true)
+
+    specification FlyAircraftSpecification?
+
+    features FlyAircraftFeatures?
+
+    cabins FlyCabin[]
+
+    images FlyAircraftImage[]
+
+    seatMap  FlySeatMap?
+    schedule FlySchedule[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([airlineId])
+}
+
+model FlyAircraftSpecification {
+    id String @id @default(cuid())
+
+    aircraftId String @unique
+
+    aircraft FlyAircraft @relation(fields: [aircraftId], references: [id], onDelete: Cascade)
+
+    maxRangeKm Float?
+
+    cruiseSpeed Float?
+
+    maxPassengers Int?
+
+    engineType String?
+
+    engineCount Int?
+
+    wingspan Float?
+
+    length Float?
+
+    height Float?
+
+    firstFlightYear Int?
+}
+
+model FlyAircraftFeatures {
+    id String @id @default(cuid())
+
+    aircraftId String @unique
+
+    aircraft FlyAircraft @relation(fields: [aircraftId], references: [id], onDelete: Cascade)
+
+    wifi Boolean?
+
+    powerOutlet Boolean?
+
+    usbPort Boolean?
+
+    entertainment Boolean?
+
+    liveTV Boolean?
+
+    recliningSeat Boolean?
+
+    lieFlatSeat Boolean?
+
+    mealService Boolean?
+
+    alcoholService Boolean?
+
+    blanket Boolean?
+
+    pillow Boolean?
+}
+
+model FlyAircraftImage {
+    id String @id @default(cuid())
+
+    aircraftId String
+
+    aircraft FlyAircraft @relation(fields: [aircraftId], references: [id], onDelete: Cascade)
+
+    url String
+
+    category FlyAircraftImageCategory
+
+    isPrimary Boolean @default(false)
+
+    sortOrder Int @default(0)
+
+    alt String?
+
+    createdAt DateTime @default(now())
+}
+
+model FlyCabin {
+    id String @id @default(cuid())
+
+    aircraftId String
+
+    aircraft FlyAircraft @relation(fields: [aircraftId], references: [id], onDelete: Cascade)
+
+    class FlyCabinClass
+
+    name String?
+
+    rows Int?
+
+    totalSeats Int
+
+    seats FlySeat[]
+
+    createdAt DateTime @default(now())
+}
+
+model FlySeat {
+    id String @id @default(cuid())
+
+    cabinId String
+
+    cabin FlyCabin @relation(fields: [cabinId], references: [id], onDelete: Cascade)
+
+    seatNumber String
+
+    row Int?
+
+    column String?
+
+    type FlySeatType
+
+    extraLegroom Boolean @default(false)
+
+    emergencyExit Boolean @default(false)
+
+    nearWindow Boolean?
+
+    nearAisle Boolean?
+
+    nearWing Boolean?
+
+    available      Boolean                @default(true)
+    locks          FlySeatInventoryLock[]
+    seatAssignment FlySeatAssignment[]
+    createdAt      DateTime               @default(now())
+
+    @@unique([cabinId, seatNumber])
+}
+
+model FlySeatMap {
+    id String @id @default(cuid())
+
+    aircraftId String @unique
+
+    aircraft FlyAircraft @relation(fields: [aircraftId], references: [id], onDelete: Cascade)
+
+    imageUrl String?
+
+    svgUrl String?
+
+    jsonLayout Json?
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model FlySeatInventoryLock {
+    id String @id @default(cuid())
+
+    tripId String
+    trip   FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    seatId String
+    seat   FlySeat @relation(fields: [seatId], references: [id], onDelete: Cascade)
+
+    userId String?
+    user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+    bookingId String?
+    booking   FlyBooking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    startTime  DateTime
+    releasedAt DateTime?
+    status     InventoryLockStatus @default(locked)
+    endTime    DateTime
+    quantity   Int
+    expiresAt  DateTime
+
+    createdAt DateTime @default(now())
+
+    @@index([tripId])
+    @@index([expiresAt])
+}
+
+model FlyAirline {
+    id String @id @default(cuid())
+
+    name                String
+    legalName           String?
+    iataCode            String?
+    icaoCode            String?
+    callsign            String?
+    country             String?
+    website             String?
+    hotline             String?
+    email               String?
+    logo                String?
+    banner              String?
+    description         String?
+    active              Boolean              @default(true)
+    flights             Fly[]
+    images              FlyAirlineImage[]
+    rating              FlyAirlineRating[]
+    alliances           FlyAllianceMember[]
+    marketingCodeshares FlyCodeshare[]       @relation("MarketingAirline")
+    crew                FlyCrew[]
+    operatingCodeshares FlyCodeshare[]       @relation("OperatingAirline")
+    meal                FlyMeal[]
+    interline           FlyInterline[]
+    addon               FlyAddon[]
+    wifiPackage         FlyWifiPackage[]
+    aircraft            FlyAircraft[]
+    overbookingRule     FlyOverbookingRule[]
+    insurance           FlyInsurance[]
+    createdAt           DateTime             @default(now())
+    updatedAt           DateTime             @updatedAt
+
+    @@index([iataCode])
+    @@index([icaoCode])
+}
+
+model FlyAirlineImage {
+    id String @id @default(cuid())
+
+    airlineId String
+    airline   FlyAirline @relation(fields: [airlineId], references: [id], onDelete: Cascade)
+
+    url String
+
+    category FlyAirlineImageCategory
+
+    isPrimary Boolean @default(false)
+
+    createdAt DateTime @default(now())
+}
+
+model FlyAirlineRating {
+    id String @id @default(cuid())
+
+    airlineId String
+    airline   FlyAirline @relation(fields: [airlineId], references: [id], onDelete: Cascade)
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    overall Float?
+
+    service Float?
+
+    comfort Float?
+
+    food Float?
+
+    entertainment Float?
+
+    punctuality Float?
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model FlyWifiPackage {
+    id String @id @default(cuid())
+
+    airlineId String
+
+    airline FlyAirline @relation(fields: [airlineId], references: [id], onDelete: Cascade)
+
+    name String
+
+    dataLimitMb Float?
+
+    durationMinutes Int?
+
+    amount     Float
+    passengers FlyPassengerWifi[]
+    currency   Currency
+}
+
+model FlyAddon {
+    id String @id @default(cuid())
+
+    airlineId String?
+
+    airline FlyAirline? @relation(fields: [airlineId], references: [id], onDelete: Cascade)
+
+    name String
+
+    description String?
+
+    type FlyAddonType
+
+    provider String?
+
+    image String?
+
+    amount Float
+
+    currency Currency
+
+    active Boolean @default(true)
+
+    passengerAddons FlyPassengerAddon[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([type])
+}
+
+model FlyPassengerAddon {
+    id String @id @default(cuid())
+
+    passengerId String
+
+    passenger FlyPassenger @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+
+    addonId String
+
+    addon FlyAddon @relation(fields: [addonId], references: [id], onDelete: Restrict)
+
+    quantity Int @default(1)
+
+    unitPrice Float
+
+    totalPrice Float
+
+    currency Currency
+
+    metadata Json?
+
+    createdAt DateTime @default(now())
+
+    @@index([passengerId])
+    @@index([addonId])
+}
+
+model FlySchedule {
+    id String @id @default(cuid())
+
+    flyId String
+
+    fly Fly @relation(fields: [flyId], references: [id], onDelete: Cascade)
+
+    departureTime String
+
+    arrivalTime String
+
+    startDate DateTime
+
+    endDate DateTime?
+
+    operatingDays Weekday[]
+
+    aircraftId String?
+
+    aircraft FlyAircraft? @relation(fields: [aircraftId], references: [id])
+
+    active Boolean @default(true)
+
+    trips FlyTrip[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model FlyAirport {
+    id String @id @default(cuid())
+
+    name String
+
+    code String @unique
+
+    iataCode String @unique
+
+    icaoCode String?
+
+    city String
+
+    country String
+
+    terminalCount Int?
+
+    timezone String?
+
+    lat Float?
+
+    lng Float?
+
+    addressId String?
+
+    address Address? @relation(fields: [addressId], references: [id], onDelete: SetNull)
+
+    departures FlyRoute[] @relation("FlyDepartureAirport")
+
+    arrivals FlyRoute[] @relation("FlyArrivalAirport")
+
+    departureSegments FlyRouteSegment[] @relation("SegmentDepartureAirport")
+
+    arrivalSegments       FlyRouteSegment[]          @relation("SegmentArrivalAirport")
+    diversions            FlyDiversion[]
+    lounge                FlyLounge[]
+    minimumConnectionTime FlyMinimumConnectionTime[]
+    createdAt             DateTime                   @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model FlyAlliance {
+    id String @id @default(cuid())
+
+    name String
+
+    code String @unique
+
+    logo String?
+
+    description String?
+
+    airlines  FlyAllianceMember[]
+    createdAt DateTime            @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model FlyAllianceMember {
+    id String @id @default(cuid())
+
+    allianceId String
+    alliance   FlyAlliance @relation(fields: [allianceId], references: [id], onDelete: Cascade)
+
+    airlineId String
+    airline   FlyAirline @relation(fields: [airlineId], references: [id], onDelete: Cascade)
+
+    joinedAt DateTime?
+
+    @@unique([allianceId, airlineId])
+}
+
+model FlyCodeshare {
+    id String @id @default(cuid())
+
+    tripId String
+    trip FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    marketingAirlineId String
+    marketingAirline FlyAirline @relation("MarketingAirline", fields: [marketingAirlineId], references: id)
+
+    marketingFlightNumber String
+
+    operatingAirlineId String
+    operatingAirline FlyAirline @relation("OperatingAirline", fields: [operatingAirlineId], references: [id])
+
+    operatingFlightNumber String
+
+    createdAt DateTime @default(now())
+
+    @@index([tripId])
+}
+
+model FlyInterline {
+    id String @id @default(cuid())
+
+    bookingId String
+    booking   FlyBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    validatingAirlineId String
+    validatingAirline   FlyAirline @relation(fields: [validatingAirlineId], references: [id])
+
+    baggageTransfer Boolean
+
+    protectedConnection Boolean
+}
+
+model FlyItinerary {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking FlyBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    segments FlyItinerarySegment[]
+}
+
+model FlyItinerarySegment {
+    id String @id @default(cuid())
+
+    itineraryId String
+
+    itinerary FlyItinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+
+    tripId String
+
+    trip FlyTrip @relation(fields: [tripId], references: [id])
+
+    order Int
+}
+
+model FlyConnection {
+    id String @id @default(cuid())
+
+    firstTripId String
+
+    firstTrip FlyTrip @relation("FirstConnection", fields: [firstTripId], references: [id])
+
+    secondTripId String
+
+    secondTrip FlyTrip @relation("SecondConnection", fields: [secondTripId], references: [id])
+
+    layoverMinutes Int
+
+    airportChange   Boolean
+    baggageTransfer FlyBaggageTransfer[]
+    terminalChange  Boolean
+}
+
+model FlyBaggageTransfer {
+    id String @id @default(cuid())
+
+    connectionId String @unique
+
+    connection FlyConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+
+    automaticTransfer Boolean
+
+    customsRequired Boolean
+
+    collectAgain Boolean
+}
+
+model FlyMinimumConnectionTime {
+    id String @id @default(cuid())
+
+    airportId String
+
+    airport FlyAirport @relation(fields: [airportId], references: [id])
+
+    domesticMinutes Int
+
+    internationalMinutes Int
+}
+
+model FlyBooking {
+    id String @id @default(cuid())
+
+    bookingNumber String @unique
+
+    userId String?
+    user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+    contact FlyBookingContact?
+
+    passengers FlyPassenger[]
+
+    statusHistory FlyBookingStatusHistory[]
+
+    status FlyBookingStatus @default(pending)
+
+    totalPassengers Int
+
+    totalAmount Float
+
+    currency Currency
+
+    note              String?
+    interlines        FlyInterline[]
+    itineraries       FlyItinerary[]
+    seatInventoryLock FlySeatInventoryLock[]
+    FlyInventoryLock  FlyInventoryLock[]
+    waitlist          FlyWaitlist[]
+    createdAt         DateTime               @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([bookingNumber])
+    @@index([userId])
+}
+
+model FlyBookingContact {
+    id String @id @default(cuid())
+
+    bookingId String     @unique
+    booking   FlyBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    fullName String
+
+    email String
+
+    phone String
+
+    countryCode String?
+}
+
+model FlyPassenger {
+    id String @id @default(cuid())
+
+    bookingId String
+    booking   FlyBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    type PassengerType
+
+    title PassengerTitle?
+
+    firstName String
+
+    lastName String
+
+    gender Gender?
+
+    birthday DateTime?
+
+    nationality String?
+
+    document FlyPassengerDocument?
+
+    seat FlySeatAssignment?
+
+    meal FlyMealSelection?
+
+    baggage FlyExtraBaggage[]
+
+    tickets            FlyTicket[]
+    wifi               FlyPassengerWifi[]
+    priorityBoarding   FlyPriorityBoarding[]
+    lounge             FlyPassengerLounge[]
+    fastTrack          FlyFastTrack[]
+    passengerInsurance FlyPassengerInsurance[]
+    passengerAddon     FlyPassengerAddon[]
+    createdAt          DateTime                @default(now())
+
+    @@index([bookingId])
+}
+
+model FlyPassengerDocument {
+    id String @id @default(cuid())
+
+    passengerId String       @unique
+    passenger   FlyPassenger @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+
+    passportNumber String?
+
+    passportCountry String?
+
+    expiryDate DateTime?
+
+    nationalId String?
+}
+
+model FlyTicket {
+    id          String @id @default(cuid())
+    passengerId String
+
+    passenger FlyPassenger @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+
+    ticketNumber String @unique
+
+    pnr String?
+
+    qrCode String?
+
+    issuedAt DateTime?
+
+    boardingPass FlyBoardingPass?
+
+    createdAt DateTime @default(now())
+}
+
+model FlyBoardingPass {
+    id String @id @default(cuid())
+
+    ticketId String @unique
+
+    ticket FlyTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+    gate String?
+
+    boardingTime DateTime?
+
+    boardingGroup String?
+
+    barcode String?
+}
+
+model FlyBookingStatusHistory {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking FlyBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    fromStatus FlyBookingStatus?
+
+    toStatus FlyBookingStatus
+
+    note String?
+
+    createdAt DateTime @default(now())
+}
+
+model FlySeatAssignment {
+    id String @id @default(cuid())
+
+    passengerId String       @unique
+    passenger   FlyPassenger @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+
+    seatId String
+    seat   FlySeat @relation(fields: [seatId], references: [id], onDelete: Restrict)
+
+    paid Boolean @default(false)
+
+    amount Float?
+
+    currency Currency?
+
+    assignedAt DateTime @default(now())
+
+    @@unique([seatId])
+}
+
+model FlyMealSelection {
+    id String @id @default(cuid())
+
+    passengerId String @unique
+
+    passenger FlyPassenger @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+
+    mealId String
+
+    meal FlyMeal @relation(fields: [mealId], references: [id], onDelete: Restrict)
+
+    quantity Int @default(1)
+
+    amount Float?
+
+    currency Currency?
+}
+
+model FlyMeal {
+    id String @id @default(cuid())
+
+    airlineId String
+
+    airline FlyAirline @relation(fields: [airlineId], references: [id], onDelete: Cascade)
+
+    name String
+
+    description String?
+
+    type FlyMealType
+
+    image String?
+
+    price Float?
+
+    currency   Currency?
+    selections FlyMealSelection[]
+    active     Boolean            @default(true)
+}
+
+model FlyExtraBaggage {
+    id String @id @default(cuid())
+
+    passengerId String
+
+    passenger FlyPassenger @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+
+    weightKg Float
+
+    amount Float
+
+    currency Currency
+}
+
+model FlyLounge {
+    id String @id @default(cuid())
+
+    airportId String
+
+    airport FlyAirport @relation(fields: [airportId], references: [id], onDelete: Cascade)
+
+    name String
+
+    description String?
+
+    image String?
+
+    price      Float?
+    passengers FlyPassengerLounge[]
+    currency   Currency?
+}
+
+model FlyPassengerLounge {
+    id String @id @default(cuid())
+
+    passengerId String       @unique
+    passenger   FlyPassenger @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+
+    loungeId String
+    lounge   FlyLounge @relation(fields: [loungeId], references: [id], onDelete: Restrict)
+
+    amount Float?
+
+    currency Currency?
+}
+
+model FlyInsurance {
+    id String @id @default(cuid())
+
+    airlineId String?
+    airline   FlyAirline? @relation(fields: [airlineId], references: [id], onDelete: Restrict)
+
+    provider String
+
+    name String
+
+    description String?
+
+    coverage String?
+
+    amount Float
+
+    currency Currency
+
+    active Boolean @default(true)
+
+    passengers FlyPassengerInsurance[]
+}
+
+model FlyPassengerInsurance {
+    id String @id @default(cuid())
+
+    passengerId String
+    passenger   FlyPassenger @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+
+    insuranceId String
+    insurance   FlyInsurance @relation(fields: [insuranceId], references: [id], onDelete: Restrict)
+
+    quantity Int @default(1)
+
+    unitPrice Float
+
+    totalPrice Float
+
+    currency Currency
+
+    createdAt DateTime @default(now())
+
+    @@unique([passengerId, insuranceId])
+}
+
+model FlyPriorityBoarding {
+    id String @id @default(cuid())
+
+    passengerId String @unique
+
+    passenger FlyPassenger @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+
+    enabled Boolean
+
+    amount Float?
+
+    currency Currency?
+}
+
+model FlyFastTrack {
+    id String @id @default(cuid())
+
+    passengerId String @unique
+
+    passenger FlyPassenger @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+
+    enabled Boolean
+
+    amount Float?
+
+    currency Currency?
+}
+
+model FlyPassengerWifi {
+    id String @id @default(cuid())
+
+    passengerId String
+    passenger   FlyPassenger @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+
+    packageId String
+    package   FlyWifiPackage @relation(fields: [packageId], references: [id], onDelete: Restrict)
+}
+
+model FlyCrew {
+    id String @id @default(cuid())
+
+    airlineId String
+
+    airline FlyAirline @relation(fields: [airlineId], references: [id], onDelete: Cascade)
+
+    employeeNumber String? @unique
+
+    firstName String
+
+    lastName String
+
+    gender Gender?
+
+    birthDate DateTime?
+
+    nationality String?
+
+    role FlyCrewRole
+
+    email String?
+
+    phone String?
+
+    active Boolean @default(true)
+
+    qualifications FlyCrewQualification[]
+
+    assignments  FlyCrewAssignment[]
+    crewSchedule FlyCrewSchedule[]
+    createdAt    DateTime            @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model FlyCrewQualification {
+    id String @id @default(cuid())
+
+    crewId String
+
+    crew FlyCrew @relation(fields: [crewId], references: [id], onDelete: Cascade)
+
+    aircraftType String
+
+    validUntil DateTime?
+
+    issuedAt DateTime?
+}
+
+model FlyCrewAssignment {
+    id String @id @default(cuid())
+
+    crewId String
+    crew   FlyCrew @relation(fields: [crewId], references: [id], onDelete: Cascade)
+
+    tripId String
+    trip   FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    inventoryId String
+    inventory   FlyInventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+
+    duty FlyCrewDuty
+
+    createdAt DateTime @default(now())
+}
+
+model FlyCrewSchedule {
+    id String @id @default(cuid())
+
+    crewId String
+
+    crew FlyCrew @relation(fields: [crewId], references: [id], onDelete: Cascade)
+
+    startTime DateTime
+
+    endTime DateTime
+
+    duty FlyCrewDuty
+
+    tripId String?
+    trip   FlyTrip? @relation(fields: [tripId], references: [id])
+}
+
+enum FlyImageCategory {
+    cover
+
+    aircraft
+
+    cabin
+
+    business
+
+    economy
+
+    first_class
+
+    crew
+
+    lounge
+
+    meal
+
+    baggage
+
+    seat
+
+    logo
+
+    other
+}
+
+enum FlyAirlineImageCategory {
+    logo
+
+    banner
+
+    aircraft
+
+    lounge
+
+    office
+
+    other
+}
+
+enum FlyTripStatus {
+    scheduled
+
+    boarding
+
+    departed
+
+    delayed
+
+    landed
+
+    cancelled
+}
+
+enum FlyRouteType {
+    domestic
+
+    international
+}
+
+enum FlyCabinClass {
+    economy
+
+    premium_economy
+
+    business
+
+    first
+}
+
+enum FlyAircraftImageCategory {
+    exterior
+
+    cabin
+
+    cockpit
+
+    economy
+
+    premium_economy
+
+    business
+
+    first
+
+    seat
+
+    galley
+
+    lavatory
+
+    other
+}
+
+enum FlySeatType {
+    standard
+
+    preferred
+
+    extra_legroom
+
+    emergency_exit
+
+    bassinet
+
+    premium
+
+    business
+
+    first
+}
+
+enum FlyFareRuleType {
+    refundable
+
+    cancellation
+
+    change
+
+    no_show
+
+    baggage
+
+    meal
+
+    seat
+
+    lounge
+
+    upgrade
+}
+
+enum FlyPriceRuleType {
+    discount
+
+    coupon
+
+    promotion
+
+    holiday
+
+    seasonal
+
+    member
+}
+
+enum FlyRefundType {
+    none
+    partial
+    full
+}
+
+enum FlyBookingStatus {
+    pending
+
+    waiting_payment
+
+    confirmed
+
+    ticketed
+
+    checked_in
+
+    boarded
+
+    completed
+
+    cancelled
+
+    refunded
+}
+
+enum PassengerType {
+    adult
+
+    child
+
+    infant
+}
+
+enum PassengerTitle {
+    mr
+
+    ms
+
+    mrs
+
+    miss
+
+    master
+}
+
+enum FlyMealType {
+    standard
+
+    vegetarian
+
+    vegan
+
+    halal
+
+    kosher
+
+    gluten_free
+
+    diabetic
+
+    child
+
+    seafood
+
+    premium
+}
+
+enum FlyAddonType {
+    seat
+
+    baggage
+
+    meal
+
+    insurance
+
+    lounge
+
+    wifi
+
+    fast_track
+
+    priority_boarding
+
+    airport_transfer
+
+    airport_hotel
+
+    sim
+
+    esim
+
+    carbon_offset
+
+    pet
+
+    sports_equipment
+
+    musical_instrument
+
+    wheelchair
+
+    assistance
+
+    other
+}
+
+enum FlyOperationStatus {
+    scheduled
+
+    check_in
+
+    boarding
+
+    gate_closed
+
+    departed
+
+    delayed
+
+    diverted
+
+    landed
+
+    cancelled
+}
+
+enum FlyTimelineType {
+    scheduled
+
+    check_in_open
+
+    boarding
+
+    final_call
+
+    gate_closed
+
+    departed
+
+    arrived
+}
+
+enum FlyDelayReason {
+    weather
+
+    technical
+
+    airport
+
+    crew
+
+    security
+
+    air_traffic
+
+    operational
+
+    other
+}
+
+enum FlyCrewRole {
+    captain
+
+    first_officer
+
+    cabin_manager
+
+    cabin_crew
+}
+
+enum FlyCrewDuty {
+    flight
+
+    standby
+
+    training
+
+    leave
+
+    office
+}
+
+model FlyFavorite {
+    id String @id @default(cuid())
+
+    flyId String
+    fly Fly @relation(fields: [flyId], references: [id], onDelete: Cascade)
+
+    userId String
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+
+    @@unique([flyId, userId])
+    @@index([userId])
+}
+
+// ======================================================
+// FLIGHT
+// ======================================================
+
+model Fly {
+    id String @id @default(cuid())
+
+    // ======================================================
+    // RELATIONS
+    // ======================================================
+
+    providerBookingId String
+    providerBooking   ProviderBooking @relation(fields: [providerBookingId], references: [id])
+
+    airlineId String
+    airline   FlyAirline @relation(fields: [airlineId], references: [id])
+
+    routes FlyRoute[]
+
+    trips FlyTrip[]
+
+    policies FlyPolicies?
+
+    price FlyPrice?
+
+    notice FlyNotice?
+
+    images FlyImage[]
+
+    favorites FlyFavorite[]
+    schedule  FlySchedule[]
+
+    active Boolean @default(true)
+
+    // ======================================================
+    // SEARCH
+    // ======================================================
+
+    name String
+
+    slug String @unique
+
+    aliases String[]
+
+    keywords String[]
+
+    tags String[]
+
+    searchText String?
+
+    featured Boolean @default(false)
+
+    searchable Boolean @default(true)
+
+    searchPriority Int @default(0)
+
+    // ======================================================
+    // TIMESTAMP
+    // ======================================================
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model FlyImage {
+    id String @id @default(cuid())
+
+    flyId String
+    fly Fly @relation(fields: [flyId], references: [id], onDelete: Cascade)
+
+    url String
+
+    category FlyImageCategory
+
+    alt String?
+
+    isPrimary Boolean @default(false)
+
+    sortOrder Int @default(0)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([flyId])
+}
+
+model FlyNotice {
+    id String @id @default(cuid())
+
+    flyId String @unique
+
+    fly Fly @relation(fields: [flyId], references: [id], onDelete: Cascade)
+
+    title String?
+
+    content String?
+
+    baggageNotice String?
+
+    checkInNotice String?
+
+    visaNotice String?
+
+    covidNotice String?
+
+    refundNotice String?
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model FlyOperation {
+    id String @id @default(cuid())
+
+    tripId String @unique
+
+    trip FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    status FlyOperationStatus
+
+    departureTerminal String?
+
+    departureGate String?
+
+    arrivalTerminal String?
+
+    arrivalGate String?
+
+    baggageClaim String?
+
+    checkInCounter String?
+
+    boardingTime DateTime?
+
+    boardingEndTime DateTime?
+
+    gateOpenTime DateTime?
+
+    gateCloseTime DateTime?
+
+    actualDepartureTime DateTime?
+
+    actualArrivalTime DateTime?
+
+    estimatedDepartureTime DateTime?
+
+    estimatedArrivalTime DateTime?
+
+    timeline FlyOperationTimeline[]
+
+    delays FlyDelay[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model FlyOperationTimeline {
+    id String @id @default(cuid())
+
+    operationId String
+
+    operation FlyOperation @relation(fields: [operationId], references: [id], onDelete: Cascade)
+
+    type FlyTimelineType
+
+    eventTime DateTime
+
+    note String?
+}
+
+model FlyDelay {
+    id String @id @default(cuid())
+
+    operationId String
+
+    operation FlyOperation @relation(fields: [operationId], references: [id], onDelete: Cascade)
+
+    minutes Int
+
+    reason FlyDelayReason
+
+    description String?
+
+    createdAt DateTime @default(now())
+}
+
+model FlyCancellation {
+    id String @id @default(cuid())
+
+    tripId String @unique
+
+    trip FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    reason String?
+
+    cancelledAt DateTime
+
+    compensationRequired Boolean?
+}
+
+model FlyDiversion {
+    id String @id @default(cuid())
+
+    tripId String @unique
+
+    trip FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    divertedAirportId String
+    divertedAirport FlyAirport @relation(fields: [divertedAirportId], references: [id])
+
+    reason String?
+}
+
+model FlyTracking {
+    id String @id @default(cuid())
+
+    tripId String 
+
+    trip FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    latitude Float?
+
+    longitude Float?
+
+    altitudeFt Float?
+
+    speedKmh Float?
+
+    heading Float?
+
+    lastUpdated DateTime?
+}
+
+model FlyTripHistory {
+    id String @id @default(cuid())
+
+    tripId String
+
+    trip FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    oldStatus FlyOperationStatus
+
+    newStatus FlyOperationStatus
+
+    changedAt DateTime @default(now())
+}
+
+model FlyPolicies {
+    id String @id @default(cuid())
+
+    flyId String @unique
+    fly   Fly    @relation(fields: [flyId], references: [id], onDelete: Cascade)
+
+    cancellation FlyCancellationPolicy?
+    change       FlyChangePolicy?
+    baggage      FlyBaggagePolicy?
+    boarding     FlyBoardingPolicy?
+    passenger    FlyPassengerPolicy?
+    checkIn      FlyCheckInPolicy?
+    transit      FlyTransitPolicy?
+    visa         FlyVisaPolicy?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model FlyTransitPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    selfTransfer Boolean
+
+    baggageTransfer Boolean
+
+    visaRequiredDuringTransit Boolean
+
+    minimumConnectionMinutes Int?
+}
+
+model FlyCancellationPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    refundable Boolean
+
+    refundType FlyRefundType
+
+    cancellationFee Float?
+
+    noShowFee Float?
+
+    freeCancellationBeforeHours Int?
+}
+
+model FlyChangePolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    allowed Boolean
+
+    changeFee Float?
+
+    maxChanges Int?
+
+    beforeDepartureHours Int?
+}
+
+model FlyBaggagePolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    cabinIncludedKg Float?
+
+    checkedIncludedKg Float?
+
+    extraAllowed Boolean
+
+    extraPricePerKg Float?
+}
+
+model FlyBoardingPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    boardingBeforeMinutes Int?
+
+    gateCloseMinutes Int?
+
+    onlineBoardingPass Boolean?
+
+    printedBoardingPass Boolean?
+}
+
+model FlyPassengerPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    infantAllowed Boolean
+
+    childAllowed Boolean
+
+    petsAllowed Boolean
+
+    unaccompaniedMinor Boolean
+
+    wheelchairSupport Boolean
+
+    pregnantPassengerAllowed Boolean
+}
+
+model FlyCheckInPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    onlineCheckIn Boolean
+
+    opensBeforeHours Int?
+
+    closesBeforeMinutes Int?
+
+    airportCheckIn Boolean
+
+    mobileBoardingPass Boolean
+}
+
+model FlyVisaPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    visaRequired Boolean?
+
+    passportRequired Boolean?
+
+    passportMinimumValidityMonths Int?
+
+    healthDocumentsRequired Boolean?
+
+    note String?
+}
+
+model FlyPrice {
+    id String @id @default(cuid())
+
+    flyId String @unique
+    fly   Fly    @relation(fields: [flyId], references: [id], onDelete: Cascade)
+
+    currency Currency
+
+    fromPrice Float
+
+    toPrice Float?
+
+    originalFromPrice Float?
+
+    originalToPrice Float?
+
+    fares FlyFare[]
+
+    priceRules FlyPriceRule[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([fromPrice])
+}
+
+model FlyFare {
+    id String @id @default(cuid())
+
+    priceId String
+
+    price FlyPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    name String
+
+    cabinClass FlyCabinClass
+
+    code String?
+
+    refundable Boolean @default(false)
+
+    changeable Boolean @default(false)
+
+    priorityBoarding Boolean @default(false)
+
+    loungeAccess Boolean @default(false)
+
+    seatSelectionIncluded Boolean @default(false)
+
+    mealsIncluded Boolean @default(false)
+
+    wifiIncluded Boolean @default(false)
+
+    baggage FlyFareBaggage?
+
+    taxes FlyFareTax[]
+
+    breakdown FlyFarePriceBreakdown?
+
+    rules          FlyFareRule[]
+    inventoryFares FlyInventoryFare[]
+    active         Boolean            @default(true)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([priceId])
+}
+
+model FlyFarePriceBreakdown {
+    id String @id @default(cuid())
+
+    fareId String @unique
+
+    fare FlyFare @relation(fields: [fareId], references: [id], onDelete: Cascade)
+
+    baseFare Float
+
+    taxes Float @default(0)
+
+    airportFee Float @default(0)
+
+    fuelSurcharge Float @default(0)
+
+    serviceFee Float @default(0)
+
+    bookingFee Float @default(0)
+
+    discount Float @default(0)
+
+    finalPrice Float
+
+    createdAt DateTime @default(now())
+}
+
+model FlyFareTax {
+    id String @id @default(cuid())
+
+    fareId String
+
+    fare FlyFare @relation(fields: [fareId], references: [id], onDelete: Cascade)
+
+    name String
+
+    amount Float
+
+    currency Currency
+
+    createdAt DateTime @default(now())
+}
+
+model FlyFareBaggage {
+    id String @id @default(cuid())
+
+    fareId String @unique
+
+    fare FlyFare @relation(fields: [fareId], references: [id], onDelete: Cascade)
+
+    cabinWeightKg Float?
+
+    checkedWeightKg Float?
+
+    extraBaggageAllowed Boolean @default(true)
+
+    extraBaggagePrice Float?
+
+    createdAt DateTime @default(now())
+}
+
+model FlyFareRule {
+    id String @id @default(cuid())
+
+    fareId String
+
+    fare FlyFare @relation(fields: [fareId], references: [id], onDelete: Cascade)
+
+    type FlyFareRuleType
+
+    value String
+
+    createdAt DateTime @default(now())
+}
+
+model FlyPriceRule {
+    id String @id @default(cuid())
+
+    priceId String
+
+    price FlyPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    name String
+
+    type FlyPriceRuleType
+
+    percentage Float?
+
+    amount Float?
+
+    couponCode String?
+
+    minimumSpend Float?
+
+    maximumDiscount Float?
+
+    validFrom DateTime?
+
+    validTo DateTime?
+
+    active Boolean @default(true)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([priceId])
+}
+
+model FlyRoute {
+    id String @id @default(cuid())
+
+    flyId String
+    fly   Fly    @relation(fields: [flyId], references: [id], onDelete: Cascade)
+
+    departureAirportId String
+    departureAirport   FlyAirport @relation("FlyDepartureAirport", fields: [departureAirportId], references: [id])
+
+    arrivalAirportId String
+    arrivalAirport   FlyAirport @relation("FlyArrivalAirport", fields: [arrivalAirportId], references: [id])
+
+    distanceKm Float?
+
+    estimatedDuration Int?
+
+    directFlight Boolean @default(true)
+
+    segments  FlyRouteSegment[]
+    routeType FlyRouteType
+    trips     FlyTrip[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([flyId])
+    @@index([departureAirportId])
+    @@index([arrivalAirportId])
+}
+
+model FlyRouteSegment {
+    id String @id @default(cuid())
+
+    routeId String
+    route   FlyRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
+
+    departureAirportId String
+    departureAirport   FlyAirport @relation("SegmentDepartureAirport", fields: [departureAirportId], references: [id])
+
+    arrivalAirportId String
+    arrivalAirport   FlyAirport @relation("SegmentArrivalAirport", fields: [arrivalAirportId], references: [id])
+
+    segmentOrder Int
+
+    estimatedDuration Int?
+
+    distanceKm Float?
+
+    createdAt DateTime @default(now())
+
+    @@index([routeId])
+}
+
+model FlyTrip {
+    id String @id @default(cuid())
+
+    flyId String
+    fly   Fly    @relation(fields: [flyId], references: [id], onDelete: Cascade)
+
+    routeId String
+    route   FlyRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
+
+    flightNumber String
+
+    departureTime DateTime
+
+    arrivalTime DateTime
+
+    durationMinutes Int
+
+    status FlyTripStatus @default(scheduled)
+
+    availableSeats Int?
+
+    aircraftId String?
+
+    aircraft FlyAircraft? @relation(fields: [aircraftId], references: [id], onDelete: SetNull)
+
+    scheduleId String?
+
+    schedule  FlySchedule?           @relation(fields: [scheduleId], references: [id])
+    seatLocks FlySeatInventoryLock[]
+    inventory FlyInventory?
+    operation FlyOperation?
+    tracking  FlyTracking[]
+
+    cancellation FlyCancellation?
+
+    diversion  FlyDiversion?
+    codeshares FlyCodeshare[]
+
+    firstConnections FlyConnection[] @relation("FirstConnection")
+
+    secondConnections FlyConnection[]       @relation("SecondConnection")
+    crewSchedule      FlyCrewSchedule[]
+    crewAssignment    FlyCrewAssignment[]
+    history           FlyTripHistory[]
+    itinerarySegment  FlyItinerarySegment[]
+    createdAt         DateTime              @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([routeId])
+    @@index([departureTime])
+    @@index([flightNumber])
+}
+
+model FlyInventory {
+    id String @id @default(cuid())
+
+    tripId String  @unique
+    trip   FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    crewAssignments FlyCrewAssignment[]
+    cabins          FlyCabinInventory[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model FlyCabinInventory {
+    id String @id @default(cuid())
+
+    inventoryId String
+
+    inventory FlyInventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+
+    cabinClass FlyCabinClass
+
+    totalSeats Int
+
+    availableSeats Int
+
+    reservedSeats Int
+
+    blockedSeats Int
+
+    overbookLimit Int?
+
+    waitlistSeats Int?
+
+    fares FlyInventoryFare[]
+}
+
+model FlyInventoryFare {
+    id String @id @default(cuid())
+
+    cabinInventoryId String
+    cabinInventory   FlyCabinInventory @relation(fields: [cabinInventoryId], references: [id], onDelete: Cascade)
+
+    fareId String
+    fare   FlyFare @relation(fields: [fareId], references: [id])
+
+    locks     FlyInventoryLock[]
+    waitlists FlyWaitlist[]
+    available Int
+
+    sold Int
+
+    hold Int
+
+    waitlist Int
+}
+
+model FlyInventoryLock {
+    id String @id @default(cuid())
+
+    inventoryFareId String
+    inventoryFare   FlyInventoryFare @relation(fields: [inventoryFareId], references: [id], onDelete: Cascade)
+
+    bookingId String?
+    booking   FlyBooking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    userId String?
+    user   User?   @relation(fields: [userId], references: [id])
+
+    startTime  DateTime
+    releasedAt DateTime?
+    status     InventoryLockStatus @default(locked)
+    endTime    DateTime
+    quantity   Int
+    expiresAt  DateTime
+    createdAt  DateTime            @default(now())
+}
+
+model FlyWaitlist {
+    id String @id @default(cuid())
+
+    inventoryFareId String
+
+    inventoryFare FlyInventoryFare @relation(fields: [inventoryFareId], references: [id])
+
+    bookingId String?
+    booking   FlyBooking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    position Int
+
+    createdAt DateTime @default(now())
+}
+
+model FlyOverbookingRule {
+    id String @id @default(cuid())
+
+    airlineId String
+
+    airline FlyAirline @relation(fields: [airlineId], references: [id])
+
+    cabinClass FlyCabinClass
+
+    percentage Float
+}
+
+model HotelAreaGuide {
+    id String @id @default(cuid())
+
+    hotelId String
+
+    hotel Hotel @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+    title String
+
+    description String
+
+    images String[]
+
+    createdAt DateTime @default(now())
+
+    @@index([hotelId])
+}
+
+model HotelBooking {
+    id String @id @default(cuid())
+
+    hotelId String
+    hotel   Hotel  @relation(fields: [hotelId], references: [id])
+
+    userId String?
+    user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+    status         HotelBookingStatus          @default(pending)
+    checkIn        DateTime
+    checkOut       DateTime
+    totalRooms     Int
+    rooms          HotelBookingRoom[]
+    guests         HotelBookingGuest[]
+    price          HotelBookingPriceSnapshot?
+    statusHistory  HotelBookingStatusHistory[]
+    specialRequest String?
+
+    extras    HotelBookingExtra[]
+    meals     HotelBookingMeal[]
+    expiresAt DateTime?
+    locks     HotelInventoryLock[]
+    reviews   HotelReview[]
+    createdAt DateTime             @default(now())
+    updatedAt DateTime             @updatedAt
+
+    @@index([hotelId])
+    @@index([userId])
+    @@index([status])
+}
+
+model HotelBookingRoom {
+    id String @id @default(cuid())
+
+    bookingId String
+    booking   HotelBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    inventoryId String?
+    inventory   HotelInventory? @relation(fields: [inventoryId], references: [id], onDelete: SetNull)
+
+    roomName String
+
+    roomTypeId String?
+    roomType   HotelRoomType? @relation(fields: [roomTypeId], references: [id], onDelete: SetNull)
+
+    quantity Int @default(1)
+
+    adults Int @default(1)
+
+    children Int @default(0)
+
+    price HotelBookingRoomPrice?
+
+    createdAt DateTime @default(now())
+
+    @@index([bookingId])
+}
+
+model HotelBookingRoomPrice {
+    id String @id @default(cuid())
+
+    bookingRoomId String @unique
+
+    bookingRoom   HotelBookingRoom @relation(fields: [bookingRoomId], references: [id], onDelete: Cascade)
+    originalPrice Float
+    nightlyPrice  Float
+
+    nights Int
+
+    subtotal Float
+
+    tax Float @default(0)
+
+    serviceFee Float @default(0)
+
+    discount Float @default(0)
+
+    total Float
+
+    currency Currency
+}
+
+model HotelBookingPriceSnapshot {
+    id String @id @default(cuid())
+
+    bookingId String       @unique
+    booking   HotelBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    roomAmount   Float
+    currencyRate Float
+    taxAmount    Float @default(0)
+
+    serviceFee Float @default(0)
+
+    discount Float @default(0)
+
+    totalAmount   Float
+    depositAmount Float    @default(0)
+    payableNow    Float
+    payableLater  Float
+    currency      Currency
+
+    createdAt DateTime @default(now())
+}
+
+model HotelBookingGuest {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking HotelBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    firstName String
+
+    lastName String
+
+    email String?
+
+    phone String?
+
+    nationality String?
+
+    passportNumber  String?
+    passportCountry String?
+    dateOfBirth     String?
+    gender          Gender
+    isMainGuest     Boolean @default(false)
+
+    createdAt DateTime @default(now())
+
+    @@index([bookingId])
+}
+
+model HotelBookingStatusHistory {
+    id String @id @default(cuid())
+
+    bookingId String
+    booking   HotelBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    status HotelBookingStatus
+
+    note String?
+
+    createdAt DateTime @default(now())
+
+    @@index([bookingId])
+}
+
+model HotelExtra {
+    id String @id @default(cuid())
+
+    hotelId String
+    hotel   Hotel  @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+    name String
+
+    description String?
+
+    type HotelExtraType
+
+    required Boolean @default(false)
+
+    prices HotelExtraPrice[]
+
+    bookingExtras HotelBookingExtra[]
+
+    active Boolean @default(true)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([hotelId])
+}
+
+model HotelExtraPrice {
+    id String @id @default(cuid())
+
+    extraId String
+
+    extra HotelExtra @relation(fields: [extraId], references: [id], onDelete: Cascade)
+
+    price Float
+
+    currency Currency
+
+    unit ExtraPriceUnit
+
+    active Boolean @default(true)
+
+    createdAt DateTime @default(now())
+
+    @@index([extraId])
+}
+
+model HotelBookingExtra {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking HotelBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    extraId String?
+
+    extra HotelExtra? @relation(fields: [extraId], references: [id], onDelete: SetNull)
+
+    name String
+
+    quantity Int @default(1)
+
+    price Float
+
+    total Float
+
+    currency Currency
+
+    createdAt DateTime @default(now())
+
+    @@index([bookingId])
+}
+
+model HotelMealOption {
+    id String @id @default(cuid())
+
+    hotelId String
+
+    hotel        Hotel              @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+    bookingMeals HotelBookingMeal[]
+    name         String
+
+    description String?
+
+    type HotelMealType
+
+    prices HotelMealPrice[]
+
+    active Boolean @default(true)
+
+    createdAt DateTime @default(now())
+
+    @@index([hotelId])
+}
+
+model HotelMealPrice {
+    id String @id @default(cuid())
+
+    mealId String
+
+    meal HotelMealOption @relation(fields: [mealId], references: [id], onDelete: Cascade)
+
+    price Float
+
+    currency Currency
+
+    unit MealPriceUnit
+
+    createdAt DateTime @default(now())
+
+    @@index([mealId])
+}
+
+model HotelBookingMeal {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking HotelBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    mealId String?
+    meal   HotelMealOption? @relation(fields: [mealId], references: [id], onDelete: SetNull)
+
+    name String
+
+    quantity Int @default(1)
+
+    price Float
+
+    total Float
+
+    currency Currency
+
+    createdAt DateTime @default(now())
+
+    @@index([bookingId])
+}
+
+enum MealPriceUnit {
+    per_person
+
+    per_room
+
+    per_night
+}
+
+enum HotelMealType {
+    breakfast
+
+    lunch
+
+    dinner
+
+    snack
+}
+
+enum ExtraPriceUnit {
+    per_booking
+
+    per_room
+
+    per_night
+
+    per_person
+
+    per_day
+}
+
+enum HotelBookingStatus {
+    pending
+    confirmed
+    cancelled
+    completed
+    rejected
+    no_show
+}
+
+enum HotelExtraType {
+    airport_transfer
+
+    extra_bed
+
+    baby_crib
+
+    breakfast
+
+    dinner
+
+    lunch
+
+    laundry
+
+    minibar
+
+    parking
+
+    spa
+
+    other
+}
+
+enum HotelImageCategory {
+    cover
+    exterior
+    room
+    pool
+    restaurant
+    spa
+    gym
+}
+
+enum HotelRatePlanType {
+    standard
+
+    refundable
+
+    non_refundable
+
+    breakfast_included
+
+    half_board
+
+    full_board
+
+    corporate
+
+    member
+
+    promotional
+}
+
+enum InventoryLockStatus {
+    locked
+
+    converted
+
+    expired
+
+    released
+}
+
+enum RoomType {
+    standard
+    superior
+    deluxe
+    premier
+    executive
+    club
+    studio
+
+    single
+    double
+    twin
+    triple
+    quadruple
+    family
+
+    connecting
+    adjoining
+
+    suite
+    junior_suite
+    executive_suite
+    presidential_suite
+    honeymoon_suite
+
+    apartment
+    villa
+    bungalow
+    cottage
+    chalet
+    cabin
+
+    dormitory
+    capsule
+
+    penthouse
+    loft
+
+    accessible
+
+    other
+}
+
+enum BedType {
+    single
+    twin
+    double
+    queen
+    king
+    california_king
+
+    bunk_bed
+    sofa_bed
+    futon
+    murphy_bed
+
+    mixed
+
+    other
+}
+
+enum RoomViewType {
+    city
+    sea
+    ocean
+    beach
+
+    lake
+    river
+    mountain
+    garden
+    pool
+
+    park
+    forest
+
+    landmark
+    skyline
+
+    courtyard
+
+    street
+
+    interior
+
+    no_view
+
+    other
+}
+
+enum BathroomType {
+    private
+    shared
+}
+
+enum SmokingPolicy {
+    smoking
+    non_smoking
+    both
+}
+
+enum MealPlan {
+    room_only
+    breakfast
+    half_board
+    full_board
+    all_inclusive
+}
+
+enum NearbyPlaceType {
+    airport
+
+    landmark
+
+    attraction
+
+    shopping
+
+    restaurant
+
+    station
+
+    hospital
+
+    beach
+
+    other
+}
+
+enum HotelPriceRuleType {
+    weekend
+    weekday
+    holiday
+    peak_season
+    low_season
+    early_bird
+    last_minute
+    long_stay
+    promotional
+    coupon
+    member
+    custom
+}
+
+enum HotelPriceAdjustmentType {
+    percentage
+    fixed_amount
+}
+
+enum Weekday {
+    monday
+    tuesday
+    wednesday
+    thursday
+    friday
+    saturday
+    sunday
+}
+
+enum TripType {
+    BUSINESS // Công tác
+    LEISURE // Du lịch
+    FAMILY // Gia đình
+    COUPLE // Cặp đôi
+    SOLO // Du lịch một mình
+    FRIENDS // Đi cùng bạn bè
+    GROUP // Đoàn / nhóm
+}
+
+enum RetaurentCategory {
+    interior
+
+    food
+
+    menu
+
+    outside
+}
+
+enum HotelStatus {
+    DRAFT
+
+    ACTIVE
+
+    INACTIVE
+
+    SUSPENDED
+}
+
+model HotelRoomFacilities {
+    id String @id @default(cuid())
+
+    roomId String    @unique
+    room   HotelRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+    tv                Boolean?
+    minibar           Boolean?
+    refrigerator      Boolean?
+    microwave         Boolean?
+    coffeeMachine     Boolean?
+    kettle            Boolean?
+    safe              Boolean?
+    wardrobe          Boolean?
+    hairDryer         Boolean?
+    ironingFacilities Boolean?
+    slippers          Boolean?
+    bathrobe          Boolean?
+    telephone         Boolean?
+    desk              Boolean?
+    sofa              Boolean?
+    balcony           Boolean?
+    bathtub           Boolean?
+    shower            Boolean?
+    streamingService  Boolean?
+}
+
+model HotelFacilities {
+    id String @id @default(cuid())
+
+    hotelId String @unique
+    hotel   Hotel  @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+    wifi             HotelWifi?
+    parking          HotelParking?
+    swimmingPool     HotelPool?
+    gym              HotelGym?
+    spa              HotelSpa?
+    restaurants      HotelRestaurant[]
+    bar              Boolean?
+    roomService      Boolean?
+    laundry          Boolean?
+    meetingRoom      Boolean?
+    businessCenter   Boolean?
+    familyRoom       Boolean?
+    kidsClub         Boolean?
+    playground       Boolean?
+    atm              Boolean?
+    giftShop         Boolean?
+    currencyExchange Boolean?
+    concierge        Boolean?
+    luggageStorage   Boolean?
+    sharedKitchen    Boolean?
+    vendingMachine   Boolean?
+    library          Boolean?
+    casino           Boolean?
+    nightClub        Boolean?
+    beachAccess      Boolean?
+    privateBeach     Boolean?
+    waterPark        Boolean?
+    golfCourse       Boolean?
+    tennisCourt      Boolean?
+    transportation   HotelTransportation?
+    accessibility    HotelAccessibility?
+    safety           HotelSafety?
+}
+
+model HotelWifi {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    available Boolean
+
+    free Boolean?
+
+    speedMbps Float?
+
+    availableInRooms       Boolean?
+    availableInPublicAreas Boolean?
+}
+
+model HotelParking {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    available Boolean
+
+    free                Boolean?
+    valet               Boolean?
+    covered             Boolean?
+    evCharging          Boolean?
+    reservationRequired Boolean?
+}
+
+model HotelPool {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    available Boolean
+
+    indoor   Boolean?
+    outdoor  Boolean?
+    infinity Boolean?
+    heated   Boolean?
+    kidsPool Boolean?
+}
+
+model HotelGym {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    available Boolean
+
+    open24Hours     Boolean?
+    personalTrainer Boolean?
+}
+
+model HotelSpa {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    available Boolean
+
+    massage   Boolean?
+    sauna     Boolean?
+    steamRoom Boolean?
+    hotTub    Boolean?
+}
+
+model HotelRestaurant {
+    id String @id @default(cuid())
+
+    facilitiesId String
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    name String
+
+    cuisineTypes String[]
+
+    breakfast Boolean?
+    lunch     Boolean?
+    dinner    Boolean?
+    buffet    Boolean?
+
+    reservation Boolean?
+    capacity    Int?
+    opening     String?
+    images      HotelRestaurantImage[]
+    price       Float
+    currency    Currency
+}
+
+model HotelRestaurantImage {
+    id           String            @id @default(cuid())
+    restaurantId String
+    restaurant   HotelRestaurant   @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+    url          String
+    category     RetaurentCategory
+    isPrimary    Boolean           @default(false)
+    sortOrder    Int               @default(0)
+    createdAt    DateTime          @default(now())
+
+    @@index([restaurantId])
+}
+
+model HotelTransportation {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    airportShuttle Boolean?
+
+    shuttleFee Float?
+
+    taxiService          Boolean?
+    carRental            Boolean?
+    bicycleRental        Boolean?
+    trainStationTransfer Boolean?
+}
+
+model HotelAccessibility {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    wheelchairAccessible Boolean?
+
+    accessibleRoom     Boolean?
+    elevator           Boolean?
+    brailleSignage     Boolean?
+    accessibleBathroom Boolean?
+    hearingAccessible  Boolean?
+    visualAccessible   Boolean?
+    ramp               Boolean?
+}
+
+model HotelSafety {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    security24Hours Boolean?
+
+    cctv Boolean?
+
+    smokeDetector    Boolean?
+    fireAlarm        Boolean?
+    fireExtinguisher Boolean?
+    firstAidKit      Boolean?
+    emergencyExit    Boolean?
+    securityBox      Boolean?
+    inRoomSafe       Boolean?
+}
+
+model HotelFavorite {
+    id String @id @default(cuid())
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    hotelId String
+    hotel   Hotel  @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+
+    @@unique([userId, hotelId])
+    @@index([userId])
+    @@index([hotelId])
+}
+
+model HotelImage {
+    id String @id @default(cuid())
+
+    hotelId String
+    hotel   Hotel  @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+    url       String
+    category  HotelImageCategory
+    sortOrder Int
+    isPrimary Boolean            @default(false)
+    createdAt DateTime           @default(now())
+}
+
+model Hotel {
+    id String @id @default(cuid())
+
+    information HotelInformation?
+    hotelImage  HotelImage[]
+    inventory   HotelInventory[]
+    // new
+    roomTypes   HotelRoomType[]
+
+    reviews         HotelReview[]
+    facilitiesHotel HotelFacilities?
+
+    // new
+    bookings     HotelBooking[]
+    extras       HotelExtra[]
+    mealOptions  HotelMealOption[]
+    favorites    HotelFavorite[]
+    nearbyPlaces HotelNearbyPlace[]
+    areaGuides   HotelAreaGuide[]
+
+    status HotelStatus @default(DRAFT)
+
+    name           String
+    slug           String   @unique
+    aliases        String[] @default([])
+    keywords       String[] @default([])
+    tags           String[] @default([])
+    searchText     String?
+    featured       Boolean  @default(false)
+    searchable     Boolean  @default(true)
+    searchPriority Int      @default(0)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model HotelInformation {
+    id String @id @default(cuid())
+
+    hotelId String @unique
+    hotel   Hotel  @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+    addressId String
+    address   Address @relation(fields: [addressId], references: [id], onDelete: Restrict)
+
+    providerBookingId String
+    providerBooking   ProviderBooking @relation(fields: [providerBookingId], references: [id], onDelete: Cascade)
+}
+
+model HotelInventory {
+    id String @id @default(cuid())
+
+    hotelId String
+    hotel   Hotel  @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+    roomTypeId String
+    roomType   HotelRoomType @relation(fields: [roomTypeId], references: [id], onDelete: Cascade)
+
+    availability HotelAvailability?
+    ratePlans    HotelRatePlan[]
+    locks        HotelInventoryLock[]
+
+    bookingRooms HotelBookingRoom[]
+
+    @@unique([hotelId, roomTypeId])
+    @@index([hotelId])
+}
+
+model HotelAvailability {
+    id String @id @default(cuid())
+
+    inventoryId String         @unique
+    inventory   HotelInventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+
+    isAvailable    Boolean
+    availableRooms Int?
+
+    lastUpdated DateTime?
+
+    calendar HotelAvailabilityCalendar[]
+}
+
+model HotelAvailabilityCalendar {
+    id String @id @default(cuid())
+
+    availabilityId String
+    availability   HotelAvailability @relation(fields: [availabilityId], references: [id], onDelete: Cascade)
+
+    date              DateTime
+    available         Boolean
+    remainingRooms    Int?
+    priceOverride     Float?
+    stopSell          Boolean?
+    /**
+     * cuối tuần phải ở tối thiểu 2 đêm
+     * không được check-in vào ngày lễ
+     * không được check-out vào một số ngày
+     */
+    minimumStay       Int?
+    closedToArrival   Boolean?
+    closedToDeparture Boolean?
+
+    @@unique([availabilityId, date])
+    @@index([date])
+}
+
+model HotelInventoryLock {
+    id String @id @default(cuid())
+
+    inventoryId String
+    inventory   HotelInventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+
+    ratePlanId String?
+    ratePlan   HotelRatePlan? @relation(fields: [ratePlanId], references: [id], onDelete: SetNull)
+
+    userId String?
+    user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+    bookingId String?
+    booking   HotelBooking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    quantity Int                 @default(1)
+    status   InventoryLockStatus @default(locked)
+
+    startTime DateTime
+    releasedAt DateTime?
+    endTime DateTime
+    expiresAt DateTime
+    createdAt DateTime @default(now())
+
+    @@index([inventoryId])
+    @@index([expiresAt])
+}
+
+model HotelRatePlan {
+    id String @id @default(cuid())
+
+    inventoryId String
+    inventory   HotelInventory       @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+    locks       HotelInventoryLock[]
+    name        String
+
+    description String?
+
+    type     HotelRatePlanType
+    code     String?
+    mealPlan MealPlan?
+    policies HotelPolicies?
+
+    refundable Boolean @default(false)
+
+    cancellationPolicy HotelRatePlanCancellation?
+
+    price HotelRoomPrice?
+
+    active Boolean @default(true)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([inventoryId])
+}
+
+model HotelRatePlanCancellation {
+    id String @id @default(cuid())
+
+    ratePlanId String        @unique
+    ratePlan   HotelRatePlan @relation(fields: [ratePlanId], references: [id], onDelete: Cascade)
+
+    freeCancellation Boolean @default(false)
+    beforeHours      Int?
+
+    cancellationFee Float?
+}
+
+model HotelNearbyPlace {
+    id String @id @default(cuid())
+
+    hotelId String
+
+    hotel Hotel @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+    name String
+
+    type NearbyPlaceType
+
+    address String?
+
+    latitude Float?
+
+    longitude Float?
+
+    distanceKm Float?
+
+    travelTimeMinutes Int?
+
+    description String?
+
+    createdAt DateTime @default(now())
+
+    @@index([hotelId])
+    @@index([type])
+}
+
+model HotelPolicies {
+    id String @id @default(cuid())
+
+    ratePlanId String        @unique
+    ratePlan   HotelRatePlan @relation(fields: [ratePlanId], references: [id], onDelete: Cascade)
+
+    checkIn      HotelCheckInPolicy?
+    guest        HotelGuestPolicy?
+    payment      HotelPaymentPolicy?
+    cancellation HotelCancellationPolicy?
+    booking      HotelBookingPolicy?
+    houseRules   HotelHouseRules?
+
+    @@index([ratePlanId])
+}
+
+model HotelHouseRules {
+    quietHoursStart String?
+    quietHoursEnd   String?
+    partiesAllowed  Boolean?
+    visitorsAllowed Boolean?
+    alcoholAllowed  Boolean?
+    policiesId      String        @unique
+    policies        HotelPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+}
+
+model HotelCheckInPolicy {
+    id String @id @default(cuid())
+
+    checkInTime  String
+    checkOutTime String
+
+    frontDesk24Hours Boolean?
+    selfCheckIn      Boolean?
+    expressCheckIn   Boolean?
+    expressCheckOut  Boolean?
+
+    keyCollectionNote String?
+
+    policiesId String        @unique
+    policies   HotelPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+}
+
+model HotelGuestPolicy {
+    id String @id @default(cuid())
+
+    minimumAge Int?
+
+    childrenAllowed Boolean?
+    petsAllowed     Boolean?
+    smokingAllowed  Boolean?
+
+    extraBedAvailable Boolean?
+    extraBedFee       Float?
+
+    policiesId String        @unique
+    policies   HotelPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+}
+
+model HotelPaymentPolicy {
+    id String @id @default(cuid())
+
+    paymentTypes  String[]
+    acceptedCards String[]
+
+    cashAccepted    Boolean?
+    depositRequired Boolean?
+    depositAmount   Float?
+
+    policiesId String        @unique
+    policies   HotelPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+}
+
+model HotelCancellationPolicy {
+    id String @id @default(cuid())
+
+    freeCancellation            Boolean?
+    freeCancellationBeforeHours Int?
+
+    cancellationFee Float?
+    noShowFee       Float?
+
+    policiesId String        @unique
+    policies   HotelPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+}
+
+model HotelBookingPolicy {
+    id String @id @default(cuid())
+
+    policiesId          String        @unique
+    policies            HotelPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+    instantConfirmation Boolean
+    refundable          Boolean
+    payAtHotel          Boolean?
+    payLater            Boolean?
+
+    breakfastIncluded Boolean?
+
+    mobileVoucher Boolean?
+
+    onlineCheckIn  Boolean?
+    onlineCheckOut Boolean?
+
+    requiresCreditCardGuarantee Boolean?
+    requiresDeposit             Boolean?
+    requiresGovernmentId        Boolean?
+
+    allowsModification Boolean?
+}
+
+model HotelRoomPrice {
+    id String @id @default(cuid())
+
+    ratePlanId String        @unique
+    ratePlan   HotelRatePlan @relation(fields: [ratePlanId], references: [id], onDelete: Cascade)
+
+    currency            Currency
+    originalPrice       Float?
+    averageNightlyPrice Float?
+    taxesIncluded       Boolean                  @default(false)
+    payAtHotel          Boolean                  @default(false)
+    breakdown           HotelRoomPriceBreakdown?
+    rules               HotelRoomPriceRule[]
+}
+
+model HotelRoomPriceRule {
+    id String @id @default(cuid())
+
+    priceId String
+    price   HotelRoomPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    name String?
+
+    type           HotelPriceRuleType
+    adjustmentType HotelPriceAdjustmentType
+    value          Float
+    currency       Currency?
+    minimumNights  Int?
+    maximumNights  Int?
+    validFrom      DateTime?
+    validTo        DateTime?
+    daysOfWeek     Weekday[]
+    priority       Int                      @default(0)
+    combinable     Boolean                  @default(false)
+    active         Boolean                  @default(true)
+    createdAt      DateTime                 @default(now())
+    updatedAt      DateTime                 @updatedAt
+
+    @@index([type])
+    @@index([active])
+    @@index([validFrom, validTo])
+    @@index([priceId, active])
+}
+
+model HotelRoomPriceBreakdown {
+    id      String         @id @default(cuid())
+    priceId String         @unique
+    price   HotelRoomPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    roomRate      Float    @default(0)
+    nights        Int      @default(1)
+    taxes         Float    @default(0)
+    serviceFee    Float    @default(0)
+    resortFee     Float    @default(0)
+    cleaningFee   Float    @default(0)
+    extraFee      Float    @default(0)
+    discount      Float    @default(0)
+    includedItems String[] @default([])
+}
+
+model HotelReview {
+    id String @id @default(cuid())
+
+    hotelId String
+    hotel   Hotel  @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+    bookingId String?
+    booking   HotelBooking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+    roomTypeId String?
+    roomType   HotelRoomType? @relation(fields: [roomTypeId], references: [id], onDelete: SetNull)
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    tripType TripType?
+
+    wouldRecommend Boolean?
+    language       String?
+    anonymous      Boolean            @default(false)
+    overallRating  Float
+    status         ReviewStatus       @default(pending)
+    response       String?
+    responseAt     DateTime?
+    helpfulCount   Int                @default(0)
+    images         HotelReviewImage[]
+    cleanliness    Float?
+    service        Float?
+    location       Float?
+    facilities     Float?
+    valueForMoney  Float?
+    comfort        Float?
+    sleepQuality   Float?
+    food           Float?
+    wifi           Float?
+
+    title           String?
+    comment         String
+    pros            String?
+    cons            String?
+    verified        Boolean   @default(false)
+    reviewerName    String?
+    reviewerCountry String?
+    stayDate        DateTime?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([bookingId])
+    @@index([hotelId])
+    @@index([overallRating])
+    @@index([verified])
+    @@index([createdAt])
+}
+
+model HotelReviewImage {
+    id        String      @id @default(cuid())
+    reviewId  String
+    review    HotelReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+    url       String
+    sortOrder Int
+    createdAt DateTime    @default(now())
+    updatedAt DateTime    @updatedAt
+}
+
+model HotelRoomType {
+    id String @id @default(cuid())
+
+    hotelId String
+    hotel   Hotel  @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+    name         String
+    description  String?
+    // ví dụ
+    // Deluxe
+    // Suite
+    // Villa
+    inventories  HotelInventory[]
+    bookingRooms HotelBookingRoom[]
+    rooms        HotelRoom[]
+    reviews      HotelReview[]
+    active       Boolean            @default(false)
+    sortOrder    Int                @default(0)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([hotelId])
+}
+
+model HotelRoom {
+    id String @id @default(cuid())
+
+    roomTypeId String
+    roomType   HotelRoomType @relation(fields: [roomTypeId], references: [id], onDelete: Cascade)
+
+    roomFacilities HotelRoomFacilities?
+    active         Boolean              @default(false)
+
+    name        String
+    description String?
+    roomSize    Float?
+    bedTypes    BedType[]
+
+    maxGuests   Int?
+    maxAdults   Int?
+    maxChildren Int?
+
+    totalRooms        Int?
+    breakfastIncluded Boolean?
+
+    smokingPolicy   SmokingPolicy?
+    mealPlan        MealPlan?
+    bedCount        Int?
+    bathroomCount   Float?
+    viewType        RoomViewType?
+    bathRoomType    BathroomType?
+    roomImage       HotelRoomImage[]
+    floor           Int?
+    soundproof      Boolean?
+    nonSmoking      Boolean?
+    airConditioning Boolean?
+    kitchenette     Boolean?
+    privateBathroom Boolean?
+}
+
+model HotelRoomImage {
+    id String @id @default(cuid())
+
+    roomId String
+    room   HotelRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+    thumbnail  String?
+    cover      String?
+    hero       String?
+    rooms      String[]
+    bedroom    String[]
+    bathroom   String[]
+    balcony    String[]
+    livingRoom String[]
+    kitchen    String[]
+    workspace  String[]
+    view       String[]
+
+    gallery String[]
+}
+
+model ProviderBooking {
+    id String @id @default(cuid())
+
+    // =====================================================
+    // BASIC INFORMATION
+    // =====================================================
+
+    officialName String?
+
+    displayName String
+
+    shortName String?
+
+    logo String?
+
+    banner String?
+
+    subtitle String?
+
+    description String?
+
+    // =====================================================
+    // COMPANY INFORMATION
+    // =====================================================
+
+    companyType String?
+
+    registrationNumber String?
+
+    taxCode String?
+
+    foundedYear Int?
+
+    employeeCount Int?
+
+    // =====================================================
+    // CONTACT INFORMATION
+    // =====================================================
+
+    email String?
+
+    phone String?
+
+    hotline String?
+
+    website String?
+
+    // =====================================================
+    // ADDRESS
+    // =====================================================
+
+    address String?
+
+    city String?
+
+    state String?
+
+    country String?
+
+    postalCode String?
+
+    latitude Float?
+
+    longitude Float?
+
+    // =====================================================
+    // SOCIAL MEDIA
+    // =====================================================
+
+    facebook String?
+
+    instagram String?
+
+    youtube String?
+
+    linkedin String?
+
+    // =====================================================
+    // TRUST & VERIFICATION
+    // =====================================================
+
+    verified Boolean @default(false)
+
+    status ProviderStatus @default(ACTIVE)
+
+    licenseNumber String?
+
+    // =====================================================
+    // OPERATION STATUS
+    // =====================================================
+
+    operatingStatus ProviderOperatingStatus @default(OPEN)
+
+    // =====================================================
+    // RATING & REVIEW
+    // =====================================================
+
+    averageRating Float @default(0)
+
+    totalReviews Int @default(0)
+
+    totalRatings Int @default(0)
+
+    fiveStarCount Int @default(0)
+
+    fourStarCount Int @default(0)
+
+    threeStarCount Int @default(0)
+
+    twoStarCount Int @default(0)
+
+    oneStarCount Int @default(0)
+
+    // =====================================================
+    // BOOKING STATISTICS
+    // =====================================================
+
+    totalBookings Int @default(0)
+
+    completedBookings Int @default(0)
+
+    cancelledBookings Int @default(0)
+
+    totalCustomers Int @default(0)
+
+    // =====================================================
+    // SERVICE CAPABILITY
+    // =====================================================
+
+    service typeServiceBooking[]
+
+    // =====================================================
+    // RELATIONS
+    // =====================================================
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
+
+    hotels          HotelInformation[]
+    carrentals      CarRental[]
+    buses           Bus[]
+    yacht           Yacht[]
+    airportTransfer AirportTransfer[]
+    fly             Fly[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+enum typeServiceBooking {
+    HOTEL
+    CARRENTAL
+    AIRPORTTRANSFER
+    TICKETFLY
+    TICKETBUS
+    YACHT
+}
+
+enum ProviderStatus {
+    ACTIVE
+
+    INACTIVE
+
+    PENDING
+
+    BLOCKED
+}
+
+enum ProviderOperatingStatus {
+    OPEN // Đang nhận booking
+    TEMPORARILY_CLOSED // Tạm đóng
+    CLOSED // Ngừng hoạt động
+    MAINTENANCE // Bảo trì hệ thống
+    SOLD_OUT // Hết chỗ / hết dịch vụ tạm thời
+    HOLIDAY // Nghỉ lễ / nghỉ theo lịch
+}
+
+model Coupon {
+    id String @id @default(cuid())
+
+    code String @unique
+
+    name String
+
+    description String?
+
+    discountType DiscountType
+
+    value Float
+
+    maxDiscount Float?
+
+    minimumAmount Float?
+
+    target PromotionTargetType
+
+    active Boolean @default(true)
+
+    startDate DateTime?
+
+    endDate DateTime?
+
+    usageLimit Int?
+
+    usedCount Int @default(0)
+
+    usages CouponUsage[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([code])
+    @@index([active])
+}
+
+model CouponUsage {
+    id String @id @default(cuid())
+
+    couponId String
+    coupon Coupon @relation(fields: [couponId], references: [id], onDelete: Cascade)
+
+    userId String
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    referenceId String?
+
+    referenceType CounponReferenceType?
+
+    discountAmount Float
+
+    createdAt DateTime @default(now())
+
+    @@unique([couponId, userId, referenceType, referenceId])
+    @@index([couponId])
+    @@index([userId])
+}
+
+enum CounponReferenceType {
+    HOTEL_BOOKING
+    BUS_BOOKING
+    CAR_RENTAL_BOOKING
+    TRANSFER_BOOKING
+    FLIGHT_BOOKING
+    YACHT_BOOKING
+}
+
+datasource db {
+    provider = "postgresql"
 }
 
 enum Role {
-  ADMIN
-  EDITOR
-  USER
+    ADMIN
+    EDITOR
+    USER
 }
+
+enum Currency {
+    VND
+    USD
+}
+
+enum ReviewStatus {
+    pending
+    approved
+    rejected
+    hidden
+}
+
+enum Gender {
+    Female
+    Male
+    Other
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model Payment {
+    id String @id @default(cuid())
+
+    // =========================
+    // RELATION
+    // =========================
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    // =========================
+    // POLYMORPHIC BOOKING
+    // =========================
+
+    // dùng cho mọi service
+
+    referenceId   String
+    referenceType PaymentReferenceType
+
+    // Ví dụ:
+    // HOTEL_BOOKING
+    // BUS_BOOKING
+    // CAR_RENTAL_BOOKING
+
+    // =========================
+    // MONEY
+    // =========================
+
+    amount Float
+
+    currency Currency
+
+    status PaymentStatus @default(pending)
+
+    method PaymentMethodType?
+
+    // =========================
+    // RELATIONS
+    // =========================
+
+    transactions PaymentTransaction[]
+
+    refunds Refund[]
+
+    invoices Invoice[]
+
+    statusHistory PaymentStatusHistory[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([userId])
+    @@index([status])
+    @@index([referenceType, referenceId])
+}
+
+model PaymentTransaction {
+    id String @id @default(cuid())
+
+    paymentId String
+
+    payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+    type PaymentTransactionType
+
+    provider String?
+
+    providerTransactionId String?
+
+    amount Float
+
+    currency Currency
+
+    status PaymentStatus
+
+    rawResponse Json?
+
+    createdAt DateTime @default(now())
+
+    @@index([paymentId])
+    @@index([providerTransactionId])
+}
+
+model PaymentStatusHistory {
+    id String @id @default(cuid())
+
+    paymentId String
+
+    payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+    fromStatus PaymentStatus?
+
+    toStatus PaymentStatus
+
+    note String?
+
+    createdAt DateTime @default(now())
+
+    @@index([paymentId])
+}
+
+model Refund {
+    id String @id @default(cuid())
+
+    paymentId String
+
+    payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+    amount Float
+
+    currency Currency
+
+    status RefundStatus @default(pending)
+
+    reason String?
+
+    providerRefundId String?
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([paymentId])
+    @@index([status])
+}
+
+model Invoice {
+    id String @id @default(cuid())
+
+    paymentId String
+
+    payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+    invoiceNumber String @unique
+
+    customerName String
+
+    customerEmail String?
+
+    customerPhone String?
+
+    address String?
+
+    subtotal Float
+
+    tax Float @default(0)
+
+    discount Float @default(0)
+
+    total Float
+
+    currency Currency
+
+    pdfUrl String?
+
+    createdAt DateTime @default(now())
+
+    @@index([paymentId])
+}
+
+model PaymentWebhook {
+    id String @id @default(cuid())
+
+    provider String
+
+    event String
+
+    payload Json
+
+    processed Boolean @default(false)
+
+    createdAt DateTime @default(now())
+
+    @@index([provider])
+    @@index([processed])
+}
+
+enum PaymentStatus {
+    pending
+    processing
+    paid
+    failed
+    cancelled
+    refunded
+    partially_refunded
+}
+
+enum PaymentMethodType {
+    credit_card
+
+    debit_card
+
+    bank_transfer
+
+    e_wallet
+
+    cash
+
+    paypal
+
+    apple_pay
+
+    google_pay
+
+    crypto
+
+    other
+}
+
+enum PaymentTransactionType {
+    payment
+
+    refund
+
+    partial_refund
+}
+
+enum RefundStatus {
+    pending
+
+    processing
+
+    completed
+
+    rejected
+
+    failed
+}
+
+enum PaymentReferenceType {
+    HOTEL_BOOKING
+    BUS_BOOKING
+    CAR_RENTAL_BOOKING
+    TRANSFER_BOOKING
+    FLIGHT_BOOKING
+    YACHT_BOOKING
+}
+
+model Promotion {
+    id String @id @default(cuid())
+
+    name String
+
+    description String?
+
+    code String? @unique
+
+    target PromotionTargetType
+
+    status PromotionStatus @default(draft)
+
+    // =====================
+    // TIME
+    // =====================
+
+    startDate DateTime
+
+    endDate DateTime
+
+    // =====================
+    // LIMIT
+    // =====================
+
+    usageLimit Int?
+
+    usedCount Int @default(0)
+
+    // =====================
+    // RELATION
+    // =====================
+
+    rules PromotionRule[]
+
+    usages PromotionUsage[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([status])
+    @@index([target])
+    @@index([startDate])
+    @@index([endDate])
+}
+
+model PromotionRule {
+    id String @id @default(cuid())
+
+    promotionId String
+    promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+
+    discountType DiscountType
+
+    value         Float
+    maxDiscount   Float?
+    minimumAmount Float?
+    maximumAmount Float?
+    createdAt     DateTime @default(now())
+
+    @@index([promotionId])
+}
+
+model PromotionUsage {
+    id String @id @default(cuid())
+
+    promotionId String
+    promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    referenceId    String?
+    referenceType  PromotionReferenceType?
+    discountAmount Float
+    createdAt      DateTime                @default(now())
+
+    @@unique([promotionId, userId, referenceType, referenceId])
+    @@index([promotionId])
+    @@index([userId])
+}
+
+enum PromotionTargetType {
+    all
+
+    hotel
+
+    flight
+
+    bus
+
+    transfer
+
+    car_rental
+
+    yacht
+}
+
+enum PromotionStatus {
+    draft
+
+    active
+
+    paused
+
+    expired
+}
+
+enum DiscountType {
+    percentage
+
+    fixed_amount
+}
+
+enum PromotionReferenceType {
+    HOTEL_BOOKING
+    BUS_BOOKING
+    CAR_RENTAL_BOOKING
+    TRANSFER_BOOKING
+    FLIGHT_BOOKING
+    YACHT_BOOKING
+}
+
+model Wishlist {
+    id String @id @default(cuid())
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    name      String
+    items     WishlistItem[]
+    createdAt DateTime       @default(now())
+}
+
+model WishlistItem {
+    id String @id @default(cuid())
+
+    itemType WishlistItemType
+
+    wishlistId String
+    wishlist   Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+
+    @@index([wishlistId])
+}
+
+enum WishlistItemType {
+   HOTEL_BOOKING
+    BUS_BOOKING
+    CAR_RENTAL_BOOKING
+    TRANSFER_BOOKING
+    FLIGHT_BOOKING
+    YACHT_BOOKING
+}
+
+model YachtBooking {
+    id String @id @default(cuid())
+
+    // ==========================
+    // USER
+    // ==========================
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    // ==========================
+    // PRODUCT
+    // ==========================
+
+    yachtId String
+    yacht   Yacht  @relation(fields: [yachtId], references: [id])
+
+    tripId String?
+    trip   YachtTrip? @relation(fields: [tripId], references: [id])
+
+    packageId String?
+    package   YachtPackage? @relation(fields: [packageId], references: [id])
+
+    // ==========================
+    // BOOKING INFO
+    // ==========================
+
+    bookingCode String @unique
+
+    bookingDate DateTime @default(now())
+
+    startTime DateTime
+
+    endTime DateTime?
+
+    guestCount Int
+
+    status  YachtBookingStatus @default(pending)
+    reviews YachtReview[]
+    // ==========================
+    // PRICE
+    // ==========================
+
+    currency Currency
+
+    subtotal Float
+
+    tax Float @default(0)
+
+    discount Float @default(0)
+
+    serviceFee Float @default(0)
+
+    total Float
+
+    // ==========================
+    // RELATION
+    // ==========================
+
+    passengers YachtBookingPassenger[]
+
+    extras        YachtBookingExtra[]
+    contact       YachtBookingContact?
+    pickup        YachtBookingPickup?
+    statusHistory YachtBookingStatusHistory[]
+    locks         YachtInventoryLock[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([userId])
+    @@index([yachtId])
+    @@index([status])
+}
+
+model YachtBookingPassenger {
+    id String @id @default(cuid())
+
+    bookingId String
+    booking   YachtBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    fullName String
+
+    nationality String?
+
+    passportNumber String?
+
+    dateOfBirth DateTime?
+    gender      Gender
+
+    email String
+
+    phone          String
+    expiresAt      String
+    identityNumber String
+    type           YachtPassengerType
+}
+
+model YachtBookingExtra {
+    id String @id @default(cuid())
+
+    bookingId String
+    booking   YachtBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    extraId String?
+    extra   YachtExtra? @relation(fields: [extraId], references: [id])
+
+    quantity Int @default(1)
+
+    price Float
+
+    total Float
+}
+
+enum VoucherDiscountType {
+    percentage
+
+    fixed
+}
+
+model YachtBookingContact {
+    id String @id @default(cuid())
+
+    bookingId String @unique
+
+    booking YachtBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    fullName String
+
+    email String?
+
+    phone String
+
+    note String?
+}
+
+model YachtBookingPickup {
+    id String @id @default(cuid())
+
+    bookingId String @unique
+
+    booking YachtBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    pickupRequired Boolean @default(false)
+
+    addressId String?
+    address   Address? @relation(fields: [addressId], references: [id])
+
+    pickupTime DateTime?
+
+    note String?
+}
+
+model YachtBookingStatusHistory {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking YachtBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    fromStatus YachtBookingStatus?
+
+    toStatus YachtBookingStatus
+
+    note String?
+
+    createdAt DateTime @default(now())
+
+    @@index([bookingId])
+}
+
+model YachtCrew {
+    id String @id @default(cuid())
+
+    yachtId String
+
+    yacht Yacht  @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+    name  String
+
+    role YachtCrewRole
+
+    avatar String?
+
+    experienceYears Int?
+
+    languages String[]
+}
+
+enum YachtType {
+    yacht
+
+    catamaran
+
+    sailboat
+
+    speedboat
+
+    motorboat
+
+    luxury_yacht
+
+    fishing_boat
+
+    house_boat
+
+    other
+}
+
+enum YachtServiceType {
+    private_charter
+
+    shared_cruise
+
+    hourly_rental
+
+    daily_rental
+
+    overnight
+
+    fishing_trip
+
+    diving_trip
+
+    island_hopping
+}
+
+enum YachtFuelType {
+    diesel
+
+    gasoline
+
+    electric
+
+    hybrid
+}
+
+enum YachtCondition {
+    new
+
+    excellent
+
+    good
+
+    normal
+}
+
+enum YachtImageCategory {
+    exterior
+
+    deck
+
+    cabin
+
+    bedroom
+
+    bathroom
+
+    kitchen
+
+    dining
+
+    lounge
+
+    activity
+
+    crew
+
+    safety
+
+    marina
+
+    other
+}
+
+enum YachtCrewRole {
+    captain
+
+    co_captain
+
+    sailor
+
+    chef
+
+    guide
+
+    host
+
+    instructor
+}
+
+enum YachtTripStatus {
+    active
+
+    sold_out
+
+    cancelled
+
+    completed
+}
+
+enum YachtRepeatType {
+    once
+
+    daily
+
+    weekly
+
+    monthly
+}
+
+enum YachtPricingType {
+    private_charter
+
+    per_person
+
+    shared_trip
+
+    custom
+}
+
+enum YachtDurationType {
+    hourly
+
+    half_day
+
+    daily
+
+    overnight
+
+    multi_day
+}
+
+enum YachtFeeType {
+    fuel
+
+    captain
+
+    crew
+
+    port
+
+    marina
+
+    cleaning
+
+    overtime
+
+    tax
+
+    service
+
+    other
+}
+
+enum YachtDiscountType {
+    early_booking
+
+    last_minute
+
+    seasonal
+
+    promotion
+
+    coupon
+}
+
+enum YachtExtraCategory {
+    food
+
+    beverage
+
+    activity
+
+    equipment
+
+    service
+
+    decoration
+
+    entertainment
+
+    other
+}
+
+enum YachtExtraPricingType {
+    fixed
+
+    per_person
+
+    per_hour
+
+    per_day
+}
+
+enum YachtRefundType {
+    full
+
+    partial
+
+    none
+}
+
+enum YachtBookingStatus {
+    pending
+
+    awaiting_payment
+
+    confirmed
+
+    cancelled
+
+    completed
+
+    rejected
+
+    expired
+}
+
+enum YachtPassengerType {
+    adult
+
+    child
+
+    infant
+}
+
+enum CancellationActor {
+    customer
+
+    provider
+
+    system
+}
+
+model YachtVehicleFacilities {
+    id String @id @default(cuid())
+
+    vehicleId String       @unique
+    vehicle   YachtVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    wifi Boolean?
+
+    bluetooth Boolean?
+
+    tv Boolean?
+
+    soundSystem Boolean?
+
+    kitchen Boolean?
+
+    refrigerator Boolean?
+
+    coffeeMachine Boolean?
+
+    bar Boolean?
+
+    jacuzzi Boolean?
+
+    swimmingPlatform Boolean?
+
+    sunDeck Boolean?
+
+    airConditioning Boolean?
+
+    heating Boolean?
+
+    shower Boolean?
+
+    toilet Boolean?
+
+    fishingEquipment Boolean?
+
+    snorkelingEquipment Boolean?
+
+    divingEquipment Boolean?
+}
+
+model YachtSafetyEquipment {
+    id String @id @default(cuid())
+
+    vehicleId String @unique
+
+    vehicle YachtVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    lifeJacket Boolean?
+
+    lifeRaft Boolean?
+
+    fireExtinguisher Boolean?
+
+    fireAlarm Boolean?
+
+    firstAidKit Boolean?
+
+    gps Boolean?
+
+    radar Boolean?
+
+    emergencyRadio Boolean?
+
+    insurance Boolean?
+}
+
+model YachtMarinaFacilities {
+    id String @id @default(cuid())
+
+    marinaId String      @unique
+    marina   YachtMarina @relation(fields: [marinaId], references: [id], onDelete: Cascade)
+
+    fuelStation Boolean?
+
+    restaurant Boolean?
+
+    cafe Boolean?
+
+    parking Boolean?
+
+    waitingLounge Boolean?
+
+    toilet Boolean?
+
+    shower Boolean?
+
+    drinkingWater Boolean?
+
+    electricity Boolean?
+
+    wifi Boolean?
+
+    security Boolean?
+
+    cctv Boolean?
+
+    luggageStorage Boolean?
+
+    convenienceStore Boolean?
+
+    atm Boolean?
+
+    customs Boolean?
+
+    immigration Boolean?
+}
+
+model YachtFavorite {
+    id String @id @default(cuid())
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    yachtId String
+    yacht   Yacht  @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+
+    @@unique([userId, yachtId])
+    @@index([userId])
+    @@index([yachtId])
+}
+
+model YachtMarina {
+    id String @id @default(cuid())
+
+    name String
+
+    yachts Yacht[]
+
+    addressId String
+    address   Address @relation(fields: [addressId], references: [id])
+
+    departureRoutes   YachtRoute[] @relation("DepartureMarina")
+    destinationRoutes YachtRoute[] @relation("DestinationMarina")
+    latitude          Float?
+
+    longitude Float?
+
+    country String?
+
+    city String?
+
+    contactPhone String?
+
+    operatingHours String?
+
+    marinaFacilities YachtMarinaFacilities?
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model YachtNotice {
+    id String @id @default(cuid())
+
+    yachtId String @unique
+
+    yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    important String?
+
+    beforeBooking String?
+
+    afterBooking String?
+
+    safetyNotice String?
+
+    createdAt DateTime @default(now())
+}
+
+model YachtPolicies {
+    id String @id @default(cuid())
+
+    yachtId String @unique
+
+    yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    cancellation YachtCancellationPolicy?
+
+    passenger YachtPassengerRequirement?
+
+    luggage YachtLuggagePolicy?
+
+    waiting YachtWaitingPolicy?
+
+    meetAndGreet YachtMeetAndGreet?
+
+    flightSupport YachtFlightSupport?
+
+    booking YachtBookingPolicy?
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model YachtCancellationPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies YachtPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    refundable Boolean @default(false)
+
+    freeCancellation Boolean @default(false)
+
+    freeCancellationBeforeHours Int?
+
+    cancellationType YachtRefundType
+
+    refundPercentage Float?
+
+    cancellationFee Float?
+
+    noShowFee Float?
+}
+
+model YachtPassengerRequirement {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies YachtPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    minimumAge Int?
+
+    passportRequired Boolean @default(false)
+
+    identityRequired Boolean @default(false)
+
+    nationalityRestriction String[]
+
+    childAllowed Boolean @default(true)
+
+    infantAllowed Boolean @default(true)
+
+    pregnantPassengerAllowed Boolean?
+}
+
+model YachtLuggagePolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies YachtPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    allowed Boolean @default(true)
+
+    maxWeightKg Float?
+
+    maxPieces Int?
+
+    oversizedAllowed Boolean?
+
+    note String?
+}
+
+model YachtWaitingPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies YachtPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    freeWaitingMinutes Int?
+
+    extraWaitingFeePerHour Float?
+
+    maximumWaitingHours Int?
+}
+
+model YachtMeetAndGreet {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies YachtPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    available Boolean @default(false)
+
+    pickupSign Boolean?
+
+    staffLanguage String[]
+
+    meetingPoint String?
+}
+
+model YachtFlightSupport {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies YachtPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    airportPickup Boolean?
+
+    flightNumberRequired Boolean?
+
+    flightDelayMonitoring Boolean?
+}
+
+model YachtBookingPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies YachtPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    instantConfirmation Boolean @default(true)
+
+    advanceBookingHours Int?
+
+    minimumBookingDuration Int?
+
+    modificationAllowed Boolean?
+}
+
+model YachtPrice {
+    id String @id @default(cuid())
+
+    yachtId String @unique
+
+    yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    currency Currency
+
+    pricingType YachtPricingType
+
+    basePrices YachtPriceOption[]
+
+    fees YachtPriceFee[]
+
+    discounts YachtPriceRule[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model YachtPriceOption {
+    id String @id @default(cuid())
+
+    priceId String
+
+    price YachtPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    name String
+
+    duration Int?
+
+    durationType YachtDurationType
+
+    minGuests Int?
+
+    maxGuests Int?
+
+    originalPrice Float?
+
+    includedItems String[]
+
+    createdAt DateTime @default(now())
+}
+
+model YachtTripPrice {
+    id String @id @default(cuid())
+
+    tripId String    @unique
+    trip   YachtTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    currency Currency
+
+    amount Float
+
+    originalAmount Float?
+
+    tax Float @default(0)
+
+    serviceFee Float @default(0)
+
+    discount Float @default(0)
+
+    finalAmount Float
+
+    createdAt DateTime @default(now())
+}
+
+model YachtPriceFee {
+    id String @id @default(cuid())
+
+    priceId String
+
+    price YachtPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    type YachtFeeType
+
+    amount Float
+
+    mandatory Boolean @default(false)
+
+    description String?
+}
+
+model YachtPriceRule {
+    id String @id @default(cuid())
+
+    priceId String
+
+    price YachtPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    type YachtDiscountType
+
+    percentage Float?
+
+    amount Float?
+
+    startDate DateTime?
+
+    endDate DateTime?
+
+    active Boolean @default(true)
+}
+
+model YachtExtra {
+    id String @id @default(cuid())
+
+    yachtId String
+
+    yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    name String
+
+    description String?
+
+    category      YachtExtraCategory
+    bookingExtras YachtBookingExtra[]
+    pricingType   YachtExtraPricingType
+    packageExtras YachtPackageExtra[]
+    price         Float
+
+    currency Currency
+
+    active Boolean @default(true)
+
+    images YachtExtraImage[]
+}
+
+model YachtExtraImage {
+    id String @id @default(cuid())
+
+    extraId String
+
+    extra YachtExtra @relation(fields: [extraId], references: [id], onDelete: Cascade)
+
+    url String
+
+    isPrimary Boolean @default(false)
+
+    sortOrder Int @default(0)
+}
+
+model YachtPackage {
+    id String @id @default(cuid())
+
+    yachtId  String
+    yacht    Yacht          @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+    bookings YachtBooking[]
+    name     String
+
+    description String?
+
+    duration Int?
+
+    durationType YachtDurationType
+
+    maxGuests Int?
+
+    price Float
+
+    currency Currency
+
+    includedItems String[]
+
+    extras YachtPackageExtra[]
+
+    images YachtPackageImage[]
+
+    active Boolean @default(true)
+
+    createdAt DateTime @default(now())
+}
+
+model YachtPackageExtra {
+    id String @id @default(cuid())
+
+    packageId String
+    package   YachtPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+    extraId String
+    extra   YachtExtra @relation(fields: [extraId], references: [id], onDelete: Cascade)
+
+    @@unique([packageId, extraId])
+}
+
+model YachtPackageImage {
+    id String @id @default(cuid())
+
+    packageId String
+
+    package YachtPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+    url String
+
+    sortOrder Int @default(0)
+}
+
+model YachtReview {
+    id String @id @default(cuid())
+
+    yachtId String
+    yacht   Yacht  @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    userId String?
+    user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+    bookingId String?
+    booking   YachtBooking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+    overallRating Float
+
+    captainRating Float?
+
+    crewRating Float?
+
+    cleanliness Float?
+
+    safety Float?
+
+    comfort Float?
+
+    experience Float?
+
+    valueForMoney Float?
+
+    title String?
+
+    comment String
+
+    images YachtReviewImage[]
+
+    verified Boolean @default(false)
+
+    status ReviewStatus @default(pending)
+
+    helpfulCount Int @default(0)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@unique([bookingId])
+}
+
+model YachtReviewImage {
+    id String @id @default(cuid())
+
+    reviewId String
+
+    review YachtReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+    url String
+
+    createdAt DateTime @default(now())
+}
+
+model YachtRatingSummary {
+    id String @id @default(cuid())
+
+    yachtId String @unique
+
+    yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    totalReviews Int @default(0)
+
+    averageRating Float @default(0)
+
+    captain Float @default(0)
+
+    crew Float @default(0)
+
+    safety Float @default(0)
+}
+
+model YachtRoute {
+    id String @id @default(cuid())
+
+    yachtId String
+    yacht   Yacht  @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    trip YachtTrip[]
+
+    departureMarinaId   String
+    destinationMarinaId String
+
+    departureMarina YachtMarina @relation("DepartureMarina", fields: [departureMarinaId], references: [id])
+
+    destinationMarina YachtMarina @relation("DestinationMarina", fields: [destinationMarinaId], references: [id])
+    destinationName   String
+
+    distanceNm Float?
+
+    durationMinutes Int?
+
+    stops YachtRouteStop[]
+
+    active Boolean @default(true)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model YachtRouteStop {
+    id String @id @default(cuid())
+
+    routeId String
+    route   YachtRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
+
+    name String
+
+    addressId String?
+    address   Address? @relation(fields: [addressId], references: [id])
+
+    stopDurationMinutes Int?
+
+    order Int
+
+    @@unique([routeId, order])
+}
+
+model YachtTrip {
+    id String @id @default(cuid())
+
+    yachtId String
+    yacht   Yacht  @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    routeId       String?
+    route         YachtRoute?    @relation(fields: [routeId], references: [id])
+    bookings      YachtBooking[]
+    departureTime DateTime
+
+    arrivalTime DateTime
+
+    status YachtTripStatus @default(active)
+
+    maxGuests Int?
+
+    schedule  YachtSchedule?
+    price     YachtTripPrice?
+    locks     YachtInventoryLock[]
+    createdAt DateTime             @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([departureTime])
+    @@index([status])
+}
+
+model YachtSchedule {
+    id String @id @default(cuid())
+
+    tripId String @unique
+
+    trip YachtTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    repeatType YachtRepeatType
+
+    daysOfWeek Int[]
+
+    startDate DateTime?
+
+    endDate DateTime?
+
+    departureTime String?
+}
+
+model YachtAvailability {
+    id String @id @default(cuid())
+
+    yachtId String @unique
+
+    yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    calendar YachtAvailabilityCalendar[]
+
+    locks YachtInventoryLock[]
+}
+
+model YachtAvailabilityCalendar {
+    id String @id @default(cuid())
+
+    availabilityId String
+
+    availability YachtAvailability @relation(fields: [availabilityId], references: [id], onDelete: Cascade)
+
+    date DateTime
+
+    available Boolean
+
+    booked Boolean @default(false)
+
+    stopSell Boolean @default(false)
+
+    @@unique([availabilityId, date])
+}
+
+model YachtInventoryLock {
+    id String @id @default(cuid())
+
+    availabilityId String?
+    availability   YachtAvailability? @relation(fields: [availabilityId], references: [id], onDelete: Cascade)
+
+    tripId String
+    trip   YachtTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    yachtId String
+    yacht   Yacht  @relation(fields: [yachtId], references: [id], onDelete: SetNull)
+
+    userId String?
+    user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+    bookingId String?
+    booking   YachtBooking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    startTime  DateTime
+    releasedAt DateTime?
+    status     InventoryLockStatus @default(locked)
+    endTime    DateTime
+    quantity   Int
+    expiresAt  DateTime
+
+    createdAt DateTime @default(now())
+
+    @@index([tripId])
+}
+
+model YachtVehicle {
+    id String @id @default(cuid())
+
+    yachtId String @unique
+
+    yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    name String?
+
+    manufacturer String?
+
+    model String?
+
+    year Int?
+
+    registrationNumber String?
+
+    lengthMeter Float?
+
+    widthMeter Float?
+
+    speedKnots Float?
+
+    fuelType YachtFuelType?
+
+    condition YachtCondition?
+
+    capacity        YachtCapacity?
+    facilities      YachtVehicleFacilities?
+    specification   YachtSpecification?
+    images          YachtVehicleImage[]
+    safetyEquipment YachtSafetyEquipment?
+    createdAt       DateTime                @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model YachtCapacity {
+    id String @id @default(cuid())
+
+    vehicleId String       @unique
+    vehicle   YachtVehicle @relation(fields: [vehicleId], references: [id])
+
+    guestCapacity Int
+
+    overnightCapacity Int?
+
+    cabinCount Int?
+
+    bathroomCount Int?
+
+    crewCapacity Int?
+}
+
+model YachtSpecification {
+    id String @id @default(cuid())
+
+    vehicleId String @unique
+
+    vehicle YachtVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    enginePowerHp Int?
+
+    cruisingSpeedKnots Float?
+
+    maxSpeedKnots Float?
+
+    fuelCapacityLiter Float?
+
+    rangeNm Float?
+}
+
+model YachtImage {
+    id String @id @default(cuid())
+
+    yachtId String
+
+    yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    url String
+
+    category YachtImageCategory
+
+    isPrimary Boolean @default(false)
+
+    sortOrder Int @default(0)
+
+    createdAt DateTime @default(now())
+}
+
+model YachtVehicleImage {
+    id String @id @default(cuid())
+
+    vehicleId String
+
+    vehicle YachtVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    url String
+
+    category YachtImageCategory
+
+    isPrimary Boolean @default(false)
+
+    sortOrder Int @default(0)
+
+    createdAt DateTime @default(now())
+}
+
+model Yacht {
+    id String @id @default(cuid())
+
+    providerBookingId String
+    providerBooking   ProviderBooking @relation(fields: [providerBookingId], references: [id])
+
+    marinaId String?
+    marina   YachtMarina? @relation(fields: [marinaId], references: [id], onDelete: SetNull)
+
+    vehicle YachtVehicle?
+
+    routes YachtRoute[]
+
+    trips YachtTrip[]
+
+    availability YachtAvailability?
+
+    price YachtPrice?
+
+    packages YachtPackage[]
+
+    extras YachtExtra[]
+
+    policies YachtPolicies?
+
+    notice YachtNotice?
+
+    bookings      YachtBooking[]
+    locks         YachtInventoryLock[]
+    reviews       YachtReview[]
+    image         YachtImage[]
+    favorites     YachtFavorite[]
+    ratingSummary YachtRatingSummary?
+    crew          YachtCrew[]
+    active        Boolean              @default(true)
+
+    name String
+
+    slug String @unique
+
+    aliases String[]
+
+    keywords String[]
+
+    tags String[]
+
+    searchText String?
+
+    featured Boolean @default(false)
+
+    searchable Boolean @default(true)
+
+    searchPriority Int @default(0)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+

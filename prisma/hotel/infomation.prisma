@@ -1,0 +1,12 @@
+model HotelInformation {
+    id String @id @default(cuid())
+
+    hotelId String @unique
+    hotel   Hotel  @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+    addressId String
+    address   Address @relation(fields: [addressId], references: [id], onDelete: Restrict)
+
+    providerBookingId String
+    providerBooking   ProviderBooking @relation(fields: [providerBookingId], references: [id], onDelete: Cascade)
+}
