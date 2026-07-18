@@ -1,0 +1,15 @@
+
+model FlyBookingContact {
+    id String @id @default(cuid())
+
+    bookingId String     @unique
+    booking   FlyBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    fullName String
+
+    email String
+
+    phone String
+
+    countryCode String?
+}

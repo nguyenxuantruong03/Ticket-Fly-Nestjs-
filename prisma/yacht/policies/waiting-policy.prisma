@@ -1,0 +1,15 @@
+
+
+model YachtWaitingPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies YachtPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    freeWaitingMinutes Int?
+
+    extraWaitingFeePerHour Float?
+
+    maximumWaitingHours Int?
+}

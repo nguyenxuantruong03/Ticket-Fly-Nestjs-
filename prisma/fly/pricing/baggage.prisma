@@ -1,0 +1,19 @@
+
+
+model FlyFareBaggage {
+    id String @id @default(cuid())
+
+    fareId String @unique
+
+    fare FlyFare @relation(fields: [fareId], references: [id], onDelete: Cascade)
+
+    cabinWeightKg Float?
+
+    checkedWeightKg Float?
+
+    extraBaggageAllowed Boolean @default(true)
+
+    extraBaggagePrice Float?
+
+    createdAt DateTime @default(now())
+}

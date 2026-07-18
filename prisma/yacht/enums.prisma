@@ -243,3 +243,9 @@ enum CancellationActor {
 
     system
 }
+
+enum VoucherDiscountType {
+    percentage
+
+    fixed
+}

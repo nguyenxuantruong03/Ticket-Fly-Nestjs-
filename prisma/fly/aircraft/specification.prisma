@@ -1,0 +1,26 @@
+
+model FlyAircraftSpecification {
+    id String @id @default(cuid())
+
+    aircraftId String @unique
+
+    aircraft FlyAircraft @relation(fields: [aircraftId], references: [id], onDelete: Cascade)
+
+    maxRangeKm Float?
+
+    cruiseSpeed Float?
+
+    maxPassengers Int?
+
+    engineType String?
+
+    engineCount Int?
+
+    wingspan Float?
+
+    length Float?
+
+    height Float?
+
+    firstFlightYear Int?
+}

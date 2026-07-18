@@ -1,0 +1,25 @@
+
+
+
+model CarRentalBookingExtra {
+    id String @id @default(cuid())
+
+    bookingId String
+    booking   CarRentalBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    extraId String?
+    extra   CarRentalExtra? @relation(fields: [extraId], references: [id], onDelete: SetNull)
+
+    // snapshot
+
+    name       String
+    type       CarRentalExtraType
+    quantity   Int                @default(1)
+    unitPrice  Float
+    totalPrice Float
+    currency   Currency
+    createdAt  DateTime           @default(now())
+
+    @@index([bookingId])
+    @@index([extraId])
+}

@@ -1,0 +1,18 @@
+
+
+model FlyCrewAssignment {
+    id String @id @default(cuid())
+
+    crewId String
+    crew   FlyCrew @relation(fields: [crewId], references: [id], onDelete: Cascade)
+
+    tripId String
+    trip   FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    inventoryId String
+    inventory   FlyInventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+
+    duty FlyCrewDuty
+
+    createdAt DateTime @default(now())
+}

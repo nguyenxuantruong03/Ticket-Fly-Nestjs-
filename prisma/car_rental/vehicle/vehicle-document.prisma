@@ -1,0 +1,12 @@
+
+model CarRentalVehicleDocument {
+    id        String           @id @default(cuid())
+    vehicleId String
+    vehicle   CarRentalVehicle @relation(fields: [vehicleId], references: [id])
+
+    type       RentalVehicleDocumentType
+    url        String
+    expiryDate DateTime?
+
+    @@index([vehicleId])
+}

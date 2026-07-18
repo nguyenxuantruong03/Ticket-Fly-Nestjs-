@@ -10,12 +10,22 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
+import { HotelStatus } from '@prisma/client';
+
 import { CreateHotelFacilitiesDto } from './options/facilities/create-hotel-facilities.dto';
 import { CreateHotelFavoriteDto } from './options/favorite/create-hotel-favorite.dto';
 import { CreateHotelImageDto } from './options/images/create-hotel-image.dto';
 import { CreateHotelRoomTypeDto } from './options/room-type/create-hotel-room-type.dto';
-import { CreateHotelAreaGuideDto } from './options/bookings/create-hotel-booking.dto';
-import { HotelStatus } from '@prisma/client';
+import {
+  CreateHotelAreaGuideDto,
+  CreateHotelBookingDto,
+  CreateHotelExtraDto,
+  CreateHotelMealOptionDto,
+} from './options/bookings/create-hotel-booking.dto';
+import { CreateHotelInformationDto } from './options/infomations/create-hotel-infomation.dto';
+import { CreateHotelInventoryDto } from './options/inventory/create-hotel-inventory.dto';
+import { CreateHotelReviewDto } from './options/reviews/create-hotel-review.dto';
+import { CreateHotelNearbyPlaceDto } from './options/nearby-place/create-hotel-nearby-place.dto';
 
 export class CreateHotelDto {
   // ======================================================
@@ -49,7 +59,7 @@ export class CreateHotelDto {
   // ======================================================
 
   @IsOptional()
-  @IsEnum(() => HotelStatus)
+  @IsEnum(HotelStatus)
   status?: HotelStatus;
 
   @IsOptional()
@@ -66,18 +76,16 @@ export class CreateHotelDto {
   searchPriority?: number;
 
   // ======================================================
-  // CONNECT RELATIONS
+  // CONNECT
   // ======================================================
 
   @IsOptional()
-  @IsString()
-  informationId?: string;
-
-  // ======================================================
-  // CREATE RELATIONS
-  // ======================================================
+  @ValidateNested({ each: true })
+  @Type(() => CreateHotelInformationDto)
+  information?: CreateHotelInformationDto;
 
   @IsOptional()
+  @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateHotelImageDto)
   hotelImage?: CreateHotelImageDto[];
@@ -88,16 +96,19 @@ export class CreateHotelDto {
   facilitiesHotel?: CreateHotelFacilitiesDto;
 
   @IsOptional()
+  @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateHotelFavoriteDto)
   favorites?: CreateHotelFavoriteDto[];
 
   @IsOptional()
+  @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateHotelAreaGuideDto)
   areaGuides?: CreateHotelAreaGuideDto[];
 
   @IsOptional()
+  @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateHotelRoomTypeDto)
   roomTypes?: CreateHotelRoomTypeDto[];
@@ -108,31 +119,37 @@ export class CreateHotelDto {
 
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
-  inventoryIds?: string[];
+  @ValidateNested({ each: true })
+  @Type(() => CreateHotelInventoryDto)
+  inventory?: CreateHotelInventoryDto[];
 
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
-  reviewIds?: string[];
+  @ValidateNested({ each: true })
+  @Type(() => CreateHotelReviewDto)
+  reviews?: CreateHotelReviewDto[];
 
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
-  bookingIds?: string[];
+  @ValidateNested({ each: true })
+  @Type(() => CreateHotelBookingDto)
+  bookings?: CreateHotelBookingDto[];
 
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
-  extraIds?: string[];
+  @ValidateNested({ each: true })
+  @Type(() => CreateHotelExtraDto)
+  extras?: CreateHotelExtraDto[];
 
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
-  mealOptionIds?: string[];
+  @ValidateNested({ each: true })
+  @Type(() => CreateHotelMealOptionDto)
+  mealOptions?: CreateHotelMealOptionDto[];
 
   @IsOptional()
   @IsArray()
-  @IsString({ each: true })
-  nearbyPlaceIds?: string[];
+  @ValidateNested({ each: true })
+  @Type(() => CreateHotelNearbyPlaceDto)
+  nearbyPlaces?: CreateHotelNearbyPlaceDto[];
 }

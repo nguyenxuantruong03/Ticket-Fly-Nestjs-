@@ -1,0 +1,18 @@
+
+model YachtLuggagePolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies YachtPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    allowed Boolean @default(true)
+
+    maxWeightKg Float?
+
+    maxPieces Int?
+
+    oversizedAllowed Boolean?
+
+    note String?
+}

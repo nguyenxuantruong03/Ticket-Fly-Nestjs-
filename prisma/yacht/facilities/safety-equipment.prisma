@@ -1,0 +1,26 @@
+
+model YachtSafetyEquipment {
+    id String @id @default(cuid())
+
+    vehicleId String @unique
+
+    vehicle YachtVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    lifeJacket Boolean?
+
+    lifeRaft Boolean?
+
+    fireExtinguisher Boolean?
+
+    fireAlarm Boolean?
+
+    firstAidKit Boolean?
+
+    gps Boolean?
+
+    radar Boolean?
+
+    emergencyRadio Boolean?
+
+    insurance Boolean?
+}

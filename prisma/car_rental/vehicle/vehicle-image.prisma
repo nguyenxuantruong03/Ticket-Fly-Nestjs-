@@ -1,0 +1,19 @@
+
+model CarRentalVehicleImage {
+    id String @id @default(cuid())
+
+    vehicleId String
+    vehicle   CarRentalVehicle @relation(fields: [vehicleId], references: [id])
+
+    url String
+
+    category RentalVehicleImageCategory
+    position RentalVehicleImagePosition?
+
+    alt       String?
+    isPrimary Boolean @default(false)
+    sortOrder Int     @default(0)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}

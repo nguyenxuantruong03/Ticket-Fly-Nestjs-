@@ -1,0 +1,36 @@
+
+model HotelRoom {
+    id String @id @default(cuid())
+
+    roomTypeId String
+    roomType   HotelRoomType @relation(fields: [roomTypeId], references: [id], onDelete: Cascade)
+
+    roomFacilities HotelRoomFacilities?
+    active         Boolean              @default(false)
+
+    name        String
+    description String?
+    roomSize    Float?
+    bedTypes    BedType[]
+
+    maxGuests   Int?
+    maxAdults   Int?
+    maxChildren Int?
+
+    totalRooms        Int?
+    breakfastIncluded Boolean?
+
+    smokingPolicy   SmokingPolicy?
+    mealPlan        MealPlan?
+    bedCount        Int?
+    bathroomCount   Float?
+    viewType        RoomViewType?
+    bathRoomType    BathroomType?
+    roomImage       HotelRoomImage[]
+    floor           Int?
+    soundproof      Boolean?
+    nonSmoking      Boolean?
+    airConditioning Boolean?
+    kitchenette     Boolean?
+    privateBathroom Boolean?
+}

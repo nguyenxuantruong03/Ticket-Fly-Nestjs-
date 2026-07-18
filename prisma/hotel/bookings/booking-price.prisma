@@ -1,0 +1,24 @@
+
+
+model HotelBookingPriceSnapshot {
+    id String @id @default(cuid())
+
+    bookingId String       @unique
+    booking   HotelBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    roomAmount   Float
+    currencyRate Float
+    taxAmount    Float @default(0)
+
+    serviceFee Float @default(0)
+
+    discount Float @default(0)
+
+    totalAmount   Float
+    depositAmount Float    @default(0)
+    payableNow    Float
+    payableLater  Float
+    currency      Currency
+
+    createdAt DateTime @default(now())
+}

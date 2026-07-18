@@ -1,9 +1,8 @@
 import { IsString } from 'class-validator';
 
 export class CreateYachtFavoriteDto {
-  // ==========================
-  // YACHT
-  // ==========================
+  @IsString()
+  userId: string;
 
   @IsString()
   yachtId: string;

@@ -1,0 +1,19 @@
+model CarRentalBookingPassenger {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking CarRentalBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    firstName String
+
+    lastName String?
+
+    email String?
+
+    phone String?
+
+    createdAt DateTime @default(now())
+
+    @@index([bookingId])
+}

@@ -1,0 +1,45 @@
+model AirportTransferBooking {
+    id String @id @default(cuid())
+
+    transferId String
+    transfer   AirportTransfer @relation(fields: [transferId], references: [id])
+
+    tripId String?
+
+    trip AirportTransferTrip? @relation(fields: [tripId], references: [id])
+
+    vehicleId String?
+
+    vehicle AirportTransferVehicle? @relation(fields: [vehicleId], references: [id])
+
+    userId String
+
+    user User @relation(fields: [userId], references: [id])
+
+    status AirportTransferBookingStatus
+
+    pickupTime DateTime
+
+    totalAmount Float
+
+    currency Currency
+
+    paymentStatus PaymentStatus
+
+    passengers AirportTransferBookingPassenger[]
+
+    contact AirportTransferBookingContact?
+
+    flight AirportTransferBookingFlight?
+
+    extras AirportTransferBookingExtra[]
+
+    timeline AirportTransferBookingTimeline[]
+
+    histories AirportTransferBookingStatusHistory[]
+    locks     AirportTransferInventoryLock[]
+    reviews   AirportTransferReview[]
+    createdAt DateTime                              @default(now())
+
+    updatedAt DateTime @updatedAt
+}

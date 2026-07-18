@@ -1,0 +1,29 @@
+model FlyRoute {
+    id String @id @default(cuid())
+
+    flyId String
+    fly   Fly    @relation(fields: [flyId], references: [id], onDelete: Cascade)
+
+    departureAirportId String
+    departureAirport   FlyAirport @relation("FlyDepartureAirport", fields: [departureAirportId], references: [id])
+
+    arrivalAirportId String
+    arrivalAirport   FlyAirport @relation("FlyArrivalAirport", fields: [arrivalAirportId], references: [id])
+
+    distanceKm Float?
+
+    estimatedDuration Int?
+
+    directFlight Boolean @default(true)
+
+    segments  FlyRouteSegment[]
+    routeType FlyRouteType
+    trips     FlyTrip[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([flyId])
+    @@index([departureAirportId])
+    @@index([arrivalAirportId])
+}

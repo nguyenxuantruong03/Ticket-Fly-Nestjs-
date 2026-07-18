@@ -1,0 +1,14 @@
+
+model AirportTransferContactInformation {
+    id String @id @default(cuid())
+
+    transferId String @unique
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+    
+    hotline String?
+    whatsapp String?
+    telegram String?
+    emergencyPhone String?
+    supportEmail String?
+    createdAt DateTime @default(now())
+}

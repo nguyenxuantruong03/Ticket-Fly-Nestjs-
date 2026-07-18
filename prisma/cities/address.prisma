@@ -18,34 +18,40 @@ model Address {
     // ======================================================
     // MAP
     // ======================================================
-    latitude                       Float?
-    longitude                      Float?
-    timezone                       String?
-    plusCode                       String?
-    precision                      AddressPrecision           @default(ADDRESS)
+    latitude          Float?
+    longitude         Float?
+    timezone          String?
+    plusCode          String?
+    precision         AddressPrecision   @default(ADDRESS)
     // ======================================================
     // RELATIONS
     // ======================================================
-    hotelInformations              HotelInformation[]
-    airport                        FlyAirport[]
+    hotelInformations HotelInformation[]
+
+    airport FlyAirport[]
+
     busRouteStop                   BusRouteStop[]
     busBoardingPoint               BusBoardingPoint[]
     busDropoffPoint                BusDropoffPoint[]
     yachtRouteStop                 YachtRouteStop[]
     yachtMarina                    YachtMarina[]
     yachtBookingPickups            YachtBookingPickup[]
-    departureBusRoutes             BusRoute[]                 @relation("BusDepartureAddress")
-    arrivalBusRoutes               BusRoute[]                 @relation("BusArrivalAddress")
-    departureAirportTransferRoutes AirportTransferRoute[]     @relation("AirportTransferDepartureAddress")
-    arrivalAirportTransferRoutes   AirportTransferRoute[]     @relation("AirportTransferArrivalAddress")
+    departureBusRoutes             BusRoute[]                @relation("BusDepartureAddress")
+    arrivalBusRoutes               BusRoute[]                @relation("BusArrivalAddress")
+    departureAirportTransferRoutes AirportTransferRoute[]    @relation("AirportTransferDepartureAddress")
+    arrivalAirportTransferRoutes   AirportTransferRoute[]    @relation("AirportTransferArrivalAddress")
     carRentalLocations             CarRentalLocation[]
-    airportTransferRouteStop       AirportTransferRouteStop[]
+    carRentalVehicleLocation       CarRentalVehicleLocation?
 
+    airportTransferRouteStop AirportTransferRouteStop[]
+    invoicePayment           Invoice?
+    hotelNearbyPlace         HotelNearbyPlace?
+    providerBooking          ProviderBooking?
     // ======================================================
     // TIMESTAMP
     // ======================================================
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    createdAt                DateTime                   @default(now())
+    updatedAt                DateTime                   @updatedAt
 }
 
 enum AddressPrecision {

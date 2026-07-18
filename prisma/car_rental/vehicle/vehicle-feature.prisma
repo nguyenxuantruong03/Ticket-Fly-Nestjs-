@@ -1,0 +1,28 @@
+
+model CarRentalVehicleFeatures {
+    id String @id @default(cuid())
+
+    vehicleId String @unique
+
+    vehicle            CarRentalVehicle @relation(fields: [vehicleId], references: [id])
+    airConditioner     Boolean?
+    bluetooth          Boolean?
+    gps                Boolean?
+    usbCharger         Boolean?
+    wirelessCharging   Boolean?
+    appleCarPlay       Boolean?
+    androidAuto        Boolean?
+    cruiseControl      Boolean?
+    reverseCamera      Boolean?
+    parkingSensor      Boolean?
+    dashCamera         Boolean?
+    sunroof            Boolean?
+    leatherSeats       Boolean?
+    heatedSeats        Boolean?
+    childSeatAvailable Boolean?
+    phoneHolder        Boolean?
+    helmetIncluded     Boolean?
+    raincoatIncluded   Boolean?
+    luggageRack        Boolean?
+    skiRack            Boolean?
+}

@@ -43,12 +43,6 @@ export class CreateFlyRouteSegmentDto {
 // ======================================================
 
 export class CreateFlyRouteDto {
-  @IsString()
-  departureAirportId: string;
-
-  @IsString()
-  arrivalAirportId: string;
-
   @IsOptional()
   @IsNumber()
   distanceKm?: number;

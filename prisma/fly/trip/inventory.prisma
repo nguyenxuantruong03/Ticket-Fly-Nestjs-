@@ -1,0 +1,58 @@
+
+model FlyInventory {
+    id String @id @default(cuid())
+
+    tripId String  @unique
+    trip   FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    crewAssignments FlyCrewAssignment[]
+    cabins          FlyCabinInventory[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model FlyCabinInventory {
+    id String @id @default(cuid())
+
+    inventoryId String
+
+    inventory FlyInventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+
+    cabinClass FlyCabinClass
+
+    totalSeats Int
+
+    availableSeats Int
+
+    reservedSeats Int
+
+    blockedSeats Int
+
+    overbookLimit Int?
+
+    waitlistSeats Int?
+
+    fares FlyInventoryFare[]
+}
+
+model FlyInventoryFare {
+    id String @id @default(cuid())
+
+    cabinInventoryId String
+    cabinInventory   FlyCabinInventory @relation(fields: [cabinInventoryId], references: [id], onDelete: Cascade)
+
+    fareId String
+    fare   FlyFare @relation(fields: [fareId], references: [id])
+
+    locks     FlyInventoryLock[]
+    waitlists FlyWaitlist[]
+    available Int
+
+    sold Int
+
+    hold Int
+
+    waitlist Int
+}

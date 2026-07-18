@@ -1,0 +1,28 @@
+
+model AirportTransferVehicleFeatures {
+    id String @id @default(cuid())
+
+    vehicleId String @unique
+
+    vehicle AirportTransferVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    airConditioner Boolean?
+
+    wifi Boolean?
+
+    usbCharger Boolean?
+
+    bottledWater Boolean?
+
+    childSeat Boolean?
+
+    wheelchairAccessible Boolean?
+
+    petFriendly Boolean?
+
+    phoneCharger Boolean?
+
+    music Boolean?
+
+    gpsTracking Boolean?
+}

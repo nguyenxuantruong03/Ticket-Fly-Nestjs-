@@ -1,0 +1,9 @@
+model BusReviewImage {
+    id        String    @id @default(cuid())
+    reviewId  String
+    review    BusReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+    url       String
+    createdAt DateTime  @default(now())
+
+    @@index([reviewId])
+}

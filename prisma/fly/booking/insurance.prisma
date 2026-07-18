@@ -1,0 +1,45 @@
+
+model FlyInsurance {
+    id String @id @default(cuid())
+
+    airlineId String?
+    airline   FlyAirline? @relation(fields: [airlineId], references: [id], onDelete: Restrict)
+
+    provider String
+
+    name String
+
+    description String?
+
+    coverage String?
+
+    amount Float
+
+    currency Currency
+
+    active Boolean @default(true)
+
+    passengers FlyPassengerInsurance[]
+}
+
+model FlyPassengerInsurance {
+    id String @id @default(cuid())
+
+    passengerId String
+    passenger   FlyPassenger @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+
+    insuranceId String
+    insurance   FlyInsurance @relation(fields: [insuranceId], references: [id], onDelete: Restrict)
+
+    quantity Int @default(1)
+
+    unitPrice Float
+
+    totalPrice Float
+
+    currency Currency
+
+    createdAt DateTime @default(now())
+
+    @@unique([passengerId, insuranceId])
+}

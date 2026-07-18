@@ -1,0 +1,12 @@
+model CarRentalPriceRule {
+    id String @id @default(cuid())
+
+    priceId String
+    price   CarRentalPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    type       CarRentalPriceRuleType
+    percentage Float?
+    amount     Float?
+    startDate  DateTime?
+    endDate    DateTime?
+}

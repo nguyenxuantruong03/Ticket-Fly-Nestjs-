@@ -1,0 +1,16 @@
+
+model FlyBoardingPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    boardingBeforeMinutes Int?
+
+    gateCloseMinutes Int?
+
+    onlineBoardingPass Boolean?
+
+    printedBoardingPass Boolean?
+}

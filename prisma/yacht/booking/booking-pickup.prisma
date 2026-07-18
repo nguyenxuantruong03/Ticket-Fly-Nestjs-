@@ -1,0 +1,18 @@
+
+
+model YachtBookingPickup {
+    id String @id @default(cuid())
+
+    bookingId String @unique
+
+    booking YachtBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    pickupRequired Boolean @default(false)
+
+    addressId String?
+    address   Address? @relation(fields: [addressId], references: [id])
+
+    pickupTime DateTime?
+
+    note String?
+}

@@ -1,0 +1,18 @@
+model HotelInventory {
+    id String @id @default(cuid())
+
+    hotelId String
+    hotel   Hotel  @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+    roomTypeId String
+    roomType   HotelRoomType @relation(fields: [roomTypeId], references: [id], onDelete: Cascade)
+
+    availability HotelAvailability?
+    ratePlans    HotelRatePlan[]
+    locks        HotelInventoryLock[]
+
+    bookingRooms HotelBookingRoom[]
+
+    @@unique([hotelId, roomTypeId])
+    @@index([hotelId])
+}

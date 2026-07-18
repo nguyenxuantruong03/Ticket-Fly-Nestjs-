@@ -1,0 +1,17 @@
+
+model BusBoardingPass {
+    id String @id @default(cuid())
+
+    ticketId String    @unique
+    ticket   BusTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+    status BoardingPassStatus @default(issued)
+
+    boardingTime DateTime?
+    scannedAt    DateTime?
+    gate         String?
+    platform     String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}

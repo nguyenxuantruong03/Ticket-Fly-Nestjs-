@@ -1,0 +1,18 @@
+
+
+model HotelAccessibility {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    wheelchairAccessible Boolean?
+
+    accessibleRoom     Boolean?
+    elevator           Boolean?
+    brailleSignage     Boolean?
+    accessibleBathroom Boolean?
+    hearingAccessible  Boolean?
+    visualAccessible   Boolean?
+    ramp               Boolean?
+}

@@ -1,0 +1,17 @@
+
+
+model AirportTransferVehicleSpecification {
+    id String @id @default(cuid())
+
+    vehicleId String @unique
+
+    vehicle AirportTransferVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    engineSizeCc Int?
+
+    fuelCapacity Float?
+
+    mileageKm Float?
+
+    vin String?
+}

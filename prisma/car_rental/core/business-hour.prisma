@@ -1,0 +1,20 @@
+
+
+model CarRentalBusinessHour {
+    id String @id @default(cuid())
+
+    rentalId String
+    rental   CarRental @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+
+    day WeekDay
+
+    openTime String
+
+    closeTime String
+
+    closed Boolean @default(false)
+
+    createdAt DateTime @default(now())
+
+    @@index([rentalId])
+}

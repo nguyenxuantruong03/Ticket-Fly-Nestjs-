@@ -1,0 +1,9 @@
+model CarRentalTrip {
+  id String @id @default(cuid())
+
+  rentalId  String              @unique
+  rental    CarRental           @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+  locations CarRentalLocation[]
+  schedule  CarRentalSchedule?
+  tripFee   CarRentalTripFee?
+}

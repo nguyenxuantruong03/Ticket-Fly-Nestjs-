@@ -1,0 +1,23 @@
+
+model AirportTransferRouteStop {
+    id String @id @default(cuid())
+
+    routeId String
+
+    route AirportTransferRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
+
+    addressId String
+
+    address Address @relation(fields: [addressId], references: [id])
+
+    stopOrder Int
+
+    estimatedArrival Int?
+
+    waitingMinutes Int?
+
+    createdAt DateTime @default(now())
+
+    @@unique([routeId, stopOrder])
+    @@index([routeId])
+}

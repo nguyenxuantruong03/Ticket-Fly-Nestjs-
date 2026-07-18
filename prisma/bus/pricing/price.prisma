@@ -1,0 +1,27 @@
+model BusPrice {
+    id String @id @default(cuid())
+
+    busId String @unique
+    bus   Bus    @relation(fields: [busId], references: [id], onDelete: Cascade)
+
+    currency  Currency
+    // Giá hiển thị ngoài danh sách
+    fromPrice Float
+
+    // Giá cao nhất (nếu muốn hiển thị khoảng giá)
+    toPrice Float?
+
+    // Giá trước giảm
+    originalFromPrice Float?
+    originalToPrice   Float?
+    breakdowns        BusPriceBreakdown[]
+    rules             BusPriceRule[]
+
+    effectiveFrom DateTime?
+    effectiveTo   DateTime?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([fromPrice])
+}

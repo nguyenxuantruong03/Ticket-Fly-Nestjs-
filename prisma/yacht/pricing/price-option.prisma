@@ -1,0 +1,25 @@
+
+
+model YachtPriceOption {
+    id String @id @default(cuid())
+
+    priceId String
+
+    price YachtPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    name String
+
+    duration Int?
+
+    durationType YachtDurationType
+
+    minGuests Int?
+
+    maxGuests Int?
+
+    originalPrice Float?
+
+    includedItems String[]
+
+    createdAt DateTime @default(now())
+}

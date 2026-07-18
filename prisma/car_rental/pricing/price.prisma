@@ -1,0 +1,57 @@
+model CarRentalPrice {
+    id String @id @default(cuid())
+
+    vehicleId String
+
+    vehicle CarRentalVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    // =====================
+    // VALID TIME
+    // =====================
+
+    startDate DateTime?
+
+    endDate DateTime?
+
+    // =====================
+    // PRICE TYPE
+    // =====================
+
+    pricingType RentalDurationType
+
+    // =====================
+    // PRICE
+    // =====================
+
+    currency Currency
+
+    pricePerHour Float?
+
+    pricePerDay Float?
+
+    pricePerWeek Float?
+
+    pricePerMonth Float?
+
+    originalPrice Float?
+
+    // =====================
+    // RULE
+    // =====================
+
+    minimumDays Int?
+
+    maximumDays Int?
+
+    // =====================
+    // EXTRA
+    // =====================
+
+    breakdown  CarRentalPriceBreakdown?
+    priceRules CarRentalPriceRule[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([vehicleId, startDate, endDate])
+}

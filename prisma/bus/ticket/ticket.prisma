@@ -1,0 +1,15 @@
+model BusTicket {
+    id        String     @id @default(cuid())
+    bookingId String
+    booking   BusBooking @relation(fields: [bookingId], references: [id])
+
+    ticketNumber String    @unique
+    issuedAt     DateTime?
+
+    status BusTicketStatus
+
+    seatNumber   String?
+    qrCode       String?
+    boardingPass BusBoardingPass?
+    barcode      String?
+}

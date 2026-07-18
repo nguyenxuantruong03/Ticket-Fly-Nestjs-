@@ -1,0 +1,22 @@
+
+model YachtCancellationPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies YachtPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    refundable Boolean @default(false)
+
+    freeCancellation Boolean @default(false)
+
+    freeCancellationBeforeHours Int?
+
+    cancellationType YachtRefundType
+
+    refundPercentage Float?
+
+    cancellationFee Float?
+
+    noShowFee Float?
+}

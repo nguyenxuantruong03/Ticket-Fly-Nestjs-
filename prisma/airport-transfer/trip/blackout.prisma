@@ -1,0 +1,16 @@
+
+model AirportTransferBlackoutDate {
+    id String @id @default(cuid())
+
+    availabilityId String
+
+    availability AirportTransferAvailability @relation(fields: [availabilityId], references: [id], onDelete: Cascade)
+
+    date DateTime
+
+    reason String?
+
+    createdAt DateTime @default(now())
+
+    @@index([date])
+}

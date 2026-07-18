@@ -1,0 +1,22 @@
+
+
+model FlyCodeshare {
+    id String @id @default(cuid())
+
+    tripId String
+    trip FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    marketingAirlineId String
+    marketingAirline FlyAirline @relation("MarketingAirline", fields: [marketingAirlineId], references: id)
+
+    marketingFlightNumber String
+
+    operatingAirlineId String
+    operatingAirline FlyAirline @relation("OperatingAirline", fields: [operatingAirlineId], references: [id])
+
+    operatingFlightNumber String
+
+    createdAt DateTime @default(now())
+
+    @@index([tripId])
+}

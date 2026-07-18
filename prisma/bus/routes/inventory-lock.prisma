@@ -1,0 +1,28 @@
+
+
+model BusSeatInventoryLock {
+    id String @id @default(cuid())
+
+    bookingId String?
+    booking   BusBooking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    vehicleId String
+    vehicle   BusVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    userId String?
+    user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+    tripId String
+    trip   BusTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    startTime  DateTime
+    releasedAt DateTime?
+    status     InventoryLockStatus @default(locked)
+    endTime    DateTime
+    quantity   Int
+    expiresAt  DateTime
+
+    createdAt DateTime @default(now())
+
+    @@index([expiresAt])
+}

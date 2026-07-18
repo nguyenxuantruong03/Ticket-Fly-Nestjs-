@@ -1,0 +1,15 @@
+model FlyTransitPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    selfTransfer Boolean
+
+    baggageTransfer Boolean
+
+    visaRequiredDuringTransit Boolean
+
+    minimumConnectionMinutes Int?
+}

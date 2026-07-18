@@ -1,0 +1,30 @@
+
+model FlySchedule {
+    id String @id @default(cuid())
+
+    flyId String
+
+    fly Fly @relation(fields: [flyId], references: [id], onDelete: Cascade)
+
+    departureTime String
+
+    arrivalTime String
+
+    startDate DateTime
+
+    endDate DateTime?
+
+    operatingDays WeekDay[]
+
+    aircraftId String?
+
+    aircraft FlyAircraft? @relation(fields: [aircraftId], references: [id])
+
+    active Boolean @default(true)
+
+    trips FlyTrip[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}

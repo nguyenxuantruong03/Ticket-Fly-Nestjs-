@@ -1,0 +1,52 @@
+model FlyCabin {
+  id String @id @default(cuid())
+
+  aircraftId String
+
+  aircraft FlyAircraft @relation(fields: [aircraftId], references: [id], onDelete: Cascade)
+
+  class FlyCabinClass
+
+  name String?
+
+  rows Int?
+
+  totalSeats Int
+
+  seats FlySeat[]
+
+  createdAt DateTime @default(now())
+}
+
+model FlySeat {
+  id String @id @default(cuid())
+
+  cabinId String
+
+  cabin FlyCabin @relation(fields: [cabinId], references: [id], onDelete: Cascade)
+
+  seatNumber String
+
+  row Int?
+
+  column String?
+
+  type FlySeatType
+
+  extraLegroom Boolean @default(false)
+
+  emergencyExit Boolean @default(false)
+
+  nearWindow Boolean?
+
+  nearAisle Boolean?
+
+  nearWing Boolean?
+
+  available      Boolean                @default(true)
+  locks          FlySeatInventoryLock[]
+  seatAssignment FlySeatAssignment[]
+  createdAt      DateTime               @default(now())
+
+  @@unique([cabinId, seatNumber])
+}

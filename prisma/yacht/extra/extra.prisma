@@ -1,0 +1,24 @@
+
+model YachtExtra {
+    id String @id @default(cuid())
+
+    yachtId String
+
+    yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    name String
+
+    description String?
+
+    category      YachtExtraCategory
+    bookingExtras YachtBookingExtra[]
+    pricingType   YachtExtraPricingType
+    packageExtras YachtPackageExtra[]
+    price         Float
+
+    currency Currency
+
+    active Boolean @default(true)
+
+    images YachtExtraImage[]
+}

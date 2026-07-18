@@ -1,0 +1,14 @@
+
+
+model BusChildPolicy {
+    id String @id @default(cuid())
+
+    policiesId String      @unique
+    policies   BusPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    freeAgeUnder         Int?
+    childTicketAgeFrom   Int?
+    childTicketAgeTo     Int?
+    childDiscountPercent Float?
+    createdAt            DateTime @default(now())
+}

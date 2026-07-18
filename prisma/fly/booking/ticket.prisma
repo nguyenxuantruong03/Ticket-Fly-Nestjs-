@@ -1,0 +1,35 @@
+
+model FlyTicket {
+    id          String @id @default(cuid())
+    passengerId String
+
+    passenger FlyPassenger @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+
+    ticketNumber String @unique
+
+    pnr String?
+
+    qrCode String?
+
+    issuedAt DateTime?
+
+    boardingPass FlyBoardingPass?
+
+    createdAt DateTime @default(now())
+}
+
+model FlyBoardingPass {
+    id String @id @default(cuid())
+
+    ticketId String @unique
+
+    ticket FlyTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+    gate String?
+
+    boardingTime DateTime?
+
+    boardingGroup String?
+
+    barcode String?
+}

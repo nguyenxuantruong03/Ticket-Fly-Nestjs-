@@ -1,0 +1,40 @@
+
+model FlyMealSelection {
+    id String @id @default(cuid())
+
+    passengerId String @unique
+
+    passenger FlyPassenger @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+
+    mealId String
+
+    meal FlyMeal @relation(fields: [mealId], references: [id], onDelete: Restrict)
+
+    quantity Int @default(1)
+
+    amount Float?
+
+    currency Currency?
+}
+
+model FlyMeal {
+    id String @id @default(cuid())
+
+    airlineId String
+
+    airline FlyAirline @relation(fields: [airlineId], references: [id], onDelete: Cascade)
+
+    name String
+
+    description String?
+
+    type FlyMealType
+
+    image String?
+
+    price Float?
+
+    currency   Currency?
+    selections FlyMealSelection[]
+    active     Boolean            @default(true)
+}

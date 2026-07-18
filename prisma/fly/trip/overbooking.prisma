@@ -1,0 +1,13 @@
+
+
+model FlyOverbookingRule {
+    id String @id @default(cuid())
+
+    airlineId String
+
+    airline FlyAirline @relation(fields: [airlineId], references: [id])
+
+    cabinClass FlyCabinClass
+
+    percentage Float
+}

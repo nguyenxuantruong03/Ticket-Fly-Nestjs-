@@ -1,0 +1,14 @@
+model FlyRouteSegment {
+    id String @id @default(cuid())
+
+    routeId String
+    route   FlyRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
+
+    segmentOrder      Int
+    estimatedDuration Int?
+    distanceKm        Float?
+
+    createdAt DateTime @default(now())
+
+    @@index([routeId])
+}

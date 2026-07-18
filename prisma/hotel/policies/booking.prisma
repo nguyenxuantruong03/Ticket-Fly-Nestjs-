@@ -1,0 +1,18 @@
+model HotelBookingPolicy {
+    id String @id @default(cuid())
+
+    policiesId          String        @unique
+    policies            HotelPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+    instantConfirmation Boolean
+    refundable          Boolean
+    payAtHotel          Boolean?
+    payLater            Boolean?
+    breakfastIncluded Boolean?
+    mobileVoucher Boolean?
+    onlineCheckIn  Boolean?
+    onlineCheckOut Boolean?
+    requiresCreditCardGuarantee Boolean?
+    requiresDeposit             Boolean?
+    requiresGovernmentId        Boolean?
+    allowsModification Boolean?
+}

@@ -1,0 +1,19 @@
+
+model HotelSafety {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    security24Hours Boolean?
+
+    cctv Boolean?
+
+    smokeDetector    Boolean?
+    fireAlarm        Boolean?
+    fireExtinguisher Boolean?
+    firstAidKit      Boolean?
+    emergencyExit    Boolean?
+    securityBox      Boolean?
+    inRoomSafe       Boolean?
+}

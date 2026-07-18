@@ -1,0 +1,17 @@
+
+
+model YachtBookingContact {
+    id String @id @default(cuid())
+
+    bookingId String @unique
+
+    booking YachtBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    fullName String
+
+    email String?
+
+    phone String
+
+    note String?
+}

@@ -1,0 +1,27 @@
+
+
+model CarRentalLocation {
+    id String @id @default(cuid())
+
+    tripId String
+    trip   CarRentalTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    bookingId String?
+    booking   CarRentalBooking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    type RentalLocationType
+
+    name String
+
+    addressId String
+    address   Address @relation(fields: [addressId], references: [id], onDelete: Restrict)
+
+    available Boolean  @default(true)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([bookingId, type])
+    @@index([tripId])
+    @@index([type])
+    @@index([addressId])
+}

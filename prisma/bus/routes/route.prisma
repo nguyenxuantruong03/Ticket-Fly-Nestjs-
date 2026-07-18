@@ -1,0 +1,27 @@
+model BusRoute {
+    id String @id @default(cuid())
+
+    busId String
+    bus   Bus    @relation(fields: [busId], references: [id], onDelete: Cascade)
+
+    departureAddressId String
+    departureAddress   Address @relation("BusDepartureAddress", fields: [departureAddressId], references: [id])
+
+    arrivalAddressId String
+    arrivalAddress   Address @relation("BusArrivalAddress", fields: [arrivalAddressId], references: [id])
+
+    distanceKm Float?
+
+    estimatedDuration Int?
+
+    boardingPoints BusBoardingPoint[]
+
+    dropoffPoints BusDropoffPoint[]
+
+    trips     BusTrip[]
+    code      String?
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+
+    @@index([busId])
+}

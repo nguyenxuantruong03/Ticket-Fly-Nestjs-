@@ -1,0 +1,15 @@
+
+
+model CarRentalSchedule {
+    id String @id @default(cuid())
+
+    tripId String        @unique
+    trip   CarRentalTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    durationType RentalDurationType
+    minimumHours Int?
+    minimumDays  Int?
+    maximumDays  Int?
+    pickupTime   String?
+    returnTime   String?
+}

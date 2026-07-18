@@ -1,0 +1,31 @@
+model HotelBooking {
+    id String @id @default(cuid())
+
+    hotelId String
+    hotel   Hotel  @relation(fields: [hotelId], references: [id])
+
+    userId String?
+    user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+    status         HotelBookingStatus          @default(pending)
+    checkIn        DateTime
+    checkOut       DateTime
+    totalRooms     Int
+    rooms          HotelBookingRoom[]
+    guests         HotelBookingGuest[]
+    price          HotelBookingPriceSnapshot?
+    statusHistory  HotelBookingStatusHistory[]
+    specialRequest String?
+
+    extras    HotelBookingExtra[]
+    meals     HotelBookingMeal[]
+    expiresAt DateTime?
+    locks     HotelInventoryLock[]
+    reviews   HotelReview[]
+    createdAt DateTime             @default(now())
+    updatedAt DateTime             @updatedAt
+
+    @@index([hotelId])
+    @@index([userId])
+    @@index([status])
+}

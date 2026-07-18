@@ -1,0 +1,19 @@
+model AirportTransferAvailability {
+  id String @id @default(cuid())
+
+  transferId String @unique
+
+  transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+  available Boolean @default(true)
+
+  calendars AirportTransferAvailabilityCalendar[]
+
+  locks AirportTransferInventoryLock[]
+
+  blackoutDates AirportTransferBlackoutDate[]
+
+  updatedAt DateTime @updatedAt
+
+  createdAt DateTime @default(now())
+}

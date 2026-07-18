@@ -1,0 +1,20 @@
+
+model FlySeatAssignment {
+    id String @id @default(cuid())
+
+    passengerId String       @unique
+    passenger   FlyPassenger @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+
+    seatId String
+    seat   FlySeat @relation(fields: [seatId], references: [id], onDelete: Restrict)
+
+    paid Boolean @default(false)
+
+    amount Float?
+
+    currency Currency?
+
+    assignedAt DateTime @default(now())
+
+    @@unique([seatId])
+}

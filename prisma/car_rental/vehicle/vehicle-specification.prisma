@@ -1,0 +1,15 @@
+
+model CarRentalVehicleSpecification {
+    id String @id @default(cuid())
+
+    vehicleId String           @unique
+    vehicle   CarRentalVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    vin                String?
+    engineSizeCc       Int?
+    horsePower         Int?
+    batteryCapacityKwh Float?
+    rangeKm            Float?
+    condition          RentalVehicleCondition?
+    previousOwners     Int?
+}

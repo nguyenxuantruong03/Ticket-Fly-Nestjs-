@@ -1,0 +1,28 @@
+
+
+model CarRentalExtraPrice {
+    id String @id @default(cuid())
+
+    extraId String
+
+    extra CarRentalExtra @relation(fields: [extraId], references: [id], onDelete: Cascade)
+
+    pricingType CarRentalExtraPricingType
+
+    amount Float
+
+    currency Currency
+
+    minimumQuantity Int?
+
+    maximumQuantity Int?
+
+    startDate DateTime?
+
+    endDate DateTime?
+
+    createdAt DateTime @default(now())
+
+    @@index([extraId])
+}
+

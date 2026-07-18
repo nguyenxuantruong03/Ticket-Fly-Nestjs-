@@ -1,0 +1,17 @@
+model YachtSchedule {
+    id String @id @default(cuid())
+
+    tripId String @unique
+
+    trip YachtTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    repeatType YachtRepeatType
+
+    daysOfWeek Int[]
+
+    startDate DateTime?
+
+    endDate DateTime?
+
+    departureTime String?
+}

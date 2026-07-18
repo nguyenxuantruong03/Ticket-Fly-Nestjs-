@@ -1,0 +1,34 @@
+model AirportTransferRoute {
+    id String @id @default(cuid())
+
+    transferId String
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    type               AirportTransferRouteType
+    prices             AirportTransferRoutePrice[]
+    departureAddressId String
+
+    departureAddress Address @relation("AirportTransferDepartureAddress", fields: [departureAddressId], references: [id])
+
+    arrivalAddressId String
+
+    arrivalAddress Address @relation("AirportTransferArrivalAddress", fields: [arrivalAddressId], references: [id])
+
+    distanceKm Float?
+
+    estimatedDuration Int?
+
+    trips AirportTransferTrip[]
+
+    stops AirportTransferRouteStop[]
+
+    active Boolean @default(true)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([transferId])
+    @@index([type])
+}

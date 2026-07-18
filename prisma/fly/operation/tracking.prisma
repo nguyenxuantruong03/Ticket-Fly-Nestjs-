@@ -1,0 +1,21 @@
+
+
+model FlyTracking {
+    id String @id @default(cuid())
+
+    tripId String 
+
+    trip FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    latitude Float?
+
+    longitude Float?
+
+    altitudeFt Float?
+
+    speedKmh Float?
+
+    heading Float?
+
+    lastUpdated DateTime?
+}

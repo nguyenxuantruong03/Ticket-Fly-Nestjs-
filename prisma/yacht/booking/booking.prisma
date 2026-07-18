@@ -1,0 +1,75 @@
+model YachtBooking {
+    id String @id @default(cuid())
+
+    // ==========================
+    // USER
+    // ==========================
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    // ==========================
+    // PRODUCT
+    // ==========================
+
+    yachtId String
+    yacht   Yacht  @relation(fields: [yachtId], references: [id])
+
+    tripId String?
+    trip   YachtTrip? @relation(fields: [tripId], references: [id])
+
+    packageId String?
+    package   YachtPackage? @relation(fields: [packageId], references: [id])
+
+    // ==========================
+    // BOOKING INFO
+    // ==========================
+
+    bookingCode String @unique
+
+    bookingDate DateTime @default(now())
+
+    startTime DateTime
+
+    endTime DateTime?
+
+    guestCount Int
+
+    status  YachtBookingStatus @default(pending)
+    reviews YachtReview[]
+    // ==========================
+    // PRICE
+    // ==========================
+
+    currency Currency
+
+    subtotal Float
+
+    tax Float @default(0)
+
+    discount Float @default(0)
+
+    serviceFee Float @default(0)
+
+    total Float
+
+    // ==========================
+    // RELATION
+    // ==========================
+
+    passengers YachtBookingPassenger[]
+
+    extras        YachtBookingExtra[]
+    contact       YachtBookingContact?
+    pickup        YachtBookingPickup?
+    statusHistory YachtBookingStatusHistory[]
+    locks         YachtInventoryLock[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([userId])
+    @@index([yachtId])
+    @@index([status])
+}

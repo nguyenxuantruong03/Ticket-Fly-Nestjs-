@@ -1,0 +1,15 @@
+model YachtPriceFee {
+    id String @id @default(cuid())
+
+    priceId String
+
+    price YachtPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    type YachtFeeType
+
+    amount Float
+
+    mandatory Boolean @default(false)
+
+    description String?
+}

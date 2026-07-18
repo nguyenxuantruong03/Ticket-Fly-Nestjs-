@@ -1,0 +1,41 @@
+
+model BusVehicleFeatures {
+    id String @id @default(cuid())
+
+    vehicleId String     @unique
+    vehicle   BusVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    airConditioner Boolean?
+
+    wifi Boolean?
+
+    usbCharger Boolean?
+
+    powerOutlet Boolean?
+
+    readingLight Boolean?
+
+    blanket Boolean?
+
+    pillow Boolean?
+
+    drinkingWater Boolean?
+
+    snack Boolean?
+
+    toilet Boolean?
+
+    tv Boolean?
+
+    entertainment Boolean?
+
+    gpsTracking Boolean?
+
+    recliningSeat Boolean?
+
+    massageSeat Boolean?
+
+    wheelchairAccessible Boolean?
+
+    createdAt DateTime @default(now())
+}

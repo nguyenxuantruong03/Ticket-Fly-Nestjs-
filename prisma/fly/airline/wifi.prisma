@@ -1,0 +1,20 @@
+
+model FlyWifiPackage {
+    id String @id @default(cuid())
+
+    airlineId String
+
+    airline FlyAirline @relation(fields: [airlineId], references: [id], onDelete: Cascade)
+
+    name String
+
+    dataLimitMb Float?
+
+    durationMinutes Int?
+
+    amount     Float
+    passengers FlyPassengerWifi[]
+    currency   Currency
+}
+
+

@@ -1,0 +1,9 @@
+model CarRentalReviewImage {
+    id        String          @id @default(cuid())
+    reviewId  String
+    review    CarRentalReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+    url       String
+    createdAt DateTime        @default(now())
+
+    @@index([reviewId])
+}

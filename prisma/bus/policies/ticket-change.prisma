@@ -1,0 +1,14 @@
+
+
+model BusTicketChangePolicy {
+    id String @id @default(cuid())
+
+    policiesId String      @unique
+    policies   BusPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    type                       BusTicketChangeType
+    changeFee                  Float?
+    maxChanges                 Int?
+    changeBeforeDepartureHours Int?
+    createdAt                  DateTime            @default(now())
+}

@@ -1,0 +1,15 @@
+
+model FlyAirlineImage {
+    id String @id @default(cuid())
+
+    airlineId String
+    airline   FlyAirline @relation(fields: [airlineId], references: [id], onDelete: Cascade)
+
+    url String
+
+    category FlyAirlineImageCategory
+
+    isPrimary Boolean @default(false)
+
+    createdAt DateTime @default(now())
+}

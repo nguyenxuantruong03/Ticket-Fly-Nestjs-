@@ -1,0 +1,22 @@
+
+model YachtPassengerRequirement {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies YachtPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    minimumAge Int?
+
+    passportRequired Boolean @default(false)
+
+    identityRequired Boolean @default(false)
+
+    nationalityRestriction String[]
+
+    childAllowed Boolean @default(true)
+
+    infantAllowed Boolean @default(true)
+
+    pregnantPassengerAllowed Boolean?
+}

@@ -1,0 +1,26 @@
+
+
+model CarRentalInsuranceBenefit {
+    id String @id @default(cuid())
+
+    insuranceId String
+
+    insurance CarRentalInsurance @relation(fields: [insuranceId], references: [id], onDelete: Cascade)
+
+    type CarRentalInsuranceBenefitType
+
+    title String
+
+    description String?
+
+    coverageAmount Float?
+
+    excessAmount Float?
+
+    currency Currency?
+
+    createdAt DateTime @default(now())
+
+    @@index([insuranceId])
+    @@index([type])
+}

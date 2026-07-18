@@ -1,0 +1,51 @@
+model FlyTrip {
+    id String @id @default(cuid())
+
+    flyId String
+    fly   Fly    @relation(fields: [flyId], references: [id], onDelete: Cascade)
+
+    routeId String
+    route   FlyRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
+
+    flightNumber String
+
+    departureTime DateTime
+
+    arrivalTime DateTime
+
+    durationMinutes Int
+
+    status FlyTripStatus @default(scheduled)
+
+    availableSeats Int?
+
+    aircraftId String?
+    aircraft   FlyAircraft? @relation(fields: [aircraftId], references: [id], onDelete: SetNull)
+
+    scheduleId String?
+    schedule   FlySchedule?           @relation(fields: [scheduleId], references: [id])
+    seatLocks  FlySeatInventoryLock[]
+    inventory  FlyInventory?
+    operation  FlyOperation?
+    tracking   FlyTracking[]
+
+    cancellation FlyCancellation?
+
+    diversion  FlyDiversion?
+    codeshares FlyCodeshare[]
+
+    firstConnections FlyConnection[] @relation("FirstConnection")
+
+    secondConnections FlyConnection[]       @relation("SecondConnection")
+    crewSchedule      FlyCrewSchedule[]
+    crewAssignment    FlyCrewAssignment[]
+    history           FlyTripHistory[]
+    itinerarySegment  FlyItinerarySegment[]
+    createdAt         DateTime              @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([routeId])
+    @@index([departureTime])
+    @@index([flightNumber])
+}

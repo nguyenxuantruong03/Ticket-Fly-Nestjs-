@@ -1,0 +1,36 @@
+model YachtVehicle {
+    id String @id @default(cuid())
+
+    yachtId String @unique
+
+    yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    name String?
+
+    manufacturer String?
+
+    model String?
+
+    year Int?
+
+    registrationNumber String?
+
+    lengthMeter Float?
+
+    widthMeter Float?
+
+    speedKnots Float?
+
+    fuelType YachtFuelType?
+
+    condition YachtCondition?
+
+    capacity        YachtCapacity?
+    facilities      YachtVehicleFacilities?
+    specification   YachtSpecification?
+    images          YachtVehicleImage[]
+    safetyEquipment YachtSafetyEquipment?
+    createdAt       DateTime                @default(now())
+
+    updatedAt DateTime @updatedAt
+}

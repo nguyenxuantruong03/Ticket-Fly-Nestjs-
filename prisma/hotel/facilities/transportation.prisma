@@ -1,0 +1,16 @@
+
+model HotelTransportation {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    airportShuttle Boolean?
+
+    shuttleFee Float?
+
+    taxiService          Boolean?
+    carRental            Boolean?
+    bicycleRental        Boolean?
+    trainStationTransfer Boolean?
+}

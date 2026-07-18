@@ -1,0 +1,32 @@
+
+model CarRentalPriceBreakdown {
+    id String @id @default(cuid())
+
+    priceId String @unique
+
+    price CarRentalPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    // giá thuê thực tế
+    rentalRate Float @default(0)
+
+    // số giờ/ngày thuê thực tế
+    duration     Int                @default(1)
+    durationType RentalDurationType @default(hourly)
+
+    // phí bắt buộc
+    taxes      Float @default(0)
+    serviceFee Float @default(0)
+
+    // bảo hiểm
+    insuranceFee Float @default(0)
+
+    // dịch vụ thêm
+    deliveryFee    Float    @default(0)
+    extraDriverFee Float    @default(0)
+    childSeatFee   Float    @default(0)
+    gpsFee         Float    @default(0)
+    helmetFee      Float    @default(0)
+    // giảm giá
+    discount       Float    @default(0)
+    includedItems  String[] @default([])
+}

@@ -1,0 +1,26 @@
+
+model HotelBookingExtra {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking HotelBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    extraId String?
+
+    extra HotelExtra? @relation(fields: [extraId], references: [id], onDelete: SetNull)
+
+    name String
+
+    quantity Int @default(1)
+
+    price Float
+
+    total Float
+
+    currency Currency
+
+    createdAt DateTime @default(now())
+
+    @@index([bookingId])
+}

@@ -1,0 +1,62 @@
+model FlyAirline {
+  id String @id @default(cuid())
+
+  name                String
+  legalName           String?
+  iataCode            String?
+  icaoCode            String?
+  callsign            String?
+  country             String?
+  website             String?
+  hotline             String?
+  email               String?
+  logo                String?
+  banner              String?
+  description         String?
+  active              Boolean              @default(true)
+  flights             Fly[]
+  images              FlyAirlineImage[]
+  rating              FlyAirlineRating[]
+  alliances           FlyAllianceMember[]
+  marketingCodeshares FlyCodeshare[]       @relation("MarketingAirline")
+  crew                FlyCrew[]
+  operatingCodeshares FlyCodeshare[]       @relation("OperatingAirline")
+  meal                FlyMeal[]
+  interline           FlyInterline[]
+  addon               FlyAddon[]
+  wifiPackage         FlyWifiPackage[]
+  aircraft            FlyAircraft[]
+  overbookingRule     FlyOverbookingRule[]
+  insurance           FlyInsurance[]
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+
+  @@index([iataCode])
+  @@index([icaoCode])
+}
+
+model FlyAirlineRating {
+  id String @id @default(cuid())
+
+  airlineId String
+  airline   FlyAirline @relation(fields: [airlineId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  overall Float?
+
+  service Float?
+
+  comfort Float?
+
+  food Float?
+
+  entertainment Float?
+
+  punctuality Float?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+}

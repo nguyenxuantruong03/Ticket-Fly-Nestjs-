@@ -1,0 +1,39 @@
+
+
+model AirportTransferDriver {
+    id String @id @default(cuid())
+
+    vehicleId String
+
+    vehicle AirportTransferVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    firstName String
+
+    lastName String
+
+    avatar String?
+
+    phone String?
+
+    email String?
+
+    licenseNumber String?
+
+    licenseExpiry DateTime?
+
+    experienceYears Int?
+
+    rating Float?
+
+    totalTrips Int @default(0)
+
+    languages   AirportTransferDriverLanguage[]
+    assignments AirportTransferVehicleAssignment[]
+    active      Boolean                            @default(true)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([vehicleId])
+}

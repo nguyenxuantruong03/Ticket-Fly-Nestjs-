@@ -1,0 +1,22 @@
+
+model AirportTransferMeetAndGreet {
+    id String @id @default(cuid())
+
+    transferId String @unique
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    available Boolean @default(true)
+
+    included Boolean @default(false)
+
+    additionalFee Float?
+
+    nameBoard Boolean @default(true)
+
+    airportRepresentative Boolean?
+
+    multilingualSupport Boolean?
+
+    createdAt DateTime @default(now())
+}

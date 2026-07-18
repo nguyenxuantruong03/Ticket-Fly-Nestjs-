@@ -1,0 +1,17 @@
+
+
+model BusBookingSeat {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking BusBooking @relation(fields: [bookingId], references: [id])
+
+    seatId String
+
+    seat BusSeat @relation(fields: [seatId], references: [id])
+
+    price Float
+
+    @@unique([bookingId, seatId])
+}

@@ -28,19 +28,17 @@ export class BusService {
           include: {
             boardingPoints: true,
             dropoffPoints: true,
-            trip: true,
-          },
-        },
-
-        trips: {
-          include: {
-            price: {
+            trips: {
               include: {
-                seatPrices: true,
+                price: {
+                  include: {
+                    seatPrices: true,
+                  },
+                },
+                stops: true,
+                seatAvailability: true,
               },
             },
-            stops: true,
-            seatAvailability: true,
           },
         },
 
@@ -90,18 +88,17 @@ export class BusService {
           include: {
             boardingPoints: true,
             dropoffPoints: true,
-          },
-        },
-
-        trips: {
-          include: {
-            price: {
+            trips: {
               include: {
-                seatPrices: true,
+                price: {
+                  include: {
+                    seatPrices: true,
+                  },
+                },
+                stops: true,
+                seatAvailability: true,
               },
             },
-            stops: true,
-            seatAvailability: true,
           },
         },
 

@@ -1,0 +1,26 @@
+model FlyPrice {
+    id String @id @default(cuid())
+
+    flyId String @unique
+    fly   Fly    @relation(fields: [flyId], references: [id], onDelete: Cascade)
+
+    currency Currency
+
+    fromPrice Float
+
+    toPrice Float?
+
+    originalFromPrice Float?
+
+    originalToPrice Float?
+
+    fares FlyFare[]
+
+    priceRules FlyPriceRule[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([fromPrice])
+}

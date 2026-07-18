@@ -1,0 +1,30 @@
+
+model AirportTransferInventoryLock {
+    id String @id @default(cuid())
+
+    availabilityId String
+    availability   AirportTransferAvailability @relation(fields: [availabilityId], references: [id], onDelete: Cascade)
+
+    tripId String?
+    trip   AirportTransferTrip? @relation(fields: [tripId], references: [id])
+
+    vehicleId String?
+    vehicle   AirportTransferVehicle? @relation(fields: [vehicleId], references: [id])
+
+    bookingId String?
+    booking   AirportTransferBooking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    startTime  DateTime
+    releasedAt DateTime?
+    status     InventoryLockStatus @default(locked)
+    endTime    DateTime
+    quantity   Int
+    expiresAt  DateTime
+
+    createdAt DateTime @default(now())
+
+    @@index([expiresAt])
+}

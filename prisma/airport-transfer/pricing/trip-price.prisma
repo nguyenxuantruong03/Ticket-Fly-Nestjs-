@@ -1,0 +1,15 @@
+
+model AirportTransferTripPrice {
+
+    id String @id @default(cuid())
+
+    priceId String
+    price AirportTransferPrice    @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    tripId String @unique
+    trip AirportTransferTrip  @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    finalPrice Float
+    originalPrice Float?
+
+}

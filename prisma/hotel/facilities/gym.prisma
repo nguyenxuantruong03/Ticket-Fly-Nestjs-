@@ -1,0 +1,12 @@
+
+model HotelGym {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    available Boolean
+
+    open24Hours     Boolean?
+    personalTrainer Boolean?
+}

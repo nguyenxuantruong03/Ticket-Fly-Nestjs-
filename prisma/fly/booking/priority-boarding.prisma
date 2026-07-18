@@ -1,0 +1,15 @@
+
+
+model FlyPriorityBoarding {
+    id String @id @default(cuid())
+
+    passengerId String @unique
+
+    passenger FlyPassenger @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+
+    enabled Boolean
+
+    amount Float?
+
+    currency Currency?
+}

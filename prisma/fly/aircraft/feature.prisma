@@ -1,0 +1,30 @@
+
+model FlyAircraftFeatures {
+    id String @id @default(cuid())
+
+    aircraftId String @unique
+
+    aircraft FlyAircraft @relation(fields: [aircraftId], references: [id], onDelete: Cascade)
+
+    wifi Boolean?
+
+    powerOutlet Boolean?
+
+    usbPort Boolean?
+
+    entertainment Boolean?
+
+    liveTV Boolean?
+
+    recliningSeat Boolean?
+
+    lieFlatSeat Boolean?
+
+    mealService Boolean?
+
+    alcoholService Boolean?
+
+    blanket Boolean?
+
+    pillow Boolean?
+}

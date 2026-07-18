@@ -1,0 +1,10 @@
+
+model FlyPassengerWifi {
+    id String @id @default(cuid())
+
+    passengerId String
+    passenger   FlyPassenger @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+
+    packageId String
+    package   FlyWifiPackage @relation(fields: [packageId], references: [id], onDelete: Restrict)
+}

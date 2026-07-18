@@ -1,0 +1,26 @@
+
+model BusTrip {
+    id    String @id @default(cuid())
+
+    routeId          String
+    route            BusRoute               @relation(fields: [routeId], references: [id], onDelete: Cascade)
+    bookings         BusBooking[]
+    seatAvailability BusSeatAvailability[]
+    stops            BusRouteStop[]
+    locks            BusSeatInventoryLock[]
+
+    departureTime DateTime
+
+    arrivalTime DateTime
+
+    status         BusTripStatus     @default(active)
+    boardingStatus BusBoardingStatus
+    price          BusTripPrice?
+    review         BusReview[]
+    createdAt      DateTime          @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([routeId])
+    @@index([departureTime])
+}

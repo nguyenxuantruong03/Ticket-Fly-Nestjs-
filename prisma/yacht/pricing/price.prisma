@@ -1,0 +1,21 @@
+model YachtPrice {
+    id String @id @default(cuid())
+
+    yachtId String @unique
+
+    yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    currency Currency
+
+    pricingType YachtPricingType
+
+    basePrices YachtPriceOption[]
+
+    fees YachtPriceFee[]
+
+    discounts YachtPriceRule[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}

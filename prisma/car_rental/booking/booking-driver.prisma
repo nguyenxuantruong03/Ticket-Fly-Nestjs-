@@ -1,0 +1,22 @@
+
+model CarRentalBookingDriver {
+    id String @id @default(cuid())
+
+    bookingId String @unique
+
+    booking CarRentalBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    name String
+
+    phone String?
+
+    licenseNumber String?
+
+    nationality String?
+
+    experienceYears Int?
+
+    note String?
+
+    createdAt DateTime @default(now())
+}

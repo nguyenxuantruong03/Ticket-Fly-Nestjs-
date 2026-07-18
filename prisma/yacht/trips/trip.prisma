@@ -1,0 +1,27 @@
+model YachtTrip {
+    id String @id @default(cuid())
+
+    yachtId String
+    yacht   Yacht  @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    routeId       String?
+    route         YachtRoute?    @relation(fields: [routeId], references: [id])
+    bookings      YachtBooking[]
+    departureTime DateTime
+
+    arrivalTime DateTime
+
+    status YachtTripStatus @default(active)
+
+    maxGuests Int?
+
+    schedule  YachtSchedule?
+    price     YachtTripPrice?
+    locks     YachtInventoryLock[]
+    createdAt DateTime             @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([departureTime])
+    @@index([status])
+}

@@ -1,0 +1,66 @@
+model AirportTransferReview {
+    id String @id @default(cuid())
+
+    transferId String
+    transfer   AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    bookingId String?
+    booking   AirportTransferBooking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+    userId String?
+    user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+    overallRating Float
+
+    driverRating Float?
+
+    vehicleRating Float?
+
+    punctuality Float?
+
+    cleanliness Float?
+
+    communication Float?
+
+    pickupExperience Float?
+
+    valueForMoney Float?
+
+    safety Float?
+
+    comfort Float?
+
+    title String?
+
+    comment String
+
+    pros String?
+
+    cons String?
+
+    recommend Boolean?
+
+    verified Boolean @default(false)
+
+    status ReviewStatus @default(pending)
+
+    travelDate DateTime?
+
+    helpfulCount Int @default(0)
+
+    response String?
+
+    responseAt DateTime?
+
+    images AirportTransferReviewImage[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@unique([bookingId])
+    @@index([transferId])
+    @@index([overallRating])
+    @@index([verified])
+    @@index([status])
+}

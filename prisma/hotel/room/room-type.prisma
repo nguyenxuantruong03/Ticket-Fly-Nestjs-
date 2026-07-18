@@ -1,0 +1,23 @@
+model HotelRoomType {
+    id String @id @default(cuid())
+
+    hotelId String
+    hotel   Hotel  @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+    name         String
+    description  String?
+    // ví dụ
+    // Deluxe
+    // Suite
+    // Villa
+    inventories  HotelInventory[]
+    bookingRooms HotelBookingRoom[]
+    rooms        HotelRoom[]
+    active       Boolean            @default(false)
+    sortOrder    Int                @default(0)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([hotelId])
+}

@@ -1,0 +1,20 @@
+
+model AirportTransferVehicleAssignment {
+    id String @id @default(cuid())
+
+    tripId String
+
+    trip AirportTransferTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    vehicleId String
+
+    vehicle AirportTransferVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    driverId String?
+
+    driver AirportTransferDriver? @relation(fields: [driverId], references: [id])
+
+    assignedAt DateTime @default(now())
+
+    @@unique([tripId, vehicleId])
+}

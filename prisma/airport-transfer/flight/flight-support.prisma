@@ -1,0 +1,23 @@
+model AirportTransferFlightSupport {
+    id String @id @default(cuid())
+
+    transferId String @unique
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    flightNumberRequired Boolean @default(true)
+
+    airlineRequired Boolean @default(true)
+
+    terminalSupported Boolean @default(true)
+
+    arrivalFlightOnly Boolean?
+
+    departureFlightOnly Boolean?
+
+    flightTracking Boolean @default(true)
+
+    delayMonitoring Boolean @default(true)
+
+    createdAt DateTime @default(now())
+}

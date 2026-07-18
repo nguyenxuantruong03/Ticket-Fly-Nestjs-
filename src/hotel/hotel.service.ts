@@ -87,15 +87,11 @@ export class HotelService {
 
         roomTypes: {
           include: {
-            images: true,
-            facilities: true,
-            price: {
+            rooms: {
               include: {
-                breakdowns: true,
-                rules: true,
+                roomImage: true,
               },
             },
-            inventory: true,
           },
         },
 

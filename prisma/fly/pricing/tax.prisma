@@ -1,0 +1,17 @@
+
+
+model FlyFareTax {
+    id String @id @default(cuid())
+
+    fareId String
+
+    fare FlyFare @relation(fields: [fareId], references: [id], onDelete: Cascade)
+
+    name String
+
+    amount Float
+
+    currency Currency
+
+    createdAt DateTime @default(now())
+}

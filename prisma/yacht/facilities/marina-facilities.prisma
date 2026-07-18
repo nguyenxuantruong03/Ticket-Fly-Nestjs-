@@ -1,0 +1,42 @@
+
+
+model YachtMarinaFacilities {
+    id String @id @default(cuid())
+
+    marinaId String      @unique
+    marina   YachtMarina @relation(fields: [marinaId], references: [id], onDelete: Cascade)
+
+    fuelStation Boolean?
+
+    restaurant Boolean?
+
+    cafe Boolean?
+
+    parking Boolean?
+
+    waitingLounge Boolean?
+
+    toilet Boolean?
+
+    shower Boolean?
+
+    drinkingWater Boolean?
+
+    electricity Boolean?
+
+    wifi Boolean?
+
+    security Boolean?
+
+    cctv Boolean?
+
+    luggageStorage Boolean?
+
+    convenienceStore Boolean?
+
+    atm Boolean?
+
+    customs Boolean?
+
+    immigration Boolean?
+}

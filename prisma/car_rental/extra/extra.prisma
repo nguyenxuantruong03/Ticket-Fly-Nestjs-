@@ -1,0 +1,45 @@
+model CarRentalExtra {
+    id String @id @default(cuid())
+
+    // =========================
+    // RELATION
+    // =========================
+
+    rentalId String
+
+    rental CarRental @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+
+    // =========================
+    // BASIC
+    // =========================
+
+    type CarRentalExtraType
+
+    name String
+
+    description String?
+
+    image String?
+
+    // =========================
+    // RULE
+    // =========================
+
+    required Boolean @default(false)
+
+    available Boolean @default(true)
+
+    // =========================
+    // PRICE
+    // =========================
+
+    prices        CarRentalExtraPrice[]
+    bookingExtras CarRentalBookingExtra[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([rentalId])
+    @@index([type])
+}

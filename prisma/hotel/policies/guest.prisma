@@ -1,0 +1,15 @@
+model HotelGuestPolicy {
+    id String @id @default(cuid())
+
+    minimumAge Int?
+
+    childrenAllowed Boolean?
+    petsAllowed     Boolean?
+    smokingAllowed  Boolean?
+
+    extraBedAvailable Boolean?
+    extraBedFee       Float?
+
+    policiesId String        @unique
+    policies   HotelPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+}

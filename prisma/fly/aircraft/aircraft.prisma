@@ -1,0 +1,34 @@
+model FlyAircraft {
+    id String @id @default(cuid())
+
+    trips FlyTrip[]
+
+    airlineId String
+    airline   FlyAirline @relation(fields: [airlineId], references: [id], onDelete: Cascade)
+
+    manufacturer String?
+    model        String?
+
+    code String?
+
+    registrationNumber String?
+
+    active Boolean @default(true)
+
+    specification FlyAircraftSpecification?
+
+    features FlyAircraftFeatures?
+
+    cabins FlyCabin[]
+
+    images FlyAircraftImage[]
+
+    seatMap  FlySeatMap?
+    schedule FlySchedule[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([airlineId])
+}

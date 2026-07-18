@@ -1,0 +1,25 @@
+model YachtPolicies {
+    id String @id @default(cuid())
+
+    yachtId String @unique
+
+    yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    cancellation YachtCancellationPolicy?
+
+    passenger YachtPassengerRequirement?
+
+    luggage YachtLuggagePolicy?
+
+    waiting YachtWaitingPolicy?
+
+    meetAndGreet YachtMeetAndGreet?
+
+    flightSupport YachtFlightSupport?
+
+    booking YachtBookingPolicy?
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}

@@ -1,0 +1,17 @@
+model YachtRatingSummary {
+    id String @id @default(cuid())
+
+    yachtId String @unique
+
+    yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    totalReviews Int @default(0)
+
+    averageRating Float @default(0)
+
+    captain Float @default(0)
+
+    crew Float @default(0)
+
+    safety Float @default(0)
+}

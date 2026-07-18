@@ -1,0 +1,12 @@
+
+model AirportTransferReviewImage {
+    id String @id @default(cuid())
+
+    reviewId String
+
+    review AirportTransferReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+
+    url String
+
+    createdAt DateTime @default(now())
+}

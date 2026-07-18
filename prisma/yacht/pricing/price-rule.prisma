@@ -1,0 +1,21 @@
+
+
+model YachtPriceRule {
+    id String @id @default(cuid())
+
+    priceId String
+
+    price YachtPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    type YachtDiscountType
+
+    percentage Float?
+
+    amount Float?
+
+    startDate DateTime?
+
+    endDate DateTime?
+
+    active Boolean @default(true)
+}

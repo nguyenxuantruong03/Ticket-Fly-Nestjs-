@@ -1,0 +1,28 @@
+model YachtRoute {
+    id String @id @default(cuid())
+
+    yachtId String
+    yacht   Yacht  @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    trip YachtTrip[]
+
+    departureMarinaId   String
+    destinationMarinaId String
+
+    departureMarina YachtMarina @relation("DepartureMarina", fields: [departureMarinaId], references: [id])
+
+    destinationMarina YachtMarina @relation("DestinationMarina", fields: [destinationMarinaId], references: [id])
+    destinationName   String
+
+    distanceNm Float?
+
+    durationMinutes Int?
+
+    stops YachtRouteStop[]
+
+    active Boolean @default(true)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}

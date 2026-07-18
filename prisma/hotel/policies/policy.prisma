@@ -1,0 +1,15 @@
+model HotelPolicies {
+    id String @id @default(cuid())
+
+    ratePlanId String        @unique
+    ratePlan   HotelRatePlan @relation(fields: [ratePlanId], references: [id], onDelete: Cascade)
+
+    checkIn      HotelCheckInPolicy?
+    guest        HotelGuestPolicy?
+    payment      HotelPaymentPolicy?
+    cancellation HotelCancellationPolicy?
+    booking      HotelBookingPolicy?
+    houseRules   HotelHouseRules?
+
+    @@index([ratePlanId])
+}

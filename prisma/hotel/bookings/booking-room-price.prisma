@@ -1,0 +1,24 @@
+
+model HotelBookingRoomPrice {
+    id String @id @default(cuid())
+
+    bookingRoomId String @unique
+
+    bookingRoom   HotelBookingRoom @relation(fields: [bookingRoomId], references: [id], onDelete: Cascade)
+    originalPrice Float
+    nightlyPrice  Float
+
+    nights Int
+
+    subtotal Float
+
+    tax Float @default(0)
+
+    serviceFee Float @default(0)
+
+    discount Float @default(0)
+
+    total Float
+
+    currency Currency
+}

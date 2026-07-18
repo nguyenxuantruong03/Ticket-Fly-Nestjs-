@@ -1,0 +1,18 @@
+
+model FlyCancellationPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    refundable Boolean
+
+    refundType FlyRefundType
+
+    cancellationFee Float?
+
+    noShowFee Float?
+
+    freeCancellationBeforeHours Int?
+}

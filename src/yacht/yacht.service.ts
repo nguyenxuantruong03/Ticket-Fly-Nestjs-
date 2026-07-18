@@ -205,8 +205,6 @@ export class YachtService {
           },
         },
 
-        inventoryLocks: true,
-
         favorites: true,
       },
 

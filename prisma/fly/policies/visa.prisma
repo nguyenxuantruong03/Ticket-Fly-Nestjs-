@@ -1,0 +1,18 @@
+
+model FlyVisaPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    visaRequired Boolean?
+
+    passportRequired Boolean?
+
+    passportMinimumValidityMonths Int?
+
+    healthDocumentsRequired Boolean?
+
+    note String?
+}

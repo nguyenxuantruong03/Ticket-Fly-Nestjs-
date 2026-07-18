@@ -1,0 +1,17 @@
+
+
+
+
+model BusSeatLayout {
+    id String @id @default(cuid())
+
+    vehicleId String
+
+    vehicle BusVehicle @relation(fields: [vehicleId], references: [id])
+
+    name String
+
+    seatRows Int
+
+    seatColumns Int
+}

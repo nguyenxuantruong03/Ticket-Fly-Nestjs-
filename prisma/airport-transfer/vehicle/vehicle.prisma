@@ -1,0 +1,45 @@
+model AirportTransferVehicle {
+    id String @id @default(cuid())
+
+    transferId String
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    type AirportTransferVehicleType
+
+    name String?
+
+    manufacturer String?
+
+    model String?
+
+    year Int?
+
+    color String?
+
+    licensePlate String?
+
+    transmission AirportTransferTransmission?
+
+    fuelType AirportTransferFuelType?
+
+    status AirportTransferVehicleStatus @default(available)
+
+    capacity AirportTransferVehicleCapacity?
+
+    features AirportTransferVehicleFeatures?
+
+    specification AirportTransferVehicleSpecification?
+
+    images AirportTransferVehicleImage[]
+
+    availability AirportTransferVehicleAvailability[]
+
+    drivers AirportTransferDriver[]
+
+    bookings    AirportTransferBooking[]
+    locks       AirportTransferInventoryLock[]
+    assignments AirportTransferVehicleAssignment[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}

@@ -1,0 +1,19 @@
+
+
+model FlySeatMap {
+  id String @id @default(cuid())
+
+  aircraftId String @unique
+
+  aircraft FlyAircraft @relation(fields: [aircraftId], references: [id], onDelete: Cascade)
+
+  imageUrl String?
+
+  svgUrl String?
+
+  jsonLayout Json?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+}

@@ -1,0 +1,16 @@
+
+model YachtBookingExtra {
+    id String @id @default(cuid())
+
+    bookingId String
+    booking   YachtBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    extraId String?
+    extra   YachtExtra? @relation(fields: [extraId], references: [id])
+
+    quantity Int @default(1)
+
+    price Float
+
+    total Float
+}

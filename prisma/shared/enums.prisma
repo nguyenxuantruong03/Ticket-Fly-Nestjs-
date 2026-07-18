@@ -21,3 +21,13 @@ enum Gender {
     Male
     Other
 }
+
+enum InventoryLockStatus {
+    locked
+
+    converted
+
+    expired
+
+    released
+}

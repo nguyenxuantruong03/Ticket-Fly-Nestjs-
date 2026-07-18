@@ -1,0 +1,12 @@
+
+model CarRentalTripFee {
+    id String @id @default(cuid())
+
+    tripId      String        @unique
+    trip        CarRentalTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+    airportFee  Float?
+    oneWayFee   Float?
+    deliveryFee Float?
+    pickupFee   Float?
+    dropoffFee  Float?
+}

@@ -1,0 +1,23 @@
+
+model BusVehicleSpecification {
+    id String @id @default(cuid())
+
+    vehicleId String     @unique
+    vehicle   BusVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    engineType String?
+
+    transmission String?
+
+    fuelType BusFuelType?
+
+    suspension String?
+
+    airConditioning Boolean?
+
+    wifiAvailable Boolean?
+
+    toiletAvailable Boolean?
+
+    createdAt DateTime @default(now())
+}
