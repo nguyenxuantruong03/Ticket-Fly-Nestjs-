@@ -1,0 +1,22 @@
+
+model BusSeat {
+    id String @id @default(cuid())
+
+    vehicleId String
+    vehicle   BusVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    seatNumber String
+
+    type BusSeatType
+
+    floor Int?
+
+    row Int?
+
+    column       Int?
+    availability BusSeatAvailability[]
+    bookingSeat  BusBookingSeat[]
+    createdAt    DateTime              @default(now())
+
+    @@unique([vehicleId, seatNumber])
+}

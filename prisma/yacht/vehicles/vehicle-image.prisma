@@ -1,0 +1,17 @@
+model YachtVehicleImage {
+    id String @id @default(cuid())
+
+    vehicleId String
+
+    vehicle YachtVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    url String
+
+    category YachtImageCategory
+
+    isPrimary Boolean @default(false)
+
+    sortOrder Int @default(0)
+
+    createdAt DateTime @default(now())
+}

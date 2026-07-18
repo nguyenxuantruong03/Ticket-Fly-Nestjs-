@@ -1,0 +1,31 @@
+model FlyLounge {
+  id String @id @default(cuid())
+
+  airportId String
+
+  airport FlyAirport @relation(fields: [airportId], references: [id], onDelete: Cascade)
+
+  name String
+
+  description String?
+
+  image String?
+
+  price      Float?
+  passengers FlyPassengerLounge[]
+  currency   Currency?
+}
+
+model FlyPassengerLounge {
+  id String @id @default(cuid())
+
+  passengerId String       @unique
+  passenger   FlyPassenger @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+
+  loungeId String
+  lounge   FlyLounge @relation(fields: [loungeId], references: [id], onDelete: Restrict)
+
+  amount Float?
+
+  currency Currency?
+}

@@ -1,0 +1,35 @@
+model FlyCrew {
+    id String @id @default(cuid())
+
+    airlineId String
+
+    airline FlyAirline @relation(fields: [airlineId], references: [id], onDelete: Cascade)
+
+    employeeNumber String? @unique
+
+    firstName String
+
+    lastName String
+
+    gender Gender?
+
+    birthDate DateTime?
+
+    nationality String?
+
+    role FlyCrewRole
+
+    email String?
+
+    phone String?
+
+    active Boolean @default(true)
+
+    qualifications FlyCrewQualification[]
+
+    assignments  FlyCrewAssignment[]
+    crewSchedule FlyCrewSchedule[]
+    createdAt    DateTime            @default(now())
+
+    updatedAt DateTime @updatedAt
+}

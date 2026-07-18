@@ -1,0 +1,20 @@
+
+model FlyPassengerPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    infantAllowed Boolean
+
+    childAllowed Boolean
+
+    petsAllowed Boolean
+
+    unaccompaniedMinor Boolean
+
+    wheelchairSupport Boolean
+
+    pregnantPassengerAllowed Boolean
+}

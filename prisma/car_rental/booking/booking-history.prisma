@@ -1,0 +1,19 @@
+
+
+model CarRentalBookingStatusHistory {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking CarRentalBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    fromStatus CarRentalBookingStatus?
+
+    toStatus CarRentalBookingStatus
+
+    note String?
+
+    createdAt DateTime @default(now())
+
+    @@index([bookingId])
+}

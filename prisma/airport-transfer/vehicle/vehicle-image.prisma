@@ -1,0 +1,24 @@
+
+model AirportTransferVehicleImage {
+    id String @id @default(cuid())
+
+    vehicleId String
+
+    vehicle AirportTransferVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    url String
+
+    category AirportTransferVehicleImageCategory
+
+    isPrimary Boolean @default(false)
+
+    sortOrder Int @default(0)
+
+    alt String?
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([vehicleId])
+}

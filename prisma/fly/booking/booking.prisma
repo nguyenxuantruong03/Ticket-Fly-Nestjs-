@@ -1,0 +1,35 @@
+model FlyBooking {
+    id String @id @default(cuid())
+
+    bookingNumber String @unique
+
+    userId String?
+    user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+    contact FlyBookingContact?
+
+    passengers FlyPassenger[]
+
+    statusHistory FlyBookingStatusHistory[]
+
+    status FlyBookingStatus @default(pending)
+
+    totalPassengers Int
+
+    totalAmount Float
+
+    currency Currency
+
+    note              String?
+    interlines        FlyInterline[]
+    itineraries       FlyItinerary[]
+    seatInventoryLock FlySeatInventoryLock[]
+    FlyInventoryLock  FlyInventoryLock[]
+    waitlist          FlyWaitlist[]
+    createdAt         DateTime               @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([bookingNumber])
+    @@index([userId])
+}

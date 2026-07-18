@@ -1,0 +1,20 @@
+
+model AirportTransferBookingPassenger {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking AirportTransferBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    firstName String
+
+    lastName String
+
+    phone String?
+
+    email String?
+
+    adult Boolean
+
+    luggage Int?
+}

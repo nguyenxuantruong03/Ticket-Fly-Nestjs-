@@ -1,0 +1,26 @@
+
+model FlyFarePriceBreakdown {
+    id String @id @default(cuid())
+
+    fareId String @unique
+
+    fare FlyFare @relation(fields: [fareId], references: [id], onDelete: Cascade)
+
+    baseFare Float
+
+    taxes Float @default(0)
+
+    airportFee Float @default(0)
+
+    fuelSurcharge Float @default(0)
+
+    serviceFee Float @default(0)
+
+    bookingFee Float @default(0)
+
+    discount Float @default(0)
+
+    finalPrice Float
+
+    createdAt DateTime @default(now())
+}

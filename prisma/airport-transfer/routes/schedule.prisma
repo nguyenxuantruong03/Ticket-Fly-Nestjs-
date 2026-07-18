@@ -1,0 +1,24 @@
+
+model AirportTransferSchedule {
+    id String @id @default(cuid())
+
+    transferId String
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    departureTime String
+
+    operatingDays WeekDay[]
+
+    startDate DateTime
+
+    endDate DateTime?
+
+    active Boolean @default(true)
+
+    trips AirportTransferTrip[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}

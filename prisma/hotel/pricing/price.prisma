@@ -1,0 +1,14 @@
+model HotelRoomPrice {
+    id String @id @default(cuid())
+
+    ratePlanId String        @unique
+    ratePlan   HotelRatePlan @relation(fields: [ratePlanId], references: [id], onDelete: Cascade)
+
+    currency            Currency
+    originalPrice       Float?
+    averageNightlyPrice Float?
+    taxesIncluded       Boolean                  @default(false)
+    payAtHotel          Boolean                  @default(false)
+    breakdown           HotelRoomPriceBreakdown?
+    rules               HotelRoomPriceRule[]
+}

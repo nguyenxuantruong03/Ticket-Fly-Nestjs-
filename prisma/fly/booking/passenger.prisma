@@ -1,0 +1,41 @@
+
+
+model FlyPassenger {
+    id String @id @default(cuid())
+
+    bookingId String
+    booking   FlyBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    type PassengerType
+
+    title PassengerTitle?
+
+    firstName String
+
+    lastName String
+
+    gender Gender?
+
+    birthday DateTime?
+
+    nationality String?
+
+    document FlyPassengerDocument?
+
+    seat FlySeatAssignment?
+
+    meal FlyMealSelection?
+
+    baggage FlyExtraBaggage[]
+
+    tickets            FlyTicket[]
+    wifi               FlyPassengerWifi[]
+    priorityBoarding   FlyPriorityBoarding[]
+    lounge             FlyPassengerLounge[]
+    fastTrack          FlyFastTrack[]
+    passengerInsurance FlyPassengerInsurance[]
+    passengerAddon     FlyPassengerAddon[]
+    createdAt          DateTime                @default(now())
+
+    @@index([bookingId])
+}

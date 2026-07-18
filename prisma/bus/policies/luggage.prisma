@@ -1,0 +1,13 @@
+
+model BusLuggagePolicy {
+    id String @id @default(cuid())
+
+    policiesId String      @unique
+    policies   BusPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    includedLuggage     Float?
+    unit                BusLuggageUnit @default(kg)
+    extraLuggageAllowed Boolean        @default(false)
+    extraLuggageFee     Float?
+    createdAt           DateTime       @default(now())
+}

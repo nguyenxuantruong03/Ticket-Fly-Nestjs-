@@ -1,0 +1,19 @@
+
+
+model AirportTransferExtraFee {
+
+    id String @id @default(cuid())
+
+    breakdownId String
+
+    breakdown AirportTransferPriceBreakdown   @relation(fields: [breakdownId], references: [id], onDelete: Cascade)
+
+    type AirportTransferExtraFeeType
+
+    name String
+
+    amount Float
+
+    required Boolean @default(false)
+
+}

@@ -1,0 +1,47 @@
+model CarRentalInsurance {
+    id String @id @default(cuid())
+
+    // =========================
+    // RELATION
+    // =========================
+
+    rentalId String
+
+    rental CarRental @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+
+    // =========================
+    // BASIC
+    // =========================
+
+    type CarRentalInsuranceType
+
+    name String
+
+    description String?
+
+    // =========================
+    // PRICE
+    // =========================
+
+    pricePerDay Float?
+
+    fixedPrice Float?
+
+    currency Currency
+
+    // =========================
+    // BENEFITS
+    // =========================
+
+    benefits CarRentalInsuranceBenefit[]
+    bookings CarRentalBookingInsurance[]
+
+    active Boolean @default(true)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([rentalId])
+    @@index([type])
+}

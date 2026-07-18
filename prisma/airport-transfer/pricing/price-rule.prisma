@@ -1,0 +1,38 @@
+
+model AirportTransferPriceRule {
+
+    id String @id @default(cuid())
+
+    priceId String
+
+    price AirportTransferPrice     @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    name String
+
+    type AirportTransferPriceRuleType
+
+    adjustmentType AirportTransferAdjustmentType
+
+    value Float
+
+    minimumSpend Float?
+
+    maximumDiscount Float?
+
+    couponCode String?
+
+    validFrom DateTime?
+
+    validTo DateTime?
+
+    priority Int @default(0)
+
+    combinable Boolean @default(false)
+
+    active Boolean @default(true)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+}

@@ -1,0 +1,17 @@
+
+
+model FlyChangePolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    allowed Boolean
+
+    changeFee Float?
+
+    maxChanges Int?
+
+    beforeDepartureHours Int?
+}

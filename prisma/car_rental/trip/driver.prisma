@@ -1,0 +1,27 @@
+
+
+model CarRentalDriver {
+    id String @id @default(cuid())
+
+    rentalId String
+    rental   CarRental @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+
+    name  String
+    phone String?
+
+    languages String[]
+
+    experienceYears Int?
+
+    rating Float @default(0)
+
+    status DriverStatus @default(active)
+
+    image String?
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([rentalId])
+}

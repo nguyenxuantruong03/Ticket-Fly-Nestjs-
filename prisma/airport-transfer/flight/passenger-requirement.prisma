@@ -1,0 +1,20 @@
+
+model AirportTransferPassengerRequirement {
+    id String @id @default(cuid())
+
+    transferId String @unique
+
+    transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+    passportRequired Boolean?
+
+    phoneRequired Boolean @default(true)
+
+    emailRequired Boolean @default(true)
+
+    minimumPassenger Int?
+
+    maximumPassenger Int?
+
+    createdAt DateTime @default(now())
+}

@@ -1,0 +1,17 @@
+
+model YachtCapacity {
+    id String @id @default(cuid())
+
+    vehicleId String       @unique
+    vehicle   YachtVehicle @relation(fields: [vehicleId], references: [id])
+
+    guestCapacity Int
+
+    overnightCapacity Int?
+
+    cabinCount Int?
+
+    bathroomCount Int?
+
+    crewCapacity Int?
+}

@@ -1,0 +1,13 @@
+model FlyOperationTimeline {
+    id String @id @default(cuid())
+
+    operationId String
+
+    operation FlyOperation @relation(fields: [operationId], references: [id], onDelete: Cascade)
+
+    type FlyTimelineType
+
+    eventTime DateTime
+
+    note String?
+}

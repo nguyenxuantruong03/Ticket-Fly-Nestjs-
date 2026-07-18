@@ -1,0 +1,14 @@
+
+model AirportTransferBookingTimeline {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking AirportTransferBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    title String
+
+    description String?
+
+    eventTime DateTime
+}

@@ -140,7 +140,8 @@ model Invoice {
 
     customerPhone String?
 
-    address String?
+    addressId String? @unique
+    address   Address? @relation(fields: [addressId], references: [id], onDelete: Cascade)
 
     subtotal Float
 

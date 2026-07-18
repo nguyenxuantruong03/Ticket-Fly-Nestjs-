@@ -1,0 +1,30 @@
+
+model YachtInventoryLock {
+    id String @id @default(cuid())
+
+    availabilityId String?
+    availability   YachtAvailability? @relation(fields: [availabilityId], references: [id], onDelete: Cascade)
+
+    tripId String
+    trip   YachtTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    yachtId String
+    yacht   Yacht  @relation(fields: [yachtId], references: [id], onDelete: SetNull)
+
+    userId String?
+    user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+    bookingId String?
+    booking   YachtBooking? @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    startTime  DateTime
+    releasedAt DateTime?
+    status     InventoryLockStatus @default(locked)
+    endTime    DateTime
+    quantity   Int
+    expiresAt  DateTime
+
+    createdAt DateTime @default(now())
+
+    @@index([tripId])
+}

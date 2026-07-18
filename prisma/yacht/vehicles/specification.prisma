@@ -1,0 +1,19 @@
+
+
+model YachtSpecification {
+    id String @id @default(cuid())
+
+    vehicleId String @unique
+
+    vehicle YachtVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    enginePowerHp Int?
+
+    cruisingSpeedKnots Float?
+
+    maxSpeedKnots Float?
+
+    fuelCapacityLiter Float?
+
+    rangeNm Float?
+}

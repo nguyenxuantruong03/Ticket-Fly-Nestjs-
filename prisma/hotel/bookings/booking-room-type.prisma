@@ -1,0 +1,27 @@
+
+model HotelBookingRoom {
+    id String @id @default(cuid())
+
+    bookingId String
+    booking   HotelBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    inventoryId String?
+    inventory   HotelInventory? @relation(fields: [inventoryId], references: [id], onDelete: SetNull)
+
+    roomName String
+
+    roomTypeId String?
+    roomType   HotelRoomType? @relation(fields: [roomTypeId], references: [id], onDelete: SetNull)
+
+    quantity Int @default(1)
+
+    adults Int @default(1)
+
+    children Int @default(0)
+
+    price HotelBookingRoomPrice?
+
+    createdAt DateTime @default(now())
+
+    @@index([bookingId])
+}

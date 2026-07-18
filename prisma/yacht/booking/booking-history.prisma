@@ -1,0 +1,19 @@
+
+
+model YachtBookingStatusHistory {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking YachtBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    fromStatus YachtBookingStatus?
+
+    toStatus YachtBookingStatus
+
+    note String?
+
+    createdAt DateTime @default(now())
+
+    @@index([bookingId])
+}

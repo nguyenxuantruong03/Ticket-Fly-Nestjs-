@@ -1,0 +1,13 @@
+
+
+model FlyMinimumConnectionTime {
+    id String @id @default(cuid())
+
+    airportId String
+
+    airport FlyAirport @relation(fields: [airportId], references: [id])
+
+    domesticMinutes Int
+
+    internationalMinutes Int
+}

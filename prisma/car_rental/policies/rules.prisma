@@ -1,0 +1,29 @@
+
+model CarRentalRules {
+    id String @id @default(cuid())
+
+    minimumAge Int?
+
+    maximumAge Int?
+
+    requiresDriverLicense Boolean?
+
+    requiresInternationalLicense Boolean?
+
+    minimumDrivingExperienceYears Int?
+
+    smokingAllowed Boolean?
+
+    petsAllowed Boolean?
+
+    offRoadAllowed Boolean?
+
+    crossBorderAllowed Boolean?
+
+    additionalDriverAllowed Boolean?
+
+    lateReturnFeePerHour Float?
+
+    policiesId String            @unique
+    policies   CarRentalPolicies @relation(fields: [policiesId], references: [id])
+}

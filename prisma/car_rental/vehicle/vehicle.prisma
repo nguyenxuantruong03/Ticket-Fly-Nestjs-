@@ -1,0 +1,36 @@
+model CarRentalVehicle {
+    id String @id @default(cuid())
+
+    rentalId           String
+    rental             CarRental                      @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+    bookings           CarRentalBooking[]
+    price              CarRentalPrice[]
+    active             Boolean                        @default(false)
+    type               RentalVehicleType
+    status             RentalVehicleStatus?
+    brand              String?
+    model              String?
+    year               Int?
+    color              String?
+    licensePlate       String?
+    transmission       RentalTransmission?
+    fuelType           RentalFuelType?
+    fuelCapacityLiters Float?
+    mileageKm          Float?
+    mileageLimitPerDay Float?
+    unlimitedMileage   Boolean?
+    capacity           CarRentalVehicleCapacity?
+    features           CarRentalVehicleFeatures?
+    specification      CarRentalVehicleSpecification?
+    locationCurrent    CarRentalVehicleLocation?
+
+    carLocks CarRentalInventoryLock[]
+
+    images      CarRentalVehicleImage[]
+    maintenance CarRentalVehicleMaintenance[]
+    document    CarRentalVehicleDocument[]
+    calendar    CarRentalAvailabilityCalendar[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}

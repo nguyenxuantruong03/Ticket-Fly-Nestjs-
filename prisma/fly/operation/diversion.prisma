@@ -1,0 +1,15 @@
+
+
+
+model FlyDiversion {
+    id String @id @default(cuid())
+
+    tripId String @unique
+
+    trip FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    divertedAirportId String
+    divertedAirport FlyAirport @relation(fields: [divertedAirportId], references: [id])
+
+    reason String?
+}

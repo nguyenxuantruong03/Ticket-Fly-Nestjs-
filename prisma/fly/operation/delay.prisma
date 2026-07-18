@@ -1,0 +1,16 @@
+
+model FlyDelay {
+    id String @id @default(cuid())
+
+    operationId String
+
+    operation FlyOperation @relation(fields: [operationId], references: [id], onDelete: Cascade)
+
+    minutes Int
+
+    reason FlyDelayReason
+
+    description String?
+
+    createdAt DateTime @default(now())
+}

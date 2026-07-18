@@ -1,0 +1,11 @@
+model YachtAvailability {
+    id String @id @default(cuid())
+
+    yachtId String @unique
+
+    yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
+
+    calendar YachtAvailabilityCalendar[]
+
+    locks YachtInventoryLock[]
+}

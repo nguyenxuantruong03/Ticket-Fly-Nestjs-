@@ -1,0 +1,8 @@
+model CarRentalRequiredDocuments {
+    id String @id @default(cuid())
+
+    documents RentalDocument[]
+
+    policiesId String            @unique
+    policies   CarRentalPolicies @relation(fields: [policiesId], references: [id])
+}

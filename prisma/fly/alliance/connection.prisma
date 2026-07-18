@@ -1,0 +1,32 @@
+
+model FlyConnection {
+    id String @id @default(cuid())
+
+    firstTripId String
+
+    firstTrip FlyTrip @relation("FirstConnection", fields: [firstTripId], references: [id])
+
+    secondTripId String
+
+    secondTrip FlyTrip @relation("SecondConnection", fields: [secondTripId], references: [id])
+
+    layoverMinutes Int
+
+    airportChange   Boolean
+    baggageTransfer FlyBaggageTransfer[]
+    terminalChange  Boolean
+}
+
+model FlyBaggageTransfer {
+    id String @id @default(cuid())
+
+    connectionId String @unique
+
+    connection FlyConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+
+    automaticTransfer Boolean
+
+    customsRequired Boolean
+
+    collectAgain Boolean
+}

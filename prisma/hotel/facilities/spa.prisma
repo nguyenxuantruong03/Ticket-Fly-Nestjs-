@@ -1,0 +1,15 @@
+
+
+model HotelSpa {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    available Boolean
+
+    massage   Boolean?
+    sauna     Boolean?
+    steamRoom Boolean?
+    hotTub    Boolean?
+}

@@ -1,0 +1,18 @@
+
+
+model FlyCrewSchedule {
+    id String @id @default(cuid())
+
+    crewId String
+
+    crew FlyCrew @relation(fields: [crewId], references: [id], onDelete: Cascade)
+
+    startTime DateTime
+
+    endTime DateTime
+
+    duty FlyCrewDuty
+
+    tripId String?
+    trip   FlyTrip? @relation(fields: [tripId], references: [id])
+}

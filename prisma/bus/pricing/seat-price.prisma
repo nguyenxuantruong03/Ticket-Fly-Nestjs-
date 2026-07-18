@@ -1,0 +1,31 @@
+
+model BusSeatPrice {
+    id String @id @default(cuid())
+
+    tripPriceId String
+
+    tripPrice BusTripPrice @relation(fields: [tripPriceId], references: [id], onDelete: Cascade)
+
+    seatType BusSeatType
+
+    price Float
+
+    originalPrice Float?
+
+    taxes Float @default(0)
+
+    serviceFee Float @default(0)
+
+    bookingFee Float @default(0)
+
+    discount Float @default(0)
+
+    finalPrice Float
+
+    availableSeats Int?
+
+    createdAt DateTime @default(now())
+
+    @@index([tripPriceId])
+    @@index([seatType])
+}

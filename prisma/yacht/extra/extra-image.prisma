@@ -1,0 +1,14 @@
+
+model YachtExtraImage {
+    id String @id @default(cuid())
+
+    extraId String
+
+    extra YachtExtra @relation(fields: [extraId], references: [id], onDelete: Cascade)
+
+    url String
+
+    isPrimary Boolean @default(false)
+
+    sortOrder Int @default(0)
+}

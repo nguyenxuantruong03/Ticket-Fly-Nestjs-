@@ -1,0 +1,16 @@
+
+
+model CarRentalMileagePolicy {
+    id String @id @default(cuid())
+
+    unlimited Boolean
+
+    unit UnitOption
+
+    dailyLimitKm Float?
+
+    extraKmFee Float?
+
+    policiesId String            @unique
+    policies   CarRentalPolicies @relation(fields: [policiesId], references: [id])
+}

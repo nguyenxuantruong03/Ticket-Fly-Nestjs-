@@ -1,0 +1,13 @@
+model HotelPaymentPolicy {
+    id String @id @default(cuid())
+
+    paymentTypes  String[]
+    acceptedCards String[]
+
+    cashAccepted    Boolean?
+    depositRequired Boolean?
+    depositAmount   Float?
+
+    policiesId String        @unique
+    policies   HotelPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+}

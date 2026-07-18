@@ -1,0 +1,15 @@
+
+model BusBookingStatusHistory {
+    id String @id @default(cuid())
+
+    bookingId String
+    booking   BusBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    status BusBookingStatus
+
+    note String?
+
+    createdAt DateTime @default(now())
+
+    @@index([bookingId])
+}

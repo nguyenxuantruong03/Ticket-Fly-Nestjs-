@@ -1,0 +1,20 @@
+
+
+
+model FlyCheckInPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies FlyPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    onlineCheckIn Boolean
+
+    opensBeforeHours Int?
+
+    closesBeforeMinutes Int?
+
+    airportCheckIn Boolean
+
+    mobileBoardingPass Boolean
+}

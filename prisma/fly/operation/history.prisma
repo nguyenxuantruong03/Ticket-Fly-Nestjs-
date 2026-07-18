@@ -1,0 +1,14 @@
+
+model FlyTripHistory {
+    id String @id @default(cuid())
+
+    tripId String
+
+    trip FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    oldStatus FlyOperationStatus
+
+    newStatus FlyOperationStatus
+
+    changedAt DateTime @default(now())
+}

@@ -1,0 +1,15 @@
+
+model BusPassengerPolicy {
+    id String @id @default(cuid())
+
+    policiesId String      @unique
+    policies   BusPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    petsAllowed                Boolean  @default(false)
+    smokingAllowed             Boolean  @default(false)
+    foodAllowed                Boolean  @default(true)
+    alcoholAllowed             Boolean  @default(false)
+    wheelchairAccessible       Boolean  @default(false)
+    specialAssistanceAvailable Boolean  @default(false)
+    createdAt                  DateTime @default(now())
+}

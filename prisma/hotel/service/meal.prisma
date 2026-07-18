@@ -1,0 +1,21 @@
+model HotelMealOption {
+  id String @id @default(cuid())
+
+  hotelId String
+
+  hotel        Hotel              @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  bookingMeals HotelBookingMeal[]
+  name         String
+
+  description String?
+
+  type HotelMealType
+
+  prices HotelMealPrice[]
+
+  active Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  @@index([hotelId])
+}

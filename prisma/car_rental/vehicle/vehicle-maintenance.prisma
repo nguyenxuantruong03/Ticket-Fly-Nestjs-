@@ -1,0 +1,16 @@
+
+
+model CarRentalVehicleMaintenance {
+    id String @id @default(cuid())
+
+    vehicleId String
+    vehicle   CarRentalVehicle @relation(fields: [vehicleId], references: [id])
+
+    type        String?
+    description String?
+    mileageKm   Float?
+    serviceDate DateTime?
+    cost        Float?
+
+    @@index([vehicleId])
+}

@@ -1,0 +1,15 @@
+
+
+model YachtFlightSupport {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies YachtPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    airportPickup Boolean?
+
+    flightNumberRequired Boolean?
+
+    flightDelayMonitoring Boolean?
+}

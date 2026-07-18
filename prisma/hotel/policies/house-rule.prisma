@@ -1,0 +1,9 @@
+model HotelHouseRules {
+    quietHoursStart String?
+    quietHoursEnd   String?
+    partiesAllowed  Boolean?
+    visitorsAllowed Boolean?
+    alcoholAllowed  Boolean?
+    policiesId      String        @unique
+    policies        HotelPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+}

@@ -1,0 +1,20 @@
+
+
+model CarRentalCancellationPolicy {
+    id String @id @default(cuid())
+
+    refundable Boolean
+
+    freeCancellation Boolean
+
+    freeCancellationBeforeHours Float?
+
+    partialRefund Boolean?
+
+    cancellationFee Float?
+
+    noShowFee Float
+
+    policiesId String            @unique
+    policies   CarRentalPolicies @relation(fields: [policiesId], references: [id])
+}

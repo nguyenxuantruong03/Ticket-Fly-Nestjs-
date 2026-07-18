@@ -1,0 +1,13 @@
+model HotelAvailability {
+    id String @id @default(cuid())
+
+    inventoryId String         @unique
+    inventory   HotelInventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+
+    isAvailable    Boolean
+    availableRooms Int?
+
+    lastUpdated DateTime?
+
+    calendar HotelAvailabilityCalendar[]
+}

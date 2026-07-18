@@ -1,0 +1,42 @@
+model YachtVehicleFacilities {
+    id String @id @default(cuid())
+
+    vehicleId String       @unique
+    vehicle   YachtVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    wifi Boolean?
+
+    bluetooth Boolean?
+
+    tv Boolean?
+
+    soundSystem Boolean?
+
+    kitchen Boolean?
+
+    refrigerator Boolean?
+
+    coffeeMachine Boolean?
+
+    bar Boolean?
+
+    jacuzzi Boolean?
+
+    swimmingPlatform Boolean?
+
+    sunDeck Boolean?
+
+    airConditioning Boolean?
+
+    heating Boolean?
+
+    shower Boolean?
+
+    toilet Boolean?
+
+    fishingEquipment Boolean?
+
+    snorkelingEquipment Boolean?
+
+    divingEquipment Boolean?
+}

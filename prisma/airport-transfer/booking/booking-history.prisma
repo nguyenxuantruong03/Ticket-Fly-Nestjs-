@@ -1,0 +1,17 @@
+
+
+model AirportTransferBookingStatusHistory {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking AirportTransferBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    fromStatus AirportTransferBookingStatus?
+
+    toStatus AirportTransferBookingStatus
+
+    note String?
+
+    createdAt DateTime @default(now())
+}

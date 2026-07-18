@@ -1,0 +1,12 @@
+model HotelCancellationPolicy {
+    id String @id @default(cuid())
+
+    freeCancellation            Boolean?
+    freeCancellationBeforeHours Int?
+
+    cancellationFee Float?
+    noShowFee       Float?
+
+    policiesId String        @unique
+    policies   HotelPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+}

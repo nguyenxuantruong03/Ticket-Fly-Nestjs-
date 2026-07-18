@@ -1,0 +1,16 @@
+model CarRentalPolicies {
+    id String @id @default(cuid())
+
+    rentalId            String                       @unique
+    rental              CarRental                    @relation(fields: [rentalId], references: [id])
+    minimumDriverAge    Int?
+    minimumLicenseYears Int?
+    depositAmount       Float?
+    mileage             CarRentalMileagePolicy?
+    cancellation        CarRentalCancellationPolicy?
+    rules               CarRentalRules?
+    requiredDocuments   CarRentalRequiredDocuments?
+    fuelPolicy          FuelPolicy?
+
+    damagePolicy CarRentalDamagePolicy?
+}

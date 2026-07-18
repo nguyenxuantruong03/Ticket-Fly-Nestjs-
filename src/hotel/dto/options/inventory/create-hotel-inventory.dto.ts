@@ -21,32 +21,6 @@ import { CreateHotelPoliciesDto } from '../policies/create-hotel-policies.dto';
 
 //
 // ======================================================
-// HOTEL INVENTORY
-// ======================================================
-//
-
-export class CreateHotelInventoryDto {
-  @IsString()
-  roomTypeId: string;
-
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => CreateHotelAvailabilityDto)
-  availability?: CreateHotelAvailabilityDto;
-
-  @IsOptional()
-  @ValidateNested({ each: true })
-  @Type(() => CreateHotelRatePlanDto)
-  ratePlans?: CreateHotelRatePlanDto[];
-
-  @IsOptional()
-  @ValidateNested({ each: true })
-  @Type(() => CreateHotelInventoryLockDto)
-  locks?: CreateHotelInventoryLockDto[];
-}
-
-//
-// ======================================================
 // HOTEL AVAILABILITY
 // ======================================================
 //
@@ -154,6 +128,53 @@ export class CreateHotelInventoryLockDto {
 
 //
 // ======================================================
+// HOTEL RATE PLAN CANCELLATION
+// ======================================================
+//
+
+export class CreateHotelRatePlanCancellationDto {
+  @IsOptional()
+  @IsBoolean()
+  freeCancellation?: boolean;
+
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  beforeHours?: number;
+
+  @IsOptional()
+  @IsNumber()
+  cancellationFee?: number;
+}
+
+//
+// ======================================================
+// HOTEL INVENTORY
+// ======================================================
+//
+
+export class CreateHotelInventoryDto {
+  @IsString()
+  roomTypeId: string;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => CreateHotelAvailabilityDto)
+  availability?: CreateHotelAvailabilityDto;
+
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => CreateHotelRatePlanDto)
+  ratePlans?: CreateHotelRatePlanDto[];
+
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => CreateHotelInventoryLockDto)
+  locks?: CreateHotelInventoryLockDto[];
+}
+
+//
+// ======================================================
 // HOTEL RATE PLAN
 // ======================================================
 //
@@ -199,25 +220,4 @@ export class CreateHotelRatePlanDto {
   @ValidateNested()
   @Type(() => CreateHotelPoliciesDto)
   policies?: CreateHotelPoliciesDto;
-}
-
-//
-// ======================================================
-// HOTEL RATE PLAN CANCELLATION
-// ======================================================
-//
-
-export class CreateHotelRatePlanCancellationDto {
-  @IsOptional()
-  @IsBoolean()
-  freeCancellation?: boolean;
-
-  @IsOptional()
-  @IsInt()
-  @Min(0)
-  beforeHours?: number;
-
-  @IsOptional()
-  @IsNumber()
-  cancellationFee?: number;
 }

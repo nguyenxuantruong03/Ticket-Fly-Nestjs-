@@ -1,0 +1,16 @@
+model HotelCheckInPolicy {
+    id String @id @default(cuid())
+
+    checkInTime  String
+    checkOutTime String
+
+    frontDesk24Hours Boolean?
+    selfCheckIn      Boolean?
+    expressCheckIn   Boolean?
+    expressCheckOut  Boolean?
+
+    keyCollectionNote String?
+
+    policiesId String        @unique
+    policies   HotelPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+}

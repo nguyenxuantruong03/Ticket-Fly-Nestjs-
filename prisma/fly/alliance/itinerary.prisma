@@ -1,0 +1,25 @@
+
+
+model FlyItinerary {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking FlyBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    segments FlyItinerarySegment[]
+}
+
+model FlyItinerarySegment {
+    id String @id @default(cuid())
+
+    itineraryId String
+
+    itinerary FlyItinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+
+    tripId String
+
+    trip FlyTrip @relation(fields: [tripId], references: [id])
+
+    order Int
+}

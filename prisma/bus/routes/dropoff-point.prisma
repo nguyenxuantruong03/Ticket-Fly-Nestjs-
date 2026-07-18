@@ -1,0 +1,18 @@
+
+
+model BusDropoffPoint {
+    id String @id @default(cuid())
+
+    routeId String
+    route   BusRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
+
+    addressId String
+    address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
+    name      String?
+
+    arrivalTime String?
+
+    order Int
+
+    createdAt DateTime @default(now())
+}

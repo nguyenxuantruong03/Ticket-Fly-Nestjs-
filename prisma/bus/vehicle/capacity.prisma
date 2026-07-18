@@ -1,0 +1,17 @@
+
+model BusVehicleCapacity {
+    id String @id @default(cuid())
+
+    vehicleId String     @unique
+    vehicle   BusVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    totalSeats Int
+
+    sleeperBeds Int?
+
+    cabinRooms Int?
+
+    luggageCapacityKg Float?
+
+    createdAt DateTime @default(now())
+}

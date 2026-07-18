@@ -1,0 +1,16 @@
+
+
+model FlyPassengerDocument {
+    id String @id @default(cuid())
+
+    passengerId String       @unique
+    passenger   FlyPassenger @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+
+    passportNumber String?
+
+    passportCountry String?
+
+    expiryDate DateTime?
+
+    nationalId String?
+}

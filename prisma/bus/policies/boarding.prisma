@@ -1,0 +1,14 @@
+
+
+model BusBoardingPolicy {
+    id String @id @default(cuid())
+
+    policiesId String      @unique
+    policies   BusPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    checkInBeforeMinutes     Int?
+    boardingGateCloseMinutes Int?
+    digitalTicketAccepted    Boolean  @default(true)
+    printedTicketRequired    Boolean  @default(false)
+    createdAt                DateTime @default(now())
+}

@@ -1,0 +1,15 @@
+
+
+model FlyCancellation {
+    id String @id @default(cuid())
+
+    tripId String @unique
+
+    trip FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    reason String?
+
+    cancelledAt DateTime
+
+    compensationRequired Boolean?
+}

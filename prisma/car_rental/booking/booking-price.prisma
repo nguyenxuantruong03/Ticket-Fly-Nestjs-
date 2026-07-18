@@ -1,0 +1,33 @@
+model CarRentalBookingPrice {
+    id String @id @default(cuid())
+
+    bookingId String @unique
+
+    booking CarRentalBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    // base
+
+    rentalPrice Float
+
+    // fee
+
+    deliveryFee Float @default(0)
+
+    pickupFee Float @default(0)
+
+    insuranceFee Float @default(0)
+
+    serviceFee Float @default(0)
+
+    tax Float @default(0)
+
+    discount Float @default(0)
+
+    couponDiscount Float @default(0)
+
+    totalPrice Float
+
+    currency Currency
+
+    createdAt DateTime @default(now())
+}

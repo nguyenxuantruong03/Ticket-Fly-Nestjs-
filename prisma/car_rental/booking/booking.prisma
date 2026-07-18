@@ -1,0 +1,102 @@
+model CarRentalBooking {
+    id String @id @default(cuid())
+
+    // =========================
+    // RELATIONS
+    // =========================
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    rentalId String
+    rental   CarRental @relation(fields: [rentalId], references: [id], onDelete: Restrict)
+
+    vehicleId String?
+    vehicle   CarRentalVehicle?        @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+    carLocks  CarRentalInventoryLock[]
+    // =========================
+    // BOOKING INFO
+    // =========================
+
+    bookingCode   String                 @unique
+    type          CarRentalBookingType
+    status        CarRentalBookingStatus @default(pending)
+    paymentStatus CarRentalPaymentStatus @default(unpaid)
+
+    // =========================
+    // RENTAL TIME
+    // =========================
+
+    pickupDate DateTime
+    returnDate DateTime
+    totalHours Int?
+    totalDays  Int?
+
+    // =========================
+    // LOCATION SNAPSHOT
+    // =========================
+
+    locations CarRentalLocation[]
+
+    // =========================
+    // SNAPSHOT VEHICLE
+    // =========================
+
+    vehicleBrand        String?
+    vehicleModel        String?
+    vehicleType         String?
+    vehicleTransmission String?
+    vehicleFuelType     String?
+    licensePlate        String?
+    year                String?
+    color               String?
+
+    // =========================
+    // DRIVER OPTION
+    // =========================
+
+    driverRequired Boolean @default(false)
+
+    // =========================
+    // PRICE
+    // =========================
+
+    price CarRentalBookingPrice?
+
+    // =========================
+    // EXTRA
+    // =========================
+
+    extras CarRentalBookingExtra[]
+
+    // =========================
+    // DRIVER
+    // =========================
+
+    driver CarRentalBookingDriver?
+
+    // =========================
+    // PASSENGER
+    // =========================
+
+    passengers CarRentalBookingPassenger[]
+
+    // =========================
+    // STATUS LOG
+    // =========================
+
+    statusHistory    CarRentalBookingStatusHistory[]
+    calendarDays     CarRentalAvailabilityCalendar[]
+    reviews          CarRentalReview[]
+    bookingInsurance CarRentalBookingInsurance[]
+    expiresAt        DateTime?
+    createdAt        DateTime                        @default(now())
+    updatedAt        DateTime                        @updatedAt
+
+    @@index([userId])
+    @@index([rentalId])
+    @@index([vehicleId])
+    @@index([status])
+    @@index([bookingCode])
+    @@index([pickupDate])
+}

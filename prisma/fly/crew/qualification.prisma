@@ -1,0 +1,14 @@
+
+model FlyCrewQualification {
+    id String @id @default(cuid())
+
+    crewId String
+
+    crew FlyCrew @relation(fields: [crewId], references: [id], onDelete: Cascade)
+
+    aircraftType String
+
+    validUntil DateTime?
+
+    issuedAt DateTime?
+}

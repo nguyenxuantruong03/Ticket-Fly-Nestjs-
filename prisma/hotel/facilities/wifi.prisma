@@ -1,0 +1,16 @@
+
+model HotelWifi {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    available Boolean
+
+    free Boolean?
+
+    speedMbps Float?
+
+    availableInRooms       Boolean?
+    availableInPublicAreas Boolean?
+}

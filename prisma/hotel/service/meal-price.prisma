@@ -1,0 +1,18 @@
+
+model HotelMealPrice {
+    id String @id @default(cuid())
+
+    mealId String
+
+    meal HotelMealOption @relation(fields: [mealId], references: [id], onDelete: Cascade)
+
+    price Float
+
+    currency Currency
+
+    unit MealPriceUnit
+
+    createdAt DateTime @default(now())
+
+    @@index([mealId])
+}

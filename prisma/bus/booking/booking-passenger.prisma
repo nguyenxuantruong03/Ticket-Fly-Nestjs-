@@ -1,0 +1,20 @@
+
+model BusBookingPassenger {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking     BusBooking @relation(fields: [bookingId], references: [id])
+    nationality String?
+
+    firstName      String
+    lastName       String
+    phone          String
+    email          String
+    documentType   PassengerDocumentType
+    documentNumber String
+
+    dateOfBirth DateTime?
+
+    gender Gender?
+}

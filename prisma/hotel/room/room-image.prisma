@@ -1,0 +1,20 @@
+model HotelRoomImage {
+    id String @id @default(cuid())
+
+    roomId String
+    room   HotelRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+    thumbnail  String?
+    cover      String?
+    hero       String?
+    rooms      String[]
+    bedroom    String[]
+    bathroom   String[]
+    balcony    String[]
+    livingRoom String[]
+    kitchen    String[]
+    workspace  String[]
+    view       String[]
+
+    gallery String[]
+}

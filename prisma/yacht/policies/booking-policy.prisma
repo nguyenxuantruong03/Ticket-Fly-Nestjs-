@@ -1,0 +1,17 @@
+
+
+model YachtBookingPolicy {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies YachtPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    instantConfirmation Boolean @default(true)
+
+    advanceBookingHours Int?
+
+    minimumBookingDuration Int?
+
+    modificationAllowed Boolean?
+}

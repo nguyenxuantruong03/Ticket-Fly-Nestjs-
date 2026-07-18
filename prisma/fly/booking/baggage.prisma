@@ -1,0 +1,14 @@
+
+model FlyExtraBaggage {
+    id String @id @default(cuid())
+
+    passengerId String
+
+    passenger FlyPassenger @relation(fields: [passengerId], references: [id], onDelete: Cascade)
+
+    weightKg Float
+
+    amount Float
+
+    currency Currency
+}

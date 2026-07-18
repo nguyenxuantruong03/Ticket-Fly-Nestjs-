@@ -1,0 +1,51 @@
+
+
+
+
+model FlyFareRule {
+    id String @id @default(cuid())
+
+    fareId String
+
+    fare FlyFare @relation(fields: [fareId], references: [id], onDelete: Cascade)
+
+    type FlyFareRuleType
+
+    value String
+
+    createdAt DateTime @default(now())
+}
+
+model FlyPriceRule {
+    id String @id @default(cuid())
+
+    priceId String
+
+    price FlyPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    name String
+
+    type FlyPriceRuleType
+
+    percentage Float?
+
+    amount Float?
+
+    couponCode String?
+
+    minimumSpend Float?
+
+    maximumDiscount Float?
+
+    validFrom DateTime?
+
+    validTo DateTime?
+
+    active Boolean @default(true)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([priceId])
+}

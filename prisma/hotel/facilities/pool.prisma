@@ -1,0 +1,16 @@
+
+
+model HotelPool {
+    id String @id @default(cuid())
+
+    facilitiesId String          @unique
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    available Boolean
+
+    indoor   Boolean?
+    outdoor  Boolean?
+    infinity Boolean?
+    heated   Boolean?
+    kidsPool Boolean?
+}

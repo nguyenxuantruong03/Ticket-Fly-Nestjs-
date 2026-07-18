@@ -1,0 +1,23 @@
+
+
+model CarRentalAvailabilityCalendar {
+    id String @id @default(cuid())
+
+    vehicleId String
+    vehicle   CarRentalVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    startTime String
+    endTime   String
+
+    status CarRentalCalendarStatus
+
+    bookingId String?
+    booking   CarRentalBooking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+    note String?
+
+    createdAt DateTime @default(now())
+
+    @@unique([vehicleId])
+    @@index([bookingId])
+}

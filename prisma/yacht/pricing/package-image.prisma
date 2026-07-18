@@ -1,0 +1,12 @@
+
+model YachtPackageImage {
+    id String @id @default(cuid())
+
+    packageId String
+
+    package YachtPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+    url String
+
+    sortOrder Int @default(0)
+}

@@ -1,0 +1,34 @@
+
+
+model BusPriceBreakdown {
+    id String @id @default(cuid())
+
+    priceId String
+    price   BusPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    seatType BusSeatType
+
+    basePrice Float
+
+    originalPrice Float?
+
+    taxes Float @default(0)
+
+    serviceFee Float @default(0)
+
+    bookingFee Float @default(0)
+
+    discount Float @default(0)
+
+    finalPrice Float
+
+    availableSeats Int?
+
+    includedItems String[] @default([])
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([priceId])
+    @@index([seatType])
+}

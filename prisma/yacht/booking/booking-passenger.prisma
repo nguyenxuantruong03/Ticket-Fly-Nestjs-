@@ -1,0 +1,22 @@
+model YachtBookingPassenger {
+    id String @id @default(cuid())
+
+    bookingId String
+    booking   YachtBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    fullName String
+
+    nationality String?
+
+    passportNumber String?
+
+    dateOfBirth DateTime?
+    gender      Gender
+
+    email String
+
+    phone          String
+    expiresAt      String
+    identityNumber String
+    type           YachtPassengerType
+}

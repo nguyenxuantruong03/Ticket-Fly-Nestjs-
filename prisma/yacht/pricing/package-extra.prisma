@@ -1,0 +1,13 @@
+
+
+model YachtPackageExtra {
+    id String @id @default(cuid())
+
+    packageId String
+    package   YachtPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+    extraId String
+    extra   YachtExtra @relation(fields: [extraId], references: [id], onDelete: Cascade)
+
+    @@unique([packageId, extraId])
+}

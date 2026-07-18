@@ -1,0 +1,26 @@
+model HotelRoomFacilities {
+    id String @id @default(cuid())
+
+    roomId String    @unique
+    room   HotelRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+    tv                Boolean?
+    minibar           Boolean?
+    refrigerator      Boolean?
+    microwave         Boolean?
+    coffeeMachine     Boolean?
+    kettle            Boolean?
+    safe              Boolean?
+    wardrobe          Boolean?
+    hairDryer         Boolean?
+    ironingFacilities Boolean?
+    slippers          Boolean?
+    bathrobe          Boolean?
+    telephone         Boolean?
+    desk              Boolean?
+    sofa              Boolean?
+    balcony           Boolean?
+    bathtub           Boolean?
+    shower            Boolean?
+    streamingService  Boolean?
+}

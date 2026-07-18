@@ -1,0 +1,19 @@
+
+
+model AirportTransferBookingFlight {
+    id String @id @default(cuid())
+
+    bookingId String @unique
+
+    booking AirportTransferBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    airline String?
+
+    flightNumber String?
+
+    terminal String?
+
+    expectedArrival DateTime?
+
+    actualArrival DateTime?
+}

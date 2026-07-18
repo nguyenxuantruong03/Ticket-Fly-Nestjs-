@@ -1,0 +1,29 @@
+
+
+model HotelBookingGuest {
+    id String @id @default(cuid())
+
+    bookingId String
+
+    booking HotelBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+    firstName String
+
+    lastName String
+
+    email String?
+
+    phone String?
+
+    nationality String?
+
+    passportNumber  String?
+    passportCountry String?
+    dateOfBirth     String?
+    gender          Gender
+    isMainGuest     Boolean @default(false)
+
+    createdAt DateTime @default(now())
+
+    @@index([bookingId])
+}

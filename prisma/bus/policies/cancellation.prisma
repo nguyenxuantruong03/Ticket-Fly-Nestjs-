@@ -1,0 +1,16 @@
+
+
+model BusCancellationPolicy {
+    id String @id @default(cuid())
+
+    policiesId String      @unique
+    policies   BusPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    refundable                  Boolean       @default(false)
+    refundType                  BusRefundType
+    freeCancellation            Boolean       @default(false)
+    freeCancellationBeforeHours Int?
+    cancellationFee             Float?
+    noShowFee                   Float?
+    createdAt                   DateTime      @default(now())
+}

@@ -1,0 +1,29 @@
+model AirportTransferSpecialRequest {
+  id String @id @default(cuid())
+
+  transferId String @unique
+
+  transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+
+  childSeat Boolean?
+
+  babySeat Boolean?
+
+  boosterSeat Boolean?
+
+  wheelchair Boolean?
+
+  petTransport Boolean?
+
+  bicycle Boolean?
+
+  skiEquipment Boolean?
+
+  golfBag Boolean?
+
+  additionalStop Boolean?
+
+  noteSupported Boolean @default(true)
+
+  createdAt DateTime @default(now())
+}

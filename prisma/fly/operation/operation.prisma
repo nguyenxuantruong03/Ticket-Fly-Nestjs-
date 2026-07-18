@@ -1,0 +1,45 @@
+model FlyOperation {
+    id String @id @default(cuid())
+
+    tripId String @unique
+
+    trip FlyTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    status FlyOperationStatus
+
+    departureTerminal String?
+
+    departureGate String?
+
+    arrivalTerminal String?
+
+    arrivalGate String?
+
+    baggageClaim String?
+
+    checkInCounter String?
+
+    boardingTime DateTime?
+
+    boardingEndTime DateTime?
+
+    gateOpenTime DateTime?
+
+    gateCloseTime DateTime?
+
+    actualDepartureTime DateTime?
+
+    actualArrivalTime DateTime?
+
+    estimatedDepartureTime DateTime?
+
+    estimatedArrivalTime DateTime?
+
+    timeline FlyOperationTimeline[]
+
+    delays FlyDelay[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}

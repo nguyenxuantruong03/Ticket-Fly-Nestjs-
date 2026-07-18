@@ -1,0 +1,41 @@
+model HotelRatePlan {
+    id String @id @default(cuid())
+
+    inventoryId String
+    inventory   HotelInventory       @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+    locks       HotelInventoryLock[]
+    name        String
+
+    description String?
+
+    type     HotelRatePlanType
+    code     String?
+    mealPlan MealPlan?
+    policies HotelPolicies?
+
+    refundable Boolean @default(false)
+
+    cancellationPolicy HotelRatePlanCancellation?
+
+    price HotelRoomPrice?
+
+    active Boolean @default(true)
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+
+    @@index([inventoryId])
+}
+
+model HotelRatePlanCancellation {
+    id String @id @default(cuid())
+
+    ratePlanId String        @unique
+    ratePlan   HotelRatePlan @relation(fields: [ratePlanId], references: [id], onDelete: Cascade)
+
+    freeCancellation Boolean @default(false)
+    beforeHours      Int?
+
+    cancellationFee Float?
+}

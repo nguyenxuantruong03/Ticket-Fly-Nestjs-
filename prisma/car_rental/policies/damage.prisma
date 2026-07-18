@@ -1,0 +1,11 @@
+
+model CarRentalDamagePolicy {
+    id String @id @default(cuid())
+
+    policiesId String            @unique
+    policies   CarRentalPolicies @relation(fields: [policiesId], references: [id])
+
+    insuranceIncluded Boolean?
+    excessAmount      Float?
+    depositRequired   Boolean?
+}

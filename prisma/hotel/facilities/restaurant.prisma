@@ -1,0 +1,36 @@
+
+model HotelRestaurant {
+    id String @id @default(cuid())
+
+    facilitiesId String
+    facilities   HotelFacilities @relation(fields: [facilitiesId], references: [id], onDelete: Cascade)
+
+    name String
+
+    cuisineTypes String[]
+
+    breakfast Boolean?
+    lunch     Boolean?
+    dinner    Boolean?
+    buffet    Boolean?
+
+    reservation Boolean?
+    capacity    Int?
+    opening     String?
+    images      HotelRestaurantImage[]
+    price       Float
+    currency    Currency
+}
+
+model HotelRestaurantImage {
+    id           String            @id @default(cuid())
+    restaurantId String
+    restaurant   HotelRestaurant   @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+    url          String
+    category     RetaurentCategory
+    isPrimary    Boolean           @default(false)
+    sortOrder    Int               @default(0)
+    createdAt    DateTime          @default(now())
+
+    @@index([restaurantId])
+}

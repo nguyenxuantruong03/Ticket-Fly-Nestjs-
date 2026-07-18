@@ -1,0 +1,26 @@
+
+
+model AirportTransferAvailabilityCalendar {
+    id String @id @default(cuid())
+
+    availabilityId String
+
+    availability AirportTransferAvailability @relation(fields: [availabilityId], references: [id], onDelete: Cascade)
+
+    date DateTime
+
+    available Boolean
+
+    totalVehicles Int
+
+    remainingVehicles Int
+
+    stopSell Boolean @default(false)
+
+    minimumNoticeMinutes Int?
+
+    createdAt DateTime @default(now())
+
+    @@unique([availabilityId, date])
+    @@index([date])
+}

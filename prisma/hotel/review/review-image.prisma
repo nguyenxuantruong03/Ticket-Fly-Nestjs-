@@ -1,0 +1,9 @@
+model HotelReviewImage {
+    id        String      @id @default(cuid())
+    reviewId  String
+    review    HotelReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+    url       String
+    sortOrder Int
+    createdAt DateTime    @default(now())
+    updatedAt DateTime    @updatedAt
+}

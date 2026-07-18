@@ -1,0 +1,18 @@
+
+model BusRouteStop {
+    id String @id @default(cuid())
+
+    tripId String
+
+    trip BusTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+    addressId   String
+    address     Address   @relation(fields: [addressId], references: [id], onDelete: Cascade)
+    arrivalTime DateTime?
+
+    departureTime DateTime?
+
+    stopOrder Int
+
+    createdAt DateTime @default(now())
+}

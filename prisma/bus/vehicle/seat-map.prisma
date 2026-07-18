@@ -1,0 +1,17 @@
+
+model BusSeatMap {
+    id String @id @default(cuid())
+
+    vehicleId String     @unique
+    vehicle   BusVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    imageUrl String?
+
+    svgUrl String?
+
+    jsonLayout Json?
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}

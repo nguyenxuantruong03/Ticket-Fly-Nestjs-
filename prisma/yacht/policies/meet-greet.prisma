@@ -1,0 +1,17 @@
+
+
+model YachtMeetAndGreet {
+    id String @id @default(cuid())
+
+    policiesId String @unique
+
+    policies YachtPolicies @relation(fields: [policiesId], references: [id], onDelete: Cascade)
+
+    available Boolean @default(false)
+
+    pickupSign Boolean?
+
+    staffLanguage String[]
+
+    meetingPoint String?
+}

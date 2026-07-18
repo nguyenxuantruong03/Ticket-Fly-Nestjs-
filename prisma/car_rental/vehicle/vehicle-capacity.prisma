@@ -1,0 +1,10 @@
+
+
+model CarRentalVehicleCapacity {
+    id           String           @id @default(cuid())
+    vehicleId    String           @unique
+    vehicle      CarRentalVehicle @relation(fields: [vehicleId], references: [id])
+    seatCount    Int?
+    luggageCount Int?
+    doorCount    Int?
+}

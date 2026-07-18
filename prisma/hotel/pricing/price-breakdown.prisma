@@ -1,0 +1,15 @@
+model HotelRoomPriceBreakdown {
+    id      String         @id @default(cuid())
+    priceId String         @unique
+    price   HotelRoomPrice @relation(fields: [priceId], references: [id], onDelete: Cascade)
+
+    roomRate      Float    @default(0)
+    nights        Int      @default(1)
+    taxes         Float    @default(0)
+    serviceFee    Float    @default(0)
+    resortFee     Float    @default(0)
+    cleaningFee   Float    @default(0)
+    extraFee      Float    @default(0)
+    discount      Float    @default(0)
+    includedItems String[] @default([])
+}

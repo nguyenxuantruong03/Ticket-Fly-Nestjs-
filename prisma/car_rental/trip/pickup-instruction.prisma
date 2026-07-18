@@ -1,0 +1,20 @@
+model CarRentalPickupInstruction {
+    id String @id @default(cuid())
+
+    rentalId String
+    rental   CarRental @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+
+    type PickupInstructionType
+
+    title String
+
+    description String?
+
+    location String?
+
+    contactPhone String?
+
+    createdAt DateTime @default(now())
+
+    @@index([rentalId])
+}

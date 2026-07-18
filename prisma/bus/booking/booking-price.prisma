@@ -1,0 +1,20 @@
+
+model BusBookingPriceSnapshot {
+    id String @id @default(cuid())
+
+    bookingId String @unique
+
+    booking BusBooking @relation(fields: [bookingId], references: [id])
+
+    subtotal Float
+
+    taxes Float
+
+    serviceFee Float
+
+    discount Float
+
+    total Float
+
+    currency Currency
+}

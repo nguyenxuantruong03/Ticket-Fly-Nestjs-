@@ -1,0 +1,30 @@
+model FlyAirport {
+    id String @id @default(cuid())
+
+    name String
+
+    code String @unique
+
+    iataCode String @unique
+
+    icaoCode String?
+
+    terminalCount Int?
+
+    lat Float?
+
+    lng Float?
+
+    addressId String?
+    address   Address? @relation(fields: [addressId], references: [id], onDelete: SetNull)
+
+    departures FlyRoute[] @relation("FlyDepartureAirport")
+    arrivals   FlyRoute[] @relation("FlyArrivalAirport")
+
+    diversions            FlyDiversion[]
+    lounge                FlyLounge[]
+    minimumConnectionTime FlyMinimumConnectionTime[]
+    createdAt             DateTime                   @default(now())
+
+    updatedAt DateTime @updatedAt
+}

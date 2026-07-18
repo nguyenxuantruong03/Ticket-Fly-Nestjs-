@@ -1,0 +1,16 @@
+
+model AirportTransferVehicleCapacity {
+    id String @id @default(cuid())
+
+    vehicleId String @unique
+
+    vehicle AirportTransferVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+    passengerCount Int
+
+    luggageCount Int?
+
+    cabinBaggageCount Int?
+
+    oversizedLuggage Int?
+}

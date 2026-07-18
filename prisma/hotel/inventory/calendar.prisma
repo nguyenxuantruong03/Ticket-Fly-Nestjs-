@@ -1,0 +1,24 @@
+
+model HotelAvailabilityCalendar {
+    id String @id @default(cuid())
+
+    availabilityId String
+    availability   HotelAvailability @relation(fields: [availabilityId], references: [id], onDelete: Cascade)
+
+    date              DateTime
+    available         Boolean
+    remainingRooms    Int?
+    priceOverride     Float?
+    stopSell          Boolean?
+    /**
+     * cuối tuần phải ở tối thiểu 2 đêm
+     * không được check-in vào ngày lễ
+     * không được check-out vào một số ngày
+     */
+    minimumStay       Int?
+    closedToArrival   Boolean?
+    closedToDeparture Boolean?
+
+    @@unique([availabilityId, date])
+    @@index([date])
+}
