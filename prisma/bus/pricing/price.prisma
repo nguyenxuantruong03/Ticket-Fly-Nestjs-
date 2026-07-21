@@ -4,7 +4,6 @@ model BusPrice {
     busId String @unique
     bus   Bus    @relation(fields: [busId], references: [id], onDelete: Cascade)
 
-    currency  Currency
     // Giá hiển thị ngoài danh sách
     fromPrice Float
 

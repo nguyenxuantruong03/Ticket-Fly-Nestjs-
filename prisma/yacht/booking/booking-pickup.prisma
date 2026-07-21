@@ -1,5 +1,3 @@
-
-
 model YachtBookingPickup {
     id String @id @default(cuid())
 
@@ -9,8 +7,9 @@ model YachtBookingPickup {
 
     pickupRequired Boolean @default(false)
 
-    addressId String?
-    address   Address? @relation(fields: [addressId], references: [id])
+    addressId String
+
+    address Address @relation(fields: [addressId], references: [id], onDelete: Restrict)
 
     pickupTime DateTime?
 

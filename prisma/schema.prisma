@@ -125,8 +125,6 @@ model AirportTransferBooking {
 
     totalAmount Float
 
-    currency Currency
-
     paymentStatus PaymentStatus
 
     passengers AirportTransferBookingPassenger[]
@@ -599,7 +597,6 @@ model AirportTransferPrice {
 
     transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
 
-    currency Currency
 
     fromPrice Float
 
@@ -786,8 +783,7 @@ model AirportTransferRouteStop {
     route AirportTransferRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
 
     addressId String
-
-    address Address @relation(fields: [addressId], references: [id])
+    address Address @relation(fields:[addressId], references:[id],onDelete:Restrict )
 
     stopOrder Int
 
@@ -1368,7 +1364,6 @@ model BusBookingPriceSnapshot {
 
     total Float
 
-    currency Currency
 }
 
 model BusBookingSeat {
@@ -1428,7 +1423,7 @@ model Bus {
 
     routes    BusRoute[]
     policies BusPolicies?
-    vehicle  BusVehicle?
+    vehicle  BusVehicle[]
     reviews  BusReview[]
 
     images     BusImage[]
@@ -1772,7 +1767,6 @@ model BusPrice {
     busId String @unique
     bus   Bus    @relation(fields: [busId], references: [id], onDelete: Cascade)
 
-    currency  Currency
     // Giá hiển thị ngoài danh sách
     fromPrice Float
 
@@ -1967,13 +1961,11 @@ model BusReview {
 model BusBoardingPoint {
     id String @id @default(cuid())
 
-    routeId String
-    route   BusRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
-
+    routeId   String
+    route     BusRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
     addressId String
-    address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
-
-    name String?
+    address   Address  @relation(fields: [addressId], references: [id], onDelete: Restrict)
+    name      String?
 
     departureTime String
 
@@ -1991,7 +1983,7 @@ model BusDropoffPoint {
     route   BusRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
 
     addressId String
-    address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
+    address   Address @relation(fields: [addressId], references: [id], onDelete: Restrict)
     name      String?
 
     arrivalTime String?
@@ -2049,7 +2041,7 @@ model BusRoute {
     dropoffPoints BusDropoffPoint[]
 
     trips     BusTrip[]
-    code      String?
+    code      String?   @unique
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
 
@@ -2072,7 +2064,6 @@ model BusSeatAvailability {
 
     totalSeats   Int
     currentPrice Float
-    currency     Currency
 
     createdAt DateTime @default(now())
 
@@ -2091,7 +2082,7 @@ model BusRouteStop {
     trip BusTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
 
     addressId   String
-    address     Address   @relation(fields: [addressId], references: [id], onDelete: Cascade)
+    address     Address   @relation(fields: [addressId], references: [id], onDelete: Restrict)
     arrivalTime DateTime?
 
     departureTime DateTime?
@@ -2102,7 +2093,10 @@ model BusRouteStop {
 }
 
 model BusTrip {
-    id    String @id @default(cuid())
+    id String @id @default(cuid())
+
+    vehicleId String
+    vehicle   BusVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
 
     routeId          String
     route            BusRoute               @relation(fields: [routeId], references: [id], onDelete: Cascade)
@@ -2317,8 +2311,10 @@ model BusVehicleSpecification {
 model BusVehicle {
     id String @id @default(cuid())
 
-    busId String @unique
+    busId String
     bus   Bus    @relation(fields: [busId], references: [id], onDelete: Cascade)
+
+    trips BusTrip[]
 
     type   BusVehicleType
     active Boolean        @default(true)
@@ -2406,7 +2402,6 @@ model CarRentalBookingExtra {
     quantity   Int                @default(1)
     unitPrice  Float
     totalPrice Float
-    currency   Currency
     createdAt  DateTime           @default(now())
 
     @@index([bookingId])
@@ -2479,8 +2474,6 @@ model CarRentalBookingPrice {
     couponDiscount Float @default(0)
 
     totalPrice Float
-
-    currency Currency
 
     createdAt DateTime @default(now())
 }
@@ -2945,7 +2938,6 @@ model CarRentalExtraPrice {
 
     amount Float
 
-    currency Currency
 
     minimumQuantity Int?
 
@@ -3041,8 +3033,6 @@ model CarRentalBookingInsurance {
 
     price Float
 
-    currency Currency
-
     quantity Int @default(1)
 
     totalPrice Float
@@ -3069,8 +3059,6 @@ model CarRentalInsuranceBenefit {
     coverageAmount Float?
 
     excessAmount Float?
-
-    currency Currency?
 
     createdAt DateTime @default(now())
 
@@ -3106,8 +3094,6 @@ model CarRentalInsurance {
     pricePerDay Float?
 
     fixedPrice Float?
-
-    currency Currency
 
     // =========================
     // BENEFITS
@@ -3296,8 +3282,6 @@ model CarRentalPrice {
     // PRICE
     // =====================
 
-    currency Currency
-
     pricePerHour Float?
 
     pricePerDay Float?
@@ -3476,8 +3460,7 @@ model CarRentalLocation {
 
     type RentalLocationType
 
-    name String
-
+    name      String
     addressId String
     address   Address @relation(fields: [addressId], references: [id], onDelete: Restrict)
 
@@ -3588,9 +3571,8 @@ model CarRentalVehicleLocation {
 
     vehicleId String           @unique
     vehicle   CarRentalVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-
-    addressId String?  @unique
-    address   Address? @relation(fields: [addressId], references: [id], onDelete: Cascade)
+    addressId String? @unique
+    address   Address?          @relation(fields: [addressId], references: [id], onDelete: Restrict)
 }
 
 model CarRentalVehicleMaintenance {
@@ -3657,280 +3639,6 @@ model CarRentalVehicle {
     calendar    CarRentalAvailabilityCalendar[]
 
     createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
-
-model Address {
-    id                 String  @id @default(cuid())
-    // ======================================================
-    // ADDRESS
-    // ======================================================
-    name               String?
-    houseNumber        String?
-    street             String?
-    ward               String?
-    district           String?
-    administrativeArea String?
-    region             String?
-    postcode           String?
-    countryCode        String
-    cityId             String
-    city               City    @relation(fields: [cityId], references: [id], onDelete: Restrict)
-
-    // ======================================================
-    // MAP
-    // ======================================================
-    latitude          Float?
-    longitude         Float?
-    timezone          String?
-    plusCode          String?
-    precision         AddressPrecision   @default(ADDRESS)
-    // ======================================================
-    // RELATIONS
-    // ======================================================
-    hotelInformations HotelInformation[]
-
-    airport FlyAirport[]
-
-    busRouteStop                   BusRouteStop[]
-    busBoardingPoint               BusBoardingPoint[]
-    busDropoffPoint                BusDropoffPoint[]
-    yachtRouteStop                 YachtRouteStop[]
-    yachtMarina                    YachtMarina[]
-    yachtBookingPickups            YachtBookingPickup[]
-    departureBusRoutes             BusRoute[]                @relation("BusDepartureAddress")
-    arrivalBusRoutes               BusRoute[]                @relation("BusArrivalAddress")
-    departureAirportTransferRoutes AirportTransferRoute[]    @relation("AirportTransferDepartureAddress")
-    arrivalAirportTransferRoutes   AirportTransferRoute[]    @relation("AirportTransferArrivalAddress")
-    carRentalLocations             CarRentalLocation[]
-    carRentalVehicleLocation       CarRentalVehicleLocation?
-
-    airportTransferRouteStop AirportTransferRouteStop[]
-    invoicePayment           Invoice?
-    hotelNearbyPlace         HotelNearbyPlace?
-    providerBooking          ProviderBooking?
-    // ======================================================
-    // TIMESTAMP
-    // ======================================================
-    createdAt                DateTime                   @default(now())
-    updatedAt                DateTime                   @updatedAt
-}
-
-enum AddressPrecision {
-    COUNTRY
-    CITY
-    DISTRICT
-    STREET
-    ADDRESS
-    POINT
-}
-
-// ======================================================
-// CITY
-// ======================================================
-
-model City {
-    id String @id @default(cuid())
-    // =========================
-    // BASIC
-    // =========================
-
-    name             String
-    nativeName       String?
-    slug             String  @unique
-    code             String? @unique
-    iataCode         String? @unique
-    subtitle         String?
-    shortDescription String?
-    description      String?
-
-    // =========================
-    // COUNTRY
-    // =========================
-
-    countryId          String
-    country            Country @relation(fields: [countryId], references: [id], onDelete: Restrict)
-    administrativeArea String?
-    region             String?
-    isCapital          Boolean @default(false)
-
-    // =========================
-    // LOCATION
-    // =========================
-
-    latitude  Float?
-    longitude Float?
-    elevation Float?
-    timezone  String?
-    utcOffset String?
-
-    // =========================
-    // SEARCH
-    // =========================
-
-    priority        Int      @default(0)
-    displayOrder    Int      @default(0)
-    popularityScore Float    @default(0)
-    featured        Boolean  @default(false)
-    popular         Boolean  @default(false)
-    searchable      Boolean  @default(true)
-    aliases         String[]
-    keywords        String[]
-    tags            String[]
-
-    // =========================
-    // MEDIA
-    // =========================
-
-    thumbnail   String?
-    coverImage  String?
-    bannerImage String?
-    images      String[]
-    video       String?
-
-    // =========================
-    // TRAVEL
-    // =========================
-
-    bestMonths  String[]
-    rainyMonths String[]
-
-    // =========================
-    // SEO
-    // =========================
-
-    seoTitle       String?
-    seoDescription String?
-    seoKeywords    String[]
-
-    // =========================
-    // STATUS
-    // =========================
-
-    verified Boolean    @default(false)
-    status   CityStatus @default(ACTIVE)
-
-    // =========================
-    // RELATIONS
-    // =========================
-
-    addresses Address[]
-
-    // Future
-    // tours Tour[]
-    // activities Activity[]
-    // restaurants Restaurant[]
-
-    // =========================
-    // TIMESTAMP
-    // =========================
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
-
-// ======================================================
-// ENUMS
-// ======================================================
-
-enum CityStatus {
-    ACTIVE
-    HIDDEN
-    COMING_SOON
-    DISABLED
-}
-
-enum Continent {
-    AFRICA
-    ANTARCTICA
-    ASIA
-    EUROPE
-    NORTH_AMERICA
-    SOUTH_AMERICA
-    OCEANIA
-}
-
-// ======================================================
-// COUNTRY
-// ======================================================
-
-model Country {
-    id String @id @default(cuid())
-
-    // =========================
-    // BASIC
-    // =========================
-
-    name String
-
-    officialName String?
-
-    slug String @unique
-
-    code String @unique // VN
-
-    iso2 String @unique // VN
-
-    iso3 String @unique // VNM
-
-    phoneCode String? // +84
-
-    capital String?
-
-    // =========================
-    // LOCATION
-    // =========================
-
-    continent Continent
-
-    timezone String?
-
-    currency Currency?
-
-    languages String[]
-
-    // =========================
-    // MEDIA
-    // =========================
-
-    flag String?
-
-    thumbnail String?
-
-    coverImage String?
-
-    // =========================
-    // SEARCH
-    // =========================
-
-    aliases String[]
-
-    keywords String[]
-
-    priority Int @default(0)
-
-    featured Boolean @default(false)
-
-    searchable Boolean @default(true)
-
-    // =========================
-    // STATUS
-    // =========================
-
-    active Boolean @default(true)
-
-    // =========================
-    // RELATIONS
-    // =========================
-
-    cities City[]
-
-    // =========================
-    // TIMESTAMP
-    // =========================
-
-    createdAt DateTime @default(now())
-
     updatedAt DateTime @updatedAt
 }
 
@@ -4163,8 +3871,6 @@ model FlyAddon {
 
   amount Float
 
-  currency Currency
-
   active Boolean @default(true)
 
   passengerAddons FlyPassengerAddon[]
@@ -4193,7 +3899,6 @@ model FlyPassengerAddon {
 
   totalPrice Float
 
-  currency Currency
 
   metadata Json?
 
@@ -4326,7 +4031,6 @@ model FlyWifiPackage {
 
     amount     Float
     passengers FlyPassengerWifi[]
-    currency   Currency
 }
 
 model FlyAirport {
@@ -4344,10 +4048,9 @@ model FlyAirport {
 
     lat Float?
 
-    lng Float?
-
-    addressId String?
-    address   Address? @relation(fields: [addressId], references: [id], onDelete: SetNull)
+    lng       Float?
+    addressId String
+    address   Address @relation(fields: [addressId], references: [id], onDelete: Restrict)
 
     departures FlyRoute[] @relation("FlyDepartureAirport")
     arrivals   FlyRoute[] @relation("FlyArrivalAirport")
@@ -4505,7 +4208,6 @@ model FlyExtraBaggage {
 
     amount Float
 
-    currency Currency
 }
 
 model FlyBooking {
@@ -4527,8 +4229,6 @@ model FlyBooking {
     totalPassengers Int
 
     totalAmount Float
-
-    currency Currency
 
     note              String?
     interlines        FlyInterline[]
@@ -4570,7 +4270,6 @@ model FlyFastTrack {
 
     amount Float?
 
-    currency Currency?
 }
 
 model FlyBookingStatusHistory {
@@ -4605,7 +4304,6 @@ model FlyInsurance {
 
     amount Float
 
-    currency Currency
 
     active Boolean @default(true)
 
@@ -4627,8 +4325,6 @@ model FlyPassengerInsurance {
 
     totalPrice Float
 
-    currency Currency
-
     createdAt DateTime @default(now())
 
     @@unique([passengerId, insuranceId])
@@ -4649,7 +4345,6 @@ model FlyLounge {
 
   price      Float?
   passengers FlyPassengerLounge[]
-  currency   Currency?
 }
 
 model FlyPassengerLounge {
@@ -4663,7 +4358,6 @@ model FlyPassengerLounge {
 
   amount Float?
 
-  currency Currency?
 }
 
 model FlyMealSelection {
@@ -4681,7 +4375,6 @@ model FlyMealSelection {
 
     amount Float?
 
-    currency Currency?
 }
 
 model FlyMeal {
@@ -4701,7 +4394,6 @@ model FlyMeal {
 
     price Float?
 
-    currency   Currency?
     selections FlyMealSelection[]
     active     Boolean            @default(true)
 }
@@ -4772,7 +4464,6 @@ model FlyPriorityBoarding {
 
     amount Float?
 
-    currency Currency?
 }
 
 model FlySeatAssignment {
@@ -4787,8 +4478,6 @@ model FlySeatAssignment {
     paid Boolean @default(false)
 
     amount Float?
-
-    currency Currency?
 
     assignedAt DateTime @default(now())
 
@@ -5773,8 +5462,6 @@ model FlyPrice {
     flyId String @unique
     fly   Fly    @relation(fields: [flyId], references: [id], onDelete: Cascade)
 
-    currency Currency
-
     fromPrice Float
 
     toPrice Float?
@@ -5852,8 +5539,6 @@ model FlyFareTax {
     name String
 
     amount Float
-
-    currency Currency
 
     createdAt DateTime @default(now())
 }
@@ -6080,8 +5765,6 @@ model HotelBookingExtra {
 
     total Float
 
-    currency Currency
-
     createdAt DateTime @default(now())
 
     @@index([bookingId])
@@ -6133,8 +5816,6 @@ model HotelBookingMeal {
 
     total Float
 
-    currency Currency
-
     createdAt DateTime @default(now())
 
     @@index([bookingId])
@@ -6158,7 +5839,6 @@ model HotelBookingPriceSnapshot {
     depositAmount Float    @default(0)
     payableNow    Float
     payableLater  Float
-    currency      Currency
 
     createdAt DateTime @default(now())
 }
@@ -6184,7 +5864,6 @@ model HotelBookingRoomPrice {
 
     total Float
 
-    currency Currency
 }
 
 model HotelBookingRoom {
@@ -6288,10 +5967,9 @@ model HotelNearbyPlace {
 
     name String
 
-    type NearbyPlaceType
-
-    addressId String?  @unique
-    address   Address? @relation(fields: [addressId], references: [id], onDelete: Cascade)
+    type      NearbyPlaceType
+    addressId String          @unique
+    address   Address         @relation(fields: [addressId], references: [id], onDelete: Restrict)
 
     latitude Float?
 
@@ -6762,7 +6440,6 @@ model HotelRestaurant {
     opening     String?
     images      HotelRestaurantImage[]
     price       Float
-    currency    Currency
 }
 
 model HotelRestaurantImage {
@@ -7076,7 +6753,6 @@ model HotelRoomPriceRule {
     type           HotelPriceRuleType
     adjustmentType HotelPriceAdjustmentType
     value          Float
-    currency       Currency?
     minimumNights  Int?
     maximumNights  Int?
     validFrom      DateTime?
@@ -7100,7 +6776,6 @@ model HotelRoomPrice {
     ratePlanId String        @unique
     ratePlan   HotelRatePlan @relation(fields: [ratePlanId], references: [id], onDelete: Cascade)
 
-    currency            Currency
     originalPrice       Float?
     averageNightlyPrice Float?
     taxesIncluded       Boolean                  @default(false)
@@ -7330,8 +7005,6 @@ model HotelExtraPrice {
 
     price Float
 
-    currency Currency
-
     unit ExtraPriceUnit
 
     active Boolean @default(true)
@@ -7377,7 +7050,6 @@ model HotelMealPrice {
 
     price Float
 
-    currency Currency
 
     unit MealPriceUnit
 
@@ -7406,6 +7078,329 @@ model HotelMealOption {
   createdAt DateTime @default(now())
 
   @@index([hotelId])
+}
+
+model Address {
+    id                 String  @id @default(cuid())
+    // ======================================================
+    // ADDRESS
+    // ======================================================
+    name               String?
+    houseNumber        String?
+    street             String?
+    ward               String?
+    district           String?
+    administrativeArea String?
+    region             String?
+    postcode           String?
+    countryCode        String
+    cityId             String
+    city               City    @relation(fields: [cityId], references: [id], onDelete: Restrict)
+
+    // ======================================================
+    // MAP
+    // ======================================================
+    latitude          Float?
+    longitude         Float?
+    timezone          String?
+    plusCode          String?
+    precision         AddressPrecision   @default(ADDRESS)
+    // ======================================================
+    // RELATIONS
+    // ======================================================
+    hotelInformations HotelInformation[]
+
+    airport FlyAirport[]
+
+    busRouteStop                   BusRouteStop[]
+    busBoardingPoint               BusBoardingPoint[]
+    busDropoffPoint                BusDropoffPoint[]
+    yachtRouteStop                 YachtRouteStop[]
+    yachtMarina                    YachtMarina[]
+    yachtBookingPickups            YachtBookingPickup[]
+    departureBusRoutes             BusRoute[]                @relation("BusDepartureAddress")
+    arrivalBusRoutes               BusRoute[]                @relation("BusArrivalAddress")
+    departureAirportTransferRoutes AirportTransferRoute[]    @relation("AirportTransferDepartureAddress")
+    arrivalAirportTransferRoutes   AirportTransferRoute[]    @relation("AirportTransferArrivalAddress")
+    carRentalLocations             CarRentalLocation[]
+    carRentalVehicleLocation       CarRentalVehicleLocation?
+
+    airportTransferRouteStop AirportTransferRouteStop[]
+    hotelNearbyPlace         HotelNearbyPlace?
+    providerBooking          ProviderBooking?
+    // ======================================================
+    // TIMESTAMP
+    // ======================================================
+    createdAt                DateTime                   @default(now())
+    updatedAt                DateTime                   @updatedAt
+}
+
+enum AddressPrecision {
+    COUNTRY
+    CITY
+    DISTRICT
+    STREET
+    ADDRESS
+    POINT
+}
+
+// ======================================================
+// CITY
+// ======================================================
+
+model City {
+    id String @id @default(cuid())
+    // =========================
+    // BASIC
+    // =========================
+
+    name             String
+    nativeName       String?
+    slug             String  @unique
+    code             String? @unique
+    iataCode         String? @unique
+    subtitle         String?
+    shortDescription String?
+    description      String?
+
+    // =========================
+    // COUNTRY
+    // =========================
+
+    countryId          String
+    country            Country @relation(fields: [countryId], references: [id], onDelete: Restrict)
+    administrativeArea String?
+    region             String?
+    isCapital          Boolean @default(false)
+
+    // =========================
+    // LOCATION
+    // =========================
+
+    latitude  Float?
+    longitude Float?
+    elevation Float?
+    timezone  String?
+    utcOffset String?
+
+    // =========================
+    // SEARCH
+    // =========================
+
+    priority        Int      @default(0)
+    displayOrder    Int      @default(0)
+    popularityScore Float    @default(0)
+    featured        Boolean  @default(false)
+    popular         Boolean  @default(false)
+    searchable      Boolean  @default(true)
+    aliases         String[]
+    keywords        String[]
+    tags            String[]
+
+    // =========================
+    // MEDIA
+    // =========================
+
+    thumbnail   String?
+    coverImage  String?
+    bannerImage String?
+    images      String[]
+    video       String?
+
+    // =========================
+    // TRAVEL
+    // =========================
+
+    bestMonths  String[]
+    rainyMonths String[]
+
+    // =========================
+    // SEO
+    // =========================
+
+    seoTitle       String?
+    seoDescription String?
+    seoKeywords    String[]
+
+    // =========================
+    // STATUS
+    // =========================
+
+    verified Boolean    @default(false)
+    status   CityStatus @default(ACTIVE)
+
+    // =========================
+    // RELATIONS
+    // =========================
+
+    addresses Address[]
+
+    // Future
+    // tours Tour[]
+    // activities Activity[]
+    // restaurants Restaurant[]
+
+    // =========================
+    // TIMESTAMP
+    // =========================
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+// ======================================================
+// ENUMS
+// ======================================================
+
+enum CityStatus {
+    ACTIVE
+    HIDDEN
+    COMING_SOON
+    DISABLED
+}
+
+enum Continent {
+    AFRICA
+    ANTARCTICA
+    ASIA
+    EUROPE
+    NORTH_AMERICA
+    SOUTH_AMERICA
+    OCEANIA
+}
+
+// ======================================================
+// COUNTRY
+// ======================================================
+
+model Country {
+    id String @id @default(cuid())
+
+    // =========================
+    // BASIC
+    // =========================
+
+    name String
+
+    officialName String?
+
+    slug String @unique
+
+    code String @unique // VN
+
+    iso2 String @unique // VN
+
+    iso3 String @unique // VNM
+
+    phoneCode String? // +84
+
+    capital String?
+
+    // =========================
+    // LOCATION
+    // =========================
+
+    continent Continent
+
+    timezone String?
+
+    languages String[]
+
+    // =========================
+    // MEDIA
+    // =========================
+
+    flag String?
+
+    thumbnail String?
+
+    coverImage String?
+
+    // =========================
+    // SEARCH
+    // =========================
+
+    aliases String[]
+
+    keywords String[]
+
+    priority Int @default(0)
+
+    featured Boolean @default(false)
+
+    searchable Boolean @default(true)
+
+    // =========================
+    // STATUS
+    // =========================
+
+    active Boolean @default(true)
+
+    // =========================
+    // RELATIONS
+    // =========================
+
+    cities City[]
+
+    currencyId String
+    currency   Currency? @relation(fields: [currencyId], references: [id])
+    // =========================
+    // TIMESTAMP
+    // =========================
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}
+
+model Currency {
+    id String @id @default(cuid())
+
+    // ======================================================
+    // BASIC
+    // ======================================================
+
+    code String @unique // VND, USD, AUD
+
+    numericCode String? // 704, 840
+
+    symbol String? // ₫ $
+
+    symbolNative String? // ₫
+
+    name String // Vietnamese Dong
+
+    nativeName String? // Đồng Việt Nam
+
+    decimalDigits Int @default(2)
+
+    rounding Float @default(0)
+
+    // ======================================================
+    // DISPLAY
+    // ======================================================
+
+    flagEmoji String?
+
+    locale String? // vi-VN
+
+    // ======================================================
+    // STATUS
+    // ======================================================
+
+    active Boolean @default(true)
+
+    isDefault Boolean @default(false)
+
+    // ======================================================
+    // RELATIONS
+    // ======================================================
+
+    countries Country[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
 }
 
 model ProviderBooking {
@@ -7458,9 +7453,8 @@ model ProviderBooking {
     // =====================================================
     // ADDRESS
     // =====================================================
-
     addressId String?  @unique
-    address   Address? @relation(fields: [addressId], references: [id], onDelete: Cascade)
+    address   Address? @relation(fields: [addressId], references: [id], onDelete: Restrict)
 
     city String?
 
@@ -7666,11 +7660,6 @@ enum Role {
     USER
 }
 
-enum Currency {
-    VND
-    USD
-}
-
 enum ReviewStatus {
     pending
     approved
@@ -7728,8 +7717,6 @@ model Payment {
 
     amount Float
 
-    currency Currency
-
     status PaymentStatus @default(pending)
 
     method PaymentMethodType?
@@ -7770,8 +7757,6 @@ model PaymentTransaction {
 
     amount Float
 
-    currency Currency
-
     status PaymentStatus
 
     rawResponse Json?
@@ -7809,8 +7794,6 @@ model Refund {
 
     amount Float
 
-    currency Currency
-
     status RefundStatus @default(pending)
 
     reason String?
@@ -7840,9 +7823,6 @@ model Invoice {
 
     customerPhone String?
 
-    addressId String? @unique
-    address   Address? @relation(fields: [addressId], references: [id], onDelete: Cascade)
-
     subtotal Float
 
     tax Float @default(0)
@@ -7850,8 +7830,6 @@ model Invoice {
     discount Float @default(0)
 
     total Float
-
-    currency Currency
 
     pdfUrl String?
 
@@ -8177,8 +8155,9 @@ model YachtBookingPickup {
 
     pickupRequired Boolean @default(false)
 
-    addressId String?
-    address   Address? @relation(fields: [addressId], references: [id])
+    addressId String
+
+    address Address @relation(fields: [addressId], references: [id], onDelete: Restrict)
 
     pickupTime DateTime?
 
@@ -8227,8 +8206,6 @@ model YachtBooking {
     // ==========================
     // PRICE
     // ==========================
-
-    currency Currency
 
     subtotal Float
 
@@ -8303,8 +8280,7 @@ model Yacht {
     providerBookingId String
     providerBooking   ProviderBooking @relation(fields: [providerBookingId], references: [id])
 
-    marinaId String?
-    marina   YachtMarina? @relation(fields: [marinaId], references: [id], onDelete: SetNull)
+    marina   YachtMarina[]
 
     vehicle YachtVehicle?
 
@@ -8656,8 +8632,6 @@ model YachtExtra {
     packageExtras YachtPackageExtra[]
     price         Float
 
-    currency Currency
-
     active Boolean @default(true)
 
     images YachtExtraImage[]
@@ -8794,10 +8768,11 @@ model YachtMarina {
 
     name String
 
-    yachts Yacht[]
+    yachtId String
+    yacht   Yacht  @relation(fields: [yachtId], references: [id], onDelete: Cascade)
 
     addressId String
-    address   Address @relation(fields: [addressId], references: [id])
+    address   Address @relation(fields: [addressId], references: [id], onDelete: Restrict)
 
     departureRoutes   YachtRoute[] @relation("DepartureMarina")
     destinationRoutes YachtRoute[] @relation("DestinationMarina")
@@ -9010,8 +8985,6 @@ model YachtPackage {
 
     price Float
 
-    currency Currency
-
     includedItems String[]
 
     extras YachtPackageExtra[]
@@ -9089,8 +9062,6 @@ model YachtPrice {
     yachtId String @unique
 
     yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
-
-    currency Currency
 
     pricingType YachtPricingType
 
@@ -9188,10 +9159,10 @@ model YachtRouteStop {
     routeId String
     route   YachtRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
 
-    name String
+    name      String
+    addressId String
 
-    addressId String?
-    address   Address? @relation(fields: [addressId], references: [id])
+    address Address @relation(fields: [addressId], references: [id], onDelete: Restrict)
 
     stopDurationMinutes Int?
 
@@ -9312,8 +9283,6 @@ model YachtTripPrice {
 
     tripId String    @unique
     trip   YachtTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
-
-    currency Currency
 
     amount Float
 

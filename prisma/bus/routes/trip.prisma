@@ -1,6 +1,8 @@
-
 model BusTrip {
-    id    String @id @default(cuid())
+    id String @id @default(cuid())
+
+    vehicleId String
+    vehicle   BusVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
 
     routeId          String
     route            BusRoute               @relation(fields: [routeId], references: [id], onDelete: Cascade)

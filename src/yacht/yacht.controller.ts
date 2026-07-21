@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { YachtService } from './yacht.service';
 import { CreateYachtDto } from './dto/create-yacht.dto';
 import { UpdateYachtDto } from './dto/update-yacht.dto';
@@ -29,6 +37,6 @@ export class YachtController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.yachtService.remove(+id);
+    return this.yachtService.remove(id);
   }
 }

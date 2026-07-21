@@ -8,7 +8,7 @@ import {
 
 import { Type } from 'class-transformer';
 
-import { Currency, YachtPricingType } from '@prisma/client';
+import { YachtPricingType } from '@prisma/client';
 
 import { CreateYachtPriceOptionDto } from './create-yacht-price-option.dto';
 import { CreateYachtPriceFeeDto } from './create-yacht-price-fee.dto';
@@ -18,9 +18,6 @@ export class CreateYachtPriceDto {
   @IsEnum(YachtPricingType)
   pricingType: YachtPricingType;
 
-  @IsString()
-  @IsEnum(() => Currency)
-  currency: Currency;
 
   @IsArray()
   @ValidateNested({ each: true })

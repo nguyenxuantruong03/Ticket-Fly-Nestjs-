@@ -12,5 +12,4 @@ model FlyFastTrack {
 
     amount Float?
 
-    currency Currency?
 }

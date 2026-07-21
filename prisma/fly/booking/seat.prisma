@@ -12,8 +12,6 @@ model FlySeatAssignment {
 
     amount Float?
 
-    currency Currency?
-
     assignedAt DateTime @default(now())
 
     @@unique([seatId])

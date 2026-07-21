@@ -10,7 +10,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Currency, RetaurentCategory } from '@prisma/client';
+import { RetaurentCategory } from '@prisma/client';
 
 //
 // ======================================================
@@ -242,9 +242,6 @@ export class CreateHotelRestaurantDto {
 
   @IsNumber()
   price: number;
-
-  @IsEnum(Currency)
-  currency: Currency;
 
   @IsOptional()
   @ValidateNested({ each: true })

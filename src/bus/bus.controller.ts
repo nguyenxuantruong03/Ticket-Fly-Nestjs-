@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { BusService } from './bus.service';
 import { CreateBusDto } from './dto/create-bus.dto';
 import { UpdateBusDto } from './dto/update-bus.dto';
@@ -29,6 +37,6 @@ export class BusController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.busService.remove(+id);
+    return this.busService.remove(id);
   }
 }

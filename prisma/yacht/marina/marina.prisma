@@ -3,10 +3,11 @@ model YachtMarina {
 
     name String
 
-    yachts Yacht[]
+    yachtId String
+    yacht   Yacht  @relation(fields: [yachtId], references: [id], onDelete: Cascade)
 
     addressId String
-    address   Address @relation(fields: [addressId], references: [id])
+    address   Address @relation(fields: [addressId], references: [id], onDelete: Restrict)
 
     departureRoutes   YachtRoute[] @relation("DepartureMarina")
     destinationRoutes YachtRoute[] @relation("DestinationMarina")

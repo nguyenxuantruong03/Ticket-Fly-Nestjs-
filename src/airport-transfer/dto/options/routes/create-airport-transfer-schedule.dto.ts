@@ -1,3 +1,4 @@
+import { WeekDay } from '@prisma/client';
 import {
   IsArray,
   IsBoolean,
@@ -7,7 +8,6 @@ import {
   IsString,
 } from 'class-validator';
 
-import { Weekday } from '@prisma/client';
 
 export class CreateAirportTransferScheduleDto {
   @IsString()
@@ -17,8 +17,8 @@ export class CreateAirportTransferScheduleDto {
   departureTime: string;
 
   @IsArray()
-  @IsEnum(Weekday, { each: true })
-  operatingDays: Weekday[];
+  @IsEnum(WeekDay, { each: true })
+  operatingDays: WeekDay[];
 
   @IsDateString()
   startDate: string;

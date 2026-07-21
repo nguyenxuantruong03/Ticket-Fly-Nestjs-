@@ -17,7 +17,6 @@ model CarRentalBookingExtra {
     quantity   Int                @default(1)
     unitPrice  Float
     totalPrice Float
-    currency   Currency
     createdAt  DateTime           @default(now())
 
     @@index([bookingId])

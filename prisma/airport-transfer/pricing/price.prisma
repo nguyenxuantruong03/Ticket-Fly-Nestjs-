@@ -5,7 +5,6 @@ model AirportTransferPrice {
 
     transfer AirportTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
 
-    currency Currency
 
     fromPrice Float
 

@@ -18,7 +18,6 @@ model HotelBookingPriceSnapshot {
     depositAmount Float    @default(0)
     payableNow    Float
     payableLater  Float
-    currency      Currency
 
     createdAt DateTime @default(now())
 }

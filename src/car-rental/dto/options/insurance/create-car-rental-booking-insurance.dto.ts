@@ -1,6 +1,6 @@
 import { IsEnum, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 
-import { CarRentalInsuranceType, Currency } from '@prisma/client';
+import { CarRentalInsuranceType } from '@prisma/client';
 
 export class CreateCarRentalBookingInsuranceDto {
   @IsOptional()
@@ -15,9 +15,6 @@ export class CreateCarRentalBookingInsuranceDto {
 
   @IsNumber()
   price: number;
-
-  @IsEnum(Currency)
-  currency: Currency;
 
   @IsOptional()
   @IsInt()

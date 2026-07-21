@@ -17,7 +17,6 @@ model BusSeatAvailability {
 
     totalSeats   Int
     currentPrice Float
-    currency     Currency
 
     createdAt DateTime @default(now())
 

@@ -48,9 +48,8 @@ model ProviderBooking {
     // =====================================================
     // ADDRESS
     // =====================================================
-
     addressId String?  @unique
-    address   Address? @relation(fields: [addressId], references: [id], onDelete: Cascade)
+    address   Address? @relation(fields: [addressId], references: [id], onDelete: Restrict)
 
     city String?
 

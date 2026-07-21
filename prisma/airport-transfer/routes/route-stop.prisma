@@ -7,8 +7,7 @@ model AirportTransferRouteStop {
     route AirportTransferRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
 
     addressId String
-
-    address Address @relation(fields: [addressId], references: [id])
+    address Address @relation(fields:[addressId], references:[id],onDelete:Restrict )
 
     stopOrder Int
 

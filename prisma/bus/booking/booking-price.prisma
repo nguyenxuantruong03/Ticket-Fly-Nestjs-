@@ -16,5 +16,4 @@ model BusBookingPriceSnapshot {
 
     total Float
 
-    currency Currency
 }

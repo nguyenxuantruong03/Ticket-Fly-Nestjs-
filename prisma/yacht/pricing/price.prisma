@@ -5,8 +5,6 @@ model YachtPrice {
 
     yacht Yacht @relation(fields: [yachtId], references: [id], onDelete: Cascade)
 
-    currency Currency
-
     pricingType YachtPricingType
 
     basePrices YachtPriceOption[]

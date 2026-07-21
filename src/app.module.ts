@@ -13,11 +13,12 @@ import { HotelModule } from './hotel/hotel.module';
 import { ProviderBookingModule } from './provider-booking/provider-booking.module';
 import { CarRentalModule } from './car-rental/car-rental.module';
 import { CityModule } from './city/city.module';
-import { CountriesModule } from './countries/countries.module';
 import { BusModule } from './bus/bus.module';
 import { AirportTransferModule } from './airport-transfer/airport-transfer.module';
-import { FlyModule } from './fly/fly.module';
+import { FlyModule } from './ticket-fly/fly.module';
 import { YachtModule } from './yacht/yacht.module';
+import { CurrencyModule } from './currency/currency.module';
+import { CountryModule } from './country/country.module';
 
 @Module({
   imports: [
@@ -29,11 +30,12 @@ import { YachtModule } from './yacht/yacht.module';
     ProviderBookingModule,
     CarRentalModule,
     CityModule,
-    CountriesModule,
+    CountryModule,
     BusModule,
     AirportTransferModule,
     FlyModule,
     YachtModule,
+    CurrencyModule,
   ],
   controllers: [AppController],
   providers: [

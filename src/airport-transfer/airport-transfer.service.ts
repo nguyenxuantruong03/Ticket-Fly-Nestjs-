@@ -113,7 +113,11 @@ export class AirportTransferService {
     return `This action updates a #${id} airportTransfer`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} airportTransfer`;
+  async remove(id: string) {
+    return this.prisma.airportTransfer.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

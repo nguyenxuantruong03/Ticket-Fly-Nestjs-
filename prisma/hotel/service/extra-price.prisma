@@ -1,4 +1,3 @@
-
 model HotelExtraPrice {
     id String @id @default(cuid())
 
@@ -7,8 +6,6 @@ model HotelExtraPrice {
     extra HotelExtra @relation(fields: [extraId], references: [id], onDelete: Cascade)
 
     price Float
-
-    currency Currency
 
     unit ExtraPriceUnit
 

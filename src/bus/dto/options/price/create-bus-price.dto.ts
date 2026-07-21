@@ -8,14 +8,10 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-import { Currency } from '@prisma/client';
-
 import { CreateBusPriceBreakdownDto } from './create-bus-price-breakdown.dto';
 import { CreateBusPriceRuleDto } from './create-bus-price-rule.dto';
 
 export class CreateBusPriceDto {
-  @IsEnum(Currency)
-  currency: Currency;
 
   @IsNumber()
   fromPrice: number;

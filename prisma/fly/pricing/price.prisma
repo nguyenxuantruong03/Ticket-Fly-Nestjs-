@@ -4,8 +4,6 @@ model FlyPrice {
     flyId String @unique
     fly   Fly    @relation(fields: [flyId], references: [id], onDelete: Cascade)
 
-    currency Currency
-
     fromPrice Float
 
     toPrice Float?

@@ -37,7 +37,11 @@ export class CityService {
     return `This action updates a #${id} city`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} city`;
+  async remove(id: string) {
+    return this.prisma.city.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

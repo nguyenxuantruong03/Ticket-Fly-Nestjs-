@@ -1,6 +1,7 @@
 import { IsDateString, IsInt, IsOptional, IsString } from 'class-validator';
 
 export class CreateBusRouteStopDto {
+  @IsOptional()
   @IsString()
   addressId: string;
 

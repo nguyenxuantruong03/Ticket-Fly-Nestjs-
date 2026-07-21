@@ -1,5 +1,3 @@
-
-
 model BusDropoffPoint {
     id String @id @default(cuid())
 
@@ -7,7 +5,7 @@ model BusDropoffPoint {
     route   BusRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
 
     addressId String
-    address   Address @relation(fields: [addressId], references: [id], onDelete: Cascade)
+    address   Address @relation(fields: [addressId], references: [id], onDelete: Restrict)
     name      String?
 
     arrivalTime String?

@@ -22,8 +22,6 @@ model AirportTransferBooking {
 
     totalAmount Float
 
-    currency Currency
-
     paymentStatus PaymentStatus
 
     passengers AirportTransferBookingPassenger[]

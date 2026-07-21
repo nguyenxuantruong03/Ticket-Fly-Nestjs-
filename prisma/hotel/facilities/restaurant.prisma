@@ -19,7 +19,6 @@ model HotelRestaurant {
     opening     String?
     images      HotelRestaurantImage[]
     price       Float
-    currency    Currency
 }
 
 model HotelRestaurantImage {

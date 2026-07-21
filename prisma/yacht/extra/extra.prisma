@@ -16,8 +16,6 @@ model YachtExtra {
     packageExtras YachtPackageExtra[]
     price         Float
 
-    currency Currency
-
     active Boolean @default(true)
 
     images YachtExtraImage[]

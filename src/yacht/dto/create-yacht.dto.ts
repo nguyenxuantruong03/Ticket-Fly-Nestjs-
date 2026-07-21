@@ -19,6 +19,7 @@ import { CreateYachtCrewDto } from './options/crew/create-yacht-crew.dto';
 import { CreateYachtRatingSummaryDto } from './options/reviews/create-yacht-rating-summary.dto';
 import { CreateYachtImageDto } from './options/images/create-yacht-iamges.dto';
 import { CreateYachtExtraDto } from './options/price/create-yacht-extra.dto';
+import { CreateYachtMarinaDto } from './options/marina/create-yacht-marina.dto';
 
 export class CreateYachtDto {
   // =========================
@@ -27,10 +28,6 @@ export class CreateYachtDto {
 
   @IsString()
   providerBookingId: string;
-
-  @IsOptional()
-  @IsString()
-  marinaId?: string;
 
   // =========================
   // BASIC
@@ -85,6 +82,16 @@ export class CreateYachtDto {
   @ValidateNested()
   @Type(() => CreateYachtVehicleDto)
   vehicle?: CreateYachtVehicleDto;
+
+    // =========================
+  // MARINA
+  // =========================
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({each: true})
+  @Type(() => CreateYachtMarinaDto)
+  marina?: CreateYachtMarinaDto[];
 
   // =========================
   // AVAILABILITY

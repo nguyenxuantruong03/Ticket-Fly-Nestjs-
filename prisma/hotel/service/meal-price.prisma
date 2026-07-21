@@ -8,7 +8,6 @@ model HotelMealPrice {
 
     price Float
 
-    currency Currency
 
     unit MealPriceUnit
 

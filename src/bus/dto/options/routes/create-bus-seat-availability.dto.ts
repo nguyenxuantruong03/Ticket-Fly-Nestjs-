@@ -1,6 +1,6 @@
 import { IsEnum, IsInt, IsNumber, IsString } from 'class-validator';
 
-import { BusSeatAvailabilityStatus, Currency } from '@prisma/client';
+import { BusSeatAvailabilityStatus } from '@prisma/client';
 
 export class CreateBusSeatAvailabilityDto {
   @IsString()
@@ -24,6 +24,4 @@ export class CreateBusSeatAvailabilityDto {
   @IsNumber()
   currentPrice: number;
 
-  @IsEnum(Currency)
-  currency: Currency;
 }

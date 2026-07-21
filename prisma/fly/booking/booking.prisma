@@ -18,8 +18,6 @@ model FlyBooking {
 
     totalAmount Float
 
-    currency Currency
-
     note              String?
     interlines        FlyInterline[]
     itineraries       FlyItinerary[]

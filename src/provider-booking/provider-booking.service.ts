@@ -1,37 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProviderBookingDto } from './dto/create-provider-booking.dto';
-import { UpdateProviderBookingDto } from './dto/update-provider-booking.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { typeServiceBooking } from '@prisma/client';
+import { mapCreateProviderBooking } from './mapper/provider-booking';
 
 @Injectable()
 export class ProviderBookingService {
   constructor(private readonly prisma: PrismaService) {}
 
   create(createProviderBookingDto: CreateProviderBookingDto) {
-    const { userId, ...data } = createProviderBookingDto;
-
+    const data = mapCreateProviderBooking(createProviderBookingDto);
     return this.prisma.providerBooking.create({
-      data: {
-        ...data,
-        user: {
-          connect: {
-            id: userId,
-          },
-        },
-      },
+      data,
     });
   }
 
-  findAll(serviceType?: string) {
+  async findAll() {
     return this.prisma.providerBooking.findMany({
-      where: {
-        // Sử dụng toán tử 'has' để kiểm tra xem mảng có chứa giá trị đó không
-        // Nếu không có serviceType, thì điều kiện là undefined (lấy tất cả)
-        service: serviceType
-          ? { has: serviceType as typeServiceBooking } // Ép kiểu string về Enum
-          : undefined,
-      },
       include: {
         user: {
           select: {
@@ -53,7 +38,11 @@ export class ProviderBookingService {
   //   return `This action updates a #${id} providerBooking`;
   // }
 
-  remove(id: number) {
-    return `This action removes a #${id} providerBooking`;
+ async remove(id: string) {
+    return this.prisma.providerBooking.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

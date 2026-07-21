@@ -6,7 +6,7 @@ model Bus {
 
     routes    BusRoute[]
     policies BusPolicies?
-    vehicle  BusVehicle?
+    vehicle  BusVehicle[]
     reviews  BusReview[]
 
     images     BusImage[]

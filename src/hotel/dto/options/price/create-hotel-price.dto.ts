@@ -13,10 +13,9 @@ import {
 import { Type } from 'class-transformer';
 
 import {
-  Currency,
   HotelPriceRuleType,
   HotelPriceAdjustmentType,
-  Weekday,
+  WeekDay,
 } from '@prisma/client';
 
 // ======================================================
@@ -80,9 +79,6 @@ export class CreateHotelRoomPriceRuleDto {
   @IsNumber()
   value: number;
 
-  @IsOptional()
-  @IsEnum(Currency)
-  currency?: Currency;
 
   @IsOptional()
   @IsInt()
@@ -102,8 +98,8 @@ export class CreateHotelRoomPriceRuleDto {
 
   @IsOptional()
   @IsArray()
-  @IsEnum(Weekday, { each: true })
-  daysOfWeek?: Weekday[];
+  @IsEnum(WeekDay, { each: true })
+  daysOfWeek?: WeekDay[];
 
   @IsOptional()
   @IsInt()
@@ -126,11 +122,6 @@ export class CreateHotelRoomPriceDto {
   // Relation
   @IsString()
   ratePlanId: string;
-
-  // Currency
-
-  @IsEnum(Currency)
-  currency: Currency;
 
   // Price
 

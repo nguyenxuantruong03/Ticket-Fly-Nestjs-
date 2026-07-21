@@ -13,10 +13,9 @@ model FlyAirport {
 
     lat Float?
 
-    lng Float?
-
-    addressId String?
-    address   Address? @relation(fields: [addressId], references: [id], onDelete: SetNull)
+    lng       Float?
+    addressId String
+    address   Address @relation(fields: [addressId], references: [id], onDelete: Restrict)
 
     departures FlyRoute[] @relation("FlyDepartureAirport")
     arrivals   FlyRoute[] @relation("FlyArrivalAirport")

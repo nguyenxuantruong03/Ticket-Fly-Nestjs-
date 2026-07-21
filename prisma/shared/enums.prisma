@@ -4,11 +4,6 @@ enum Role {
     USER
 }
 
-enum Currency {
-    VND
-    USD
-}
-
 enum ReviewStatus {
     pending
     approved

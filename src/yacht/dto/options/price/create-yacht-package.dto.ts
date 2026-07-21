@@ -10,7 +10,7 @@ import {
 
 import { Type } from 'class-transformer';
 
-import { Currency, YachtDurationType } from '@prisma/client';
+import { YachtDurationType } from '@prisma/client';
 
 import { CreateYachtPackageImageDto } from './create-yacht-package-image.dto';
 import { CreateYachtPackageExtraDto } from './create-yacht-package-extra.dto';
@@ -36,9 +36,6 @@ export class CreateYachtPackageDto {
 
   @IsNumber()
   price: number;
-
-  @IsEnum(Currency)
-  currency: Currency;
 
   @IsArray()
   @IsString({ each: true })

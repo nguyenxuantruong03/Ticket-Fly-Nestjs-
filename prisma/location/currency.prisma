@@ -1,0 +1,49 @@
+model Currency {
+    id String @id @default(cuid())
+
+    // ======================================================
+    // BASIC
+    // ======================================================
+
+    code String @unique // VND, USD, AUD
+
+    numericCode String? // 704, 840
+
+    symbol String? // ₫ $
+
+    symbolNative String? // ₫
+
+    name String // Vietnamese Dong
+
+    nativeName String? // Đồng Việt Nam
+
+    decimalDigits Int @default(2)
+
+    rounding Float @default(0)
+
+    // ======================================================
+    // DISPLAY
+    // ======================================================
+
+    flagEmoji String?
+
+    locale String? // vi-VN
+
+    // ======================================================
+    // STATUS
+    // ======================================================
+
+    active Boolean @default(true)
+
+    isDefault Boolean @default(false)
+
+    // ======================================================
+    // RELATIONS
+    // ======================================================
+
+    countries Country[]
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}

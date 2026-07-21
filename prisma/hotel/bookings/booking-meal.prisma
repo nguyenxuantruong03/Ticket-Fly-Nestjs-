@@ -17,8 +17,6 @@ model HotelBookingMeal {
 
     total Float
 
-    currency Currency
-
     createdAt DateTime @default(now())
 
     @@index([bookingId])

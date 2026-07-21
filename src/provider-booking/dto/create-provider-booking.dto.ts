@@ -1,4 +1,8 @@
-import { typeServiceBooking } from '@prisma/client';
+import {
+  ProviderOperatingStatus,
+  ProviderStatus,
+  typeServiceBooking,
+} from '@prisma/client';
 import {
   IsArray,
   IsBoolean,
@@ -158,4 +162,12 @@ export class CreateProviderBookingDto {
   @IsArray()
   @IsEnum(typeServiceBooking, { each: true })
   service?: typeServiceBooking[];
+
+  @IsOptional()
+  @IsEnum(ProviderStatus)
+  status?: ProviderStatus;
+
+  @IsOptional()
+  @IsEnum(ProviderOperatingStatus)
+  operatingStatus?: ProviderOperatingStatus;
 }

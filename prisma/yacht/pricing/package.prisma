@@ -17,8 +17,6 @@ model YachtPackage {
 
     price Float
 
-    currency Currency
-
     includedItems String[]
 
     extras YachtPackageExtra[]

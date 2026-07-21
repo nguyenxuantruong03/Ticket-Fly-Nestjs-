@@ -1,8 +1,10 @@
 model BusVehicle {
     id String @id @default(cuid())
 
-    busId String @unique
+    busId String
     bus   Bus    @relation(fields: [busId], references: [id], onDelete: Cascade)
+
+    trips BusTrip[]
 
     type   BusVehicleType
     active Boolean        @default(true)

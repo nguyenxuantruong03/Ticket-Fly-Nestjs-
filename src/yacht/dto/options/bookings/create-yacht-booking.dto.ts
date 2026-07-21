@@ -15,12 +15,7 @@ import {
 
 import { Type } from 'class-transformer';
 
-import {
-  Currency,
-  Gender,
-  YachtBookingStatus,
-  YachtPassengerType,
-} from '@prisma/client';
+import { Gender, YachtBookingStatus, YachtPassengerType } from '@prisma/client';
 import { CreateYachtBookingStatusHistoryDto } from './create-yacht-booking-status-history.dto';
 
 // ======================================================
@@ -112,10 +107,6 @@ export class CreateYachtBookingPickupDto {
   pickupRequired?: boolean;
 
   @IsOptional()
-  @IsString()
-  addressId?: string;
-
-  @IsOptional()
   @IsDateString()
   pickupTime?: Date;
 
@@ -180,9 +171,6 @@ export class CreateYachtBookingDto {
   // ==========================
   // PRICE
   // ==========================
-
-  @IsEnum(Currency)
-  currency: Currency;
 
   @IsNumber()
   subtotal: number;

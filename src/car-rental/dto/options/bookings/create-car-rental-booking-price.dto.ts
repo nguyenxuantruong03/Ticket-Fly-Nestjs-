@@ -1,6 +1,5 @@
-import { IsEnum, IsNumber } from 'class-validator';
+import { IsNumber } from 'class-validator';
 
-import { Currency } from '@prisma/client';
 
 export class CreateCarRentalBookingPriceDto {
   @IsNumber()
@@ -30,6 +29,4 @@ export class CreateCarRentalBookingPriceDto {
   @IsNumber()
   totalPrice: number;
 
-  @IsEnum(Currency)
-  currency: Currency;
 }
