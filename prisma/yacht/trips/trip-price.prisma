@@ -5,8 +5,6 @@ model YachtTripPrice {
     tripId String    @unique
     trip   YachtTrip @relation(fields: [tripId], references: [id], onDelete: Cascade)
 
-    currency Currency
-
     amount Float
 
     originalAmount Float?

@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-import { Currency, RentalDurationType } from '@prisma/client';
+import { RentalDurationType } from '@prisma/client';
 
 import { CreateCarRentalPriceBreakdownDto } from './create-car-rental-price-breakdown.dto';
 import { CreateCarRentalPriceRuleDto } from './create-car-rental-price-rule.dto';
@@ -25,9 +25,6 @@ export class CreateCarRentalPriceDto {
 
   @IsEnum(RentalDurationType)
   pricingType: RentalDurationType;
-
-  @IsEnum(Currency)
-  currency: Currency;
 
   @IsOptional()
   @IsNumber()

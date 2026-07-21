@@ -23,8 +23,6 @@ model CarRentalPrice {
     // PRICE
     // =====================
 
-    currency Currency
-
     pricePerHour Float?
 
     pricePerDay Float?

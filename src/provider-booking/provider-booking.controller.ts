@@ -1,16 +1,6 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
 import { ProviderBookingService } from './provider-booking.service';
 import { CreateProviderBookingDto } from './dto/create-provider-booking.dto';
-import { UpdateProviderBookingDto } from './dto/update-provider-booking.dto';
 
 @Controller('provider-booking')
 export class ProviderBookingController {
@@ -24,8 +14,8 @@ export class ProviderBookingController {
   }
 
   @Get()
-  findAll(@Query('service') serviceType?: string) {
-    return this.providerBookingService.findAll(serviceType);
+  findAll() {
+    return this.providerBookingService.findAll();
   }
 
   @Get(':id')
@@ -40,6 +30,6 @@ export class ProviderBookingController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.providerBookingService.remove(+id);
+    return this.providerBookingService.remove(id);
   }
 }

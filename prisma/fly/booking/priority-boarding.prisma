@@ -11,5 +11,4 @@ model FlyPriorityBoarding {
 
     amount Float?
 
-    currency Currency?
 }

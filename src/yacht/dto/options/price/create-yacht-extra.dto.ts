@@ -13,7 +13,6 @@ import { Type } from 'class-transformer';
 import {
   YachtExtraCategory,
   YachtExtraPricingType,
-  Currency,
 } from '@prisma/client';
 
 import { CreateYachtExtraImageDto } from './create-yacht-extra-image.dto';
@@ -35,8 +34,6 @@ export class CreateYachtExtraDto {
   @IsNumber()
   price: number;
 
-  @IsEnum(Currency)
-  currency: Currency;
 
   @IsOptional()
   @IsBoolean()

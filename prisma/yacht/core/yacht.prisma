@@ -4,8 +4,7 @@ model Yacht {
     providerBookingId String
     providerBooking   ProviderBooking @relation(fields: [providerBookingId], references: [id])
 
-    marinaId String?
-    marina   YachtMarina? @relation(fields: [marinaId], references: [id], onDelete: SetNull)
+    marina   YachtMarina[]
 
     vehicle YachtVehicle?
 

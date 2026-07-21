@@ -14,7 +14,6 @@ import {
 import { Type } from 'class-transformer';
 
 import {
-  Currency,
   Gender,
   HotelBookingStatus,
   HotelExtraType,
@@ -76,9 +75,6 @@ export class CreateHotelBookingRoomPriceDto {
 
   @IsNumber()
   total: number;
-
-  @IsEnum(Currency)
-  currency: Currency;
 }
 
 //
@@ -154,9 +150,6 @@ export class CreateHotelBookingPriceSnapshotDto {
 
   @IsNumber()
   payableLater: number;
-
-  @IsEnum(Currency)
-  currency: Currency;
 }
 
 //
@@ -229,9 +222,6 @@ export class CreateHotelExtraPriceDto {
   @IsNumber()
   price: number;
 
-  @IsEnum(Currency)
-  currency: Currency;
-
   @IsEnum(ExtraPriceUnit)
   unit: ExtraPriceUnit;
 
@@ -294,9 +284,6 @@ export class CreateHotelBookingExtraDto {
 
   @IsNumber()
   total: number;
-
-  @IsEnum(Currency)
-  currency: Currency;
 }
 
 //
@@ -308,9 +295,6 @@ export class CreateHotelBookingExtraDto {
 export class CreateHotelMealPriceDto {
   @IsNumber()
   price: number;
-
-  @IsEnum(Currency)
-  currency: Currency;
 
   @IsEnum(MealPriceUnit)
   unit: MealPriceUnit;
@@ -366,9 +350,6 @@ export class CreateHotelBookingMealDto {
 
   @IsNumber()
   total: number;
-
-  @IsEnum(Currency)
-  currency: Currency;
 }
 
 //

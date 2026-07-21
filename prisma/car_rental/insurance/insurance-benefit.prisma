@@ -17,8 +17,6 @@ model CarRentalInsuranceBenefit {
 
     excessAmount Float?
 
-    currency Currency?
-
     createdAt DateTime @default(now())
 
     @@index([insuranceId])

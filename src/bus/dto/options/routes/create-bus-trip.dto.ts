@@ -4,6 +4,7 @@ import {
   IsEnum,
   IsOptional,
   ValidateNested,
+  IsString,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -14,6 +15,10 @@ import { CreateBusRouteStopDto } from './create-bus-route-stop.dto';
 import { CreateBusSeatAvailabilityDto } from './create-bus-seat-availability.dto';
 
 export class CreateBusTripDto {
+  @IsOptional()
+  @IsString()
+  vehicleId?: string;
+
   @IsDateString()
   departureTime: string;
 

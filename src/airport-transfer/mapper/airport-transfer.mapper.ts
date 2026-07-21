@@ -391,8 +391,6 @@ export class AirportTransferCreateMapper {
       price: dto.price
         ? {
             create: {
-              currency: dto.price.currency,
-
               fromPrice: dto.price.fromPrice,
 
               toPrice: dto.price.toPrice,

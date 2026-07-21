@@ -14,7 +14,6 @@ model FlyMealSelection {
 
     amount Float?
 
-    currency Currency?
 }
 
 model FlyMeal {
@@ -34,7 +33,6 @@ model FlyMeal {
 
     price Float?
 
-    currency   Currency?
     selections FlyMealSelection[]
     active     Boolean            @default(true)
 }

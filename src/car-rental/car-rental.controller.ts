@@ -37,6 +37,6 @@ export class CarRentalController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.carRentalService.remove(+id);
+    return this.carRentalService.remove(id);
   }
 }

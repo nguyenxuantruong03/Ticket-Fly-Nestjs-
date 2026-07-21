@@ -1,5 +1,3 @@
-
-
 model HotelRoomPriceRule {
     id String @id @default(cuid())
 
@@ -11,7 +9,6 @@ model HotelRoomPriceRule {
     type           HotelPriceRuleType
     adjustmentType HotelPriceAdjustmentType
     value          Float
-    currency       Currency?
     minimumNights  Int?
     maximumNights  Int?
     validFrom      DateTime?

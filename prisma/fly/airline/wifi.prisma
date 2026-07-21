@@ -14,7 +14,6 @@ model FlyWifiPackage {
 
     amount     Float
     passengers FlyPassengerWifi[]
-    currency   Currency
 }
 
 

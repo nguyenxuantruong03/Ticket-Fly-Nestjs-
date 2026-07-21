@@ -27,8 +27,6 @@ model CarRentalInsurance {
 
     fixedPrice Float?
 
-    currency Currency
-
     // =========================
     // BENEFITS
     // =========================

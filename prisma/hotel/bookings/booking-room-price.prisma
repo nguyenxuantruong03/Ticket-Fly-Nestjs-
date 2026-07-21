@@ -20,5 +20,4 @@ model HotelBookingRoomPrice {
 
     total Float
 
-    currency Currency
 }

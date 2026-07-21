@@ -4,10 +4,10 @@ model YachtRouteStop {
     routeId String
     route   YachtRoute @relation(fields: [routeId], references: [id], onDelete: Cascade)
 
-    name String
+    name      String
+    addressId String
 
-    addressId String?
-    address   Address? @relation(fields: [addressId], references: [id])
+    address Address @relation(fields: [addressId], references: [id], onDelete: Restrict)
 
     stopDurationMinutes Int?
 

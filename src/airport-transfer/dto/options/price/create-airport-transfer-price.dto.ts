@@ -7,16 +7,12 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-import { Currency } from '@prisma/client';
 
 import { CreateAirportTransferRoutePriceDto } from './create-airport-transfer-route-price.dto';
 import { CreateAirportTransferTripPriceDto } from './create-airport-transfer-trip-price.dto';
 import { CreateAirportTransferPriceRuleDto } from './create-airport-transfer-price-rule.dto';
 
 export class CreateAirportTransferPriceDto {
-  @IsEnum(Currency)
-  currency: Currency;
-
   @IsNumber()
   fromPrice: number;
 

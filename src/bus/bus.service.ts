@@ -133,7 +133,11 @@ export class BusService {
     return `This action updates a #${id} bus`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} bus`;
+  async remove(id: string) {
+    return this.prisma.bus.delete({
+      where: {
+        id,
+      },
+    });
   }
 }

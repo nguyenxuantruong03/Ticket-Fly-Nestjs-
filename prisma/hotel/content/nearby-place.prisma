@@ -7,10 +7,9 @@ model HotelNearbyPlace {
 
     name String
 
-    type NearbyPlaceType
-
-    addressId String?  @unique
-    address   Address? @relation(fields: [addressId], references: [id], onDelete: Cascade)
+    type      NearbyPlaceType
+    addressId String          @unique
+    address   Address         @relation(fields: [addressId], references: [id], onDelete: Restrict)
 
     latitude Float?
 

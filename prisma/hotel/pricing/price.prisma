@@ -4,7 +4,6 @@ model HotelRoomPrice {
     ratePlanId String        @unique
     ratePlan   HotelRatePlan @relation(fields: [ratePlanId], references: [id], onDelete: Cascade)
 
-    currency            Currency
     originalPrice       Float?
     averageNightlyPrice Float?
     taxesIncluded       Boolean                  @default(false)

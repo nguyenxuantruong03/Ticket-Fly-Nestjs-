@@ -41,8 +41,6 @@ model YachtBooking {
     // PRICE
     // ==========================
 
-    currency Currency
-
     subtotal Float
 
     tax Float @default(0)

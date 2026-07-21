@@ -86,9 +86,10 @@ export class CreateBusDto {
   // --------------------------------------------------------------------------
 
   @IsOptional()
-  @ValidateNested()
+  @IsArray()
+  @ValidateNested({ each: true })
   @Type(() => CreateBusVehicleDto)
-  vehicle?: CreateBusVehicleDto;
+  vehicles?: CreateBusVehicleDto[];
 
   // --------------------------------------------------------------------------
   // Images

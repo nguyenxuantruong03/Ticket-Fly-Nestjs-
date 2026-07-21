@@ -1,0 +1,83 @@
+// ======================================================
+// COUNTRY
+// ======================================================
+
+model Country {
+    id String @id @default(cuid())
+
+    // =========================
+    // BASIC
+    // =========================
+
+    name String
+
+    officialName String?
+
+    slug String @unique
+
+    code String @unique // VN
+
+    iso2 String @unique // VN
+
+    iso3 String @unique // VNM
+
+    phoneCode String? // +84
+
+    capital String?
+
+    // =========================
+    // LOCATION
+    // =========================
+
+    continent Continent
+
+    timezone String?
+
+    languages String[]
+
+    // =========================
+    // MEDIA
+    // =========================
+
+    flag String?
+
+    thumbnail String?
+
+    coverImage String?
+
+    // =========================
+    // SEARCH
+    // =========================
+
+    aliases String[]
+
+    keywords String[]
+
+    priority Int @default(0)
+
+    featured Boolean @default(false)
+
+    searchable Boolean @default(true)
+
+    // =========================
+    // STATUS
+    // =========================
+
+    active Boolean @default(true)
+
+    // =========================
+    // RELATIONS
+    // =========================
+
+    cities City[]
+
+    currencyId String
+    currency   Currency? @relation(fields: [currencyId], references: [id])
+    // =========================
+    // TIMESTAMP
+    // =========================
+
+    createdAt DateTime @default(now())
+
+    updatedAt DateTime @updatedAt
+}

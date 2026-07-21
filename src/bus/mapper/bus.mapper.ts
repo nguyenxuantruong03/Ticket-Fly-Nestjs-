@@ -23,63 +23,63 @@ export class BusMapper {
       searchPriority: dto.searchPriority ?? 0,
 
       /**
-       * VEHICLE
+       * VEHICLES
        */
-      vehicle: dto.vehicle
+      vehicles: dto.vehicles
         ? {
-            create: {
-              type: dto.vehicle.type,
+            create: dto.vehicles.map((vehicle) => ({
+              type: vehicle.type,
 
-              name: dto.vehicle.name,
-              manufacturer: dto.vehicle.manufacturer,
-              model: dto.vehicle.model,
-              year: dto.vehicle.year,
+              name: vehicle.name,
+              manufacturer: vehicle.manufacturer,
+              model: vehicle.model,
+              year: vehicle.year,
 
-              active: dto.vehicle.active ?? true,
-              status: dto.vehicle.status,
+              active: vehicle.active ?? true,
+              status: vehicle.status,
 
-              capacity: dto.vehicle.capacity
+              capacity: vehicle.capacity
                 ? {
-                    create: dto.vehicle.capacity,
+                    create: vehicle.capacity,
                   }
                 : undefined,
 
-              specification: dto.vehicle.specification
+              specification: vehicle.specification
                 ? {
-                    create: dto.vehicle.specification,
+                    create: vehicle.specification,
                   }
                 : undefined,
 
-              features: dto.vehicle.features
+              features: vehicle.features
                 ? {
-                    create: dto.vehicle.features,
+                    create: vehicle.features,
                   }
                 : undefined,
 
-              images: dto.vehicle.images
+              images: vehicle.images
                 ? {
-                    create: dto.vehicle.images,
+                    create: vehicle.images,
                   }
                 : undefined,
 
-              seats: dto.vehicle.seats
+              seats: vehicle.seats
                 ? {
-                    create: dto.vehicle.seats,
+                    create: vehicle.seats,
                   }
                 : undefined,
 
-              seatLayout: dto.vehicle.seatLayout
+              seatLayout: vehicle.seatLayout
                 ? {
-                    create: dto.vehicle.seatLayout,
+                    create: vehicle.seatLayout,
                   }
                 : undefined,
 
-              seatMap: dto.vehicle.seatMap
+              seatMap: vehicle.seatMap
                 ? {
-                    create: dto.vehicle.seatMap,
+                    create: vehicle.seatMap,
                   }
                 : undefined,
-            },
+            })),
           }
         : undefined,
 
@@ -116,6 +116,9 @@ export class BusMapper {
 
               code: route.code,
 
+              /**
+               * BOARDING POINTS
+               */
               boardingPoints: route.boardingPoints
                 ? {
                     create: route.boardingPoints.map((item) => ({
@@ -134,6 +137,9 @@ export class BusMapper {
                   }
                 : undefined,
 
+              /**
+               * DROPOFF POINTS
+               */
               dropoffPoints: route.dropoffPoints
                 ? {
                     create: route.dropoffPoints.map((item) => ({
@@ -152,9 +158,18 @@ export class BusMapper {
                   }
                 : undefined,
 
+              /**
+               * TRIPS
+               */
               trips: route.trips
                 ? {
                     create: route.trips.map((trip) => ({
+                      vehicle: {
+                        connect: {
+                          id: trip.vehicleId,
+                        },
+                      },
+
                       departureTime: trip.departureTime,
 
                       arrivalTime: trip.arrivalTime,
@@ -163,19 +178,30 @@ export class BusMapper {
 
                       boardingStatus: trip.boardingStatus,
 
+                      /**
+                       * PRICE
+                       */
                       price: trip.price
                         ? {
                             create: {
                               seatPrices: {
                                 create: trip.price.seatPrices.map((seat) => ({
                                   seatType: seat.seatType,
+
                                   price: seat.price,
+
                                   originalPrice: seat.originalPrice,
+
                                   taxes: seat.taxes,
+
                                   serviceFee: seat.serviceFee,
+
                                   bookingFee: seat.bookingFee,
+
                                   discount: seat.discount,
+
                                   finalPrice: seat.finalPrice,
+
                                   availableSeats: seat.availableSeats,
                                 })),
                               },
@@ -183,6 +209,9 @@ export class BusMapper {
                           }
                         : undefined,
 
+                      /**
+                       * STOPS
+                       */
                       stops: trip.stops
                         ? {
                             create: trip.stops.map((stop) => ({
@@ -201,6 +230,9 @@ export class BusMapper {
                           }
                         : undefined,
 
+                      /**
+                       * SEAT AVAILABILITY
+                       */
                       seatAvailability: trip.seatAvailability
                         ? {
                             create: trip.seatAvailability.map((item) => ({
@@ -209,13 +241,18 @@ export class BusMapper {
                                   id: item.seatId,
                                 },
                               },
+
                               status: item.status,
+
                               availableSeats: item.availableSeats,
+
                               soldSeats: item.soldSeats,
+
                               reservedSeats: item.reservedSeats,
+
                               totalSeats: item.totalSeats,
+
                               currentPrice: item.currentPrice,
-                              currency: item.currency,
                             })),
                           }
                         : undefined,
@@ -277,15 +314,16 @@ export class BusMapper {
       price: dto.price
         ? {
             create: dto.price.map((price) => ({
-              currency: price.currency,
-
               fromPrice: price.fromPrice,
+
               toPrice: price.toPrice,
 
               originalFromPrice: price.originalFromPrice,
+
               originalToPrice: price.originalToPrice,
 
               effectiveFrom: price.effectiveFrom,
+
               effectiveTo: price.effectiveTo,
 
               breakdowns: price.breakdowns

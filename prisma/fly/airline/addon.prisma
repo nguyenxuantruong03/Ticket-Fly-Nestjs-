@@ -17,8 +17,6 @@ model FlyAddon {
 
   amount Float
 
-  currency Currency
-
   active Boolean @default(true)
 
   passengerAddons FlyPassengerAddon[]
@@ -47,7 +45,6 @@ model FlyPassengerAddon {
 
   totalPrice Float
 
-  currency Currency
 
   metadata Json?
 

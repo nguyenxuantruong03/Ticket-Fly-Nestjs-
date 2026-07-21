@@ -15,7 +15,6 @@ model FlyInsurance {
 
     amount Float
 
-    currency Currency
 
     active Boolean @default(true)
 
@@ -36,8 +35,6 @@ model FlyPassengerInsurance {
     unitPrice Float
 
     totalPrice Float
-
-    currency Currency
 
     createdAt DateTime @default(now())
 

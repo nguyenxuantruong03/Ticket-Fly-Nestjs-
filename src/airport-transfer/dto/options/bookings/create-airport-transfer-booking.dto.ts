@@ -11,7 +11,6 @@ import { Type } from 'class-transformer';
 
 import {
   AirportTransferBookingStatus,
-  Currency,
   PaymentStatus,
 } from '@prisma/client';
 
@@ -45,9 +44,6 @@ export class CreateAirportTransferBookingDto {
 
   @IsNumber()
   totalAmount: number;
-
-  @IsEnum(Currency)
-  currency: Currency;
 
   @IsEnum(PaymentStatus)
   paymentStatus: PaymentStatus;

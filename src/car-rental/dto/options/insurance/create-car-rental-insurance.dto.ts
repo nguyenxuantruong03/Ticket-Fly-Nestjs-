@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-import { CarRentalInsuranceType, Currency } from '@prisma/client';
+import { CarRentalInsuranceType } from '@prisma/client';
 
 import { CreateCarRentalInsuranceBenefitDto } from './create-car-rental-insurance-benefit.dto';
 
@@ -31,9 +31,6 @@ export class CreateCarRentalInsuranceDto {
   @IsOptional()
   @IsNumber()
   fixedPrice?: number;
-
-  @IsEnum(Currency)
-  currency: Currency;
 
   @IsOptional()
   @IsBoolean()

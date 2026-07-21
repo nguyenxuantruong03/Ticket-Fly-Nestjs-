@@ -13,7 +13,6 @@ model FlyLounge {
 
   price      Float?
   passengers FlyPassengerLounge[]
-  currency   Currency?
 }
 
 model FlyPassengerLounge {
@@ -27,5 +26,4 @@ model FlyPassengerLounge {
 
   amount Float?
 
-  currency Currency?
 }
